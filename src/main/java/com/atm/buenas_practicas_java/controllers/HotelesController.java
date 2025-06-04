@@ -115,6 +115,16 @@ public class HotelesController {
         return "home";
     }
 
+    @GetMapping("/reservarapida")
+    public String reservarapida( ) {
+        return "reservaRapida";
+    }
+
+    @GetMapping("/confirmarReserva")
+    public String confirmarreserva( ) {
+        return "confirmarReserva";
+    }
+
 
 
 
