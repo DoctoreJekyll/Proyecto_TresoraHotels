@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <properties>
-        <java.version>24</java.version>
+        <java.version>21</java.version>
         <lombok.version>1.18.38</lombok.version>
         <sonar.coverage.exclusions>**/Application.*,**/loaders/*</sonar.coverage.exclusions>
         <project.name>buenaspracticas</project.name>
@@ -49,6 +49,11 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>
          <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-maven-plugin -->
@@ -61,6 +66,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf-spring6</artifactId>
+            <version>3.1.0.RELEASE</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -173,7 +190,7 @@
                         <version>${lombok.version}</version>
                       </path>
                     </annotationProcessorPaths>
-                    <release>24</release>
+                    <release>21</release>
                 </configuration>
             </plugin>
             <plugin>

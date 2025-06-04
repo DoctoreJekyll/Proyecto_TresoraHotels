@@ -1,0 +1,67 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+<head>
+
+    <title>Crear Cuenta</title>
+
+</head>
+
+<body>
+<main id="contenido-principal" class="d-flex align-items-center justify-content-center" style="min-height: 100vh" layout:fragment="contenido">
+    <div class="container text-dark">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-lg p-4" style="background-color: #E0E0E0;">
+                    <h2 class="text-center mb-4">CREAR CUENTA</h2>
+                    <form id="registroForm">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">NOMBRE</label>
+                            <input type="text" class="form-control" id="nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="apellidos" class="form-label">APELLIDOS</label>
+                            <input type="text" class="form-control" id="apellidos" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">CORREO ELECTRÓNICO</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">CONTRASEÑA</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">REPETIR CONTRASEÑA</label>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                            <div id="passwordMismatch" class="text-danger mt-2 d-none">⚠️ Las contraseñas no coinciden.</div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">CREAR CUENTA</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalExito" tabindex="-1" aria-labelledby="modalExitoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-dark" style="background-color: #E0E0E0;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalExitoLabel">Cuenta creada correctamente</h5>
+                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    Siga las instrucciones del correo de confirmación para completar su perfil.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+
+</html>

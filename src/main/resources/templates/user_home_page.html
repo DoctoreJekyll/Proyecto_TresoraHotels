@@ -1,0 +1,116 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantillasinlogin}">
+<head>
+
+    <title>Mi Usuario - Página principal</title>
+
+</head>
+
+<body>
+<main id="contenido-principal" class="container py-5" layout:fragment="contenido">
+<section class="text-center mb-5">
+    <h1 class="display-4 fw-bold">¡Bienvenido!</h1>
+    <p class="lead">Disfruta de una experiencia única en el Zen Aura</p>
+    <button class="btn btn-grupo5 mt-3" data-bs-toggle="modal" data-bs-target="#disponibilidadModal">
+        BUSCAR DISPONIBILIDAD
+    </button>
+</section>
+<div class="modal fade" id="disponibilidadModal" tabindex="-1" aria-labelledby="disponibilidadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="disponibilidadModalLabel">Buscar Disponibilidad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="entrada" class="form-label" >Fecha de entrada</label>
+                            <input type="date" class="form-control" id="entrada" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="salida" class="form-label" >Fecha de salida</label>
+                            <input type="date" class="form-control" id="salida" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="adultos" class="form-label" >Adultos</label>
+                            <input type="number" class="form-control" id="adultos" min="1" value="1" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ninos" class="form-label">Niños</label>
+                            <input type="number" class="form-control" id="ninos" min="0" value="0">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="hotel" class="form-label" >Hotel</label>
+                            <select class="form-select" id="hotel">
+                                <option>Hotel 1</option>
+                                <option>Hotel 2</option>
+                                <option>Hotel 3</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="habitacion" class="form-label" >Tipo de habitación</label>
+                            <select class="form-select" id="habitacion">
+                                <option>Estandar</option>
+                                <option>Deluxe</option>
+                                <option>Suite</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-outline-grupo5">Buscar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="text-center mt-5 mb-4">
+    <h2 class="fw-bold">Tu Estancia Perfecta</h2>
+    <p class="lead">Explota nuestras opciones exclusivas y personaliza tu experiencia en Zen Aura</p>
+</section>
+
+<section class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card h-100">
+            <img src="https://cdn.pixabay.com/photo/2015/11/06/11/45/interior-1026449_1280.jpg" class="card-img-top rounded" alt="Habitación">
+            <div class="card-body">
+                <h5 class="card-title">Habitaciones</h5>
+                <p class="card-text">Disfruta de nuestras amplias habitaciones con vistas espectaculares y comodidades únicas.</p>
+                <a href="#" class="btn btn-outline-primary">Ver Detalles</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100">
+            <img src="https://cdn.pixabay.com/photo/2016/08/22/16/23/massage-therapy-1612308_1280.jpg" class="card-img-top rounded" alt="Spa y Bienestar">
+            <div class="card-body">
+                <h5 class="card-title">Spa y Bienestar</h5>
+                <p class="card-text">Relájate con nuestros tratamientos de Spa y servicios de bienestar personalizados.</p>
+                <a href="#" class="btn btn-outline-primary">Ver Detalles</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100">
+            <img src="https://cdn.pixabay.com/photo/2015/11/19/10/38/food-1050813_1280.jpg" class="card-img-top rounded" alt="Gastronomía">
+            <div class="card-body">
+                <h5 class="card-title">Gastronomía Exclusiva</h5>
+                <p class="card-text">Saborea platos exquisitos en nuestro restaurante para todos los gustos.</p>
+                <a href="#" class="btn btn-outline-primary">Ver Detalles</a>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+
+<head>
+    <title>prueba inicial</title>
+</head>
+<body>
+
+<div layout:fragment="cabecera">
+    prueba in icial ahora pongo el mio cabecera
+</div>
+<div layout:fragment="contenido" >
+    <form  th:action="@{/prueba2}"  method="get">
+        <button id="submitbtn" type="submit"  class="btn btn-success btn-lg" >Ir a prueba2</button>
+    </form>
+</div>
+
+
+</body>
+</html>

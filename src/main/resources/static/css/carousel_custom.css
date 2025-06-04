@@ -1,0 +1,34 @@
+@charset "UTF-8";
+
+/* Carrusel */
+.carousel-item {
+    position: relative;  /* Importante para que los elementos dentro puedan ser posicionados relativos a este contenedor */
+    width: 100%;
+    height: 70vh; /* Hace que el carrusel ocupe toda la pantalla */
+}
+
+.carousel-item img {
+    object-fit: cover; /* Ajusta la imagen sin distorsionarla */
+    width: 100%;
+    height: 100%; /* Hace que la imagen ocupe toda la altura del contenedor */
+    position: absolute; /* La imagen se posiciona detrás del texto */
+    top: 0;
+    left: 0;
+    z-index: -1; /* Coloca la imagen detrás del contenido */
+}
+
+/* Texto sobre la imagen */
+.carousel-center-caption {
+    position: absolute;  /* Asegura que el texto esté sobre la imagen */
+    top: 50%;  /* Centrado vertical */
+    left: 50%;  /* Centrado horizontal */
+    transform: translate(-50%, -50%);  /* Ajusta el texto exactamente al centro */
+    color: white;
+    text-align: center;
+    padding: 20px 40px;
+    background-color: rgba(0, 0, 0, 0.1); /* Fondo oscuro para contraste */
+    border-radius: 10px;
+    z-index: 1;  /* Asegura que el texto quede por encima de la imagen */
+}
+
+
