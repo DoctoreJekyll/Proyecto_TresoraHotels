@@ -3,7 +3,7 @@
       layout:decorate="~{/layout/plantilla}">
 <head>
 
-    <title>home</title>
+    <title>Reserva</title>
 
 </head>
 
@@ -12,7 +12,7 @@
         <div class="container">
 
             <!-- ----------------------------------------Reserva Express----------------------------------------------------------------------------------------- -->
-            <a href="URL_de_pagina_reserva_express" target="_blank" class="d-block-text text-center" style="position: fixed; top: 200px; right: 20px; background-color: #00BFFF; padding: 10px; border-radius: 5px; text-decoration: none;">
+            <a th:href="@{/reservarapida}" target="_blank" class="d-block-text text-center" style="position: fixed; top: 200px; right: 20px; background-color: #00BFFF; padding: 10px; border-radius: 5px; text-decoration: none;">
                 <i class="bi bi-cart-dash" style="font-size: 1.5rem; color: #FFFFFF;"></i>
                 <p style="margin: 0; font-size: 0.8rem; color: #FFFFFF; letter-spacing: 2px;">RESERVA EXPRESS</p>
             </a>
@@ -37,23 +37,26 @@
                 <div class="card shadow">
                     <div class="card-body p-5">
                         <h2 class="card-title h3 mb-4">Reserva tu estancia</h2>
-                        <form th:action="@{/reservas/buscar}" method="POST" class="row g-2">
+                        <form th:action="@{/reserva}" th:object="${datosreserva}" method="POST" class="row g-2">
                             <div class="col-md-3">
                                 <label for="checkin" class="form-label">Fecha de entrada</label>
-                                <input type="date" id="checkin" name="checkin" class="form-control" min="2025-04-28" required>
+                                <input  th:field="${datosreserva.fechaEntrada}" type="date" id="checkin" name="checkin" class="form-control" min="2025-04-28" required>
                             </div>
                             <div class="col-md-3">
                                 <label for="checkout" class="form-label">Fecha de salida</label>
-                                <input type="date" id="checkout" name="checkout" class="form-control" min="2025-04-29" required>
+                                <input th:field="${datosreserva.fechaSalida}" type="date" id="checkout" name="checkout" class="form-control" min="2025-04-29" required>
                             </div>
                             <div class="col-md-3">
-                                <label for="adults" class="form-label">Adultos</label>
+                                <label>Adultos:</label>
+                                <input type="number" th:field="${datosreserva.Adultos}" />
+
+                                <!--label for="adults" class="form-label">Adultos</label>
                                 <select id="adults" name="adults" class="form-select" required>
                                     <option value="1">1</option>
                                     <option value="2" selected>2</option>
                                     <option value="3">3</option>
                                     <option value="4">4</option>
-                                </select>
+                                </select-->
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
                                 <button type="submit" class="btn btn-grupo5 w-100">Buscar</button>
@@ -263,7 +266,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-grupo5" data-bs-dismiss="modal">Cancelar</button>
-                            <a id="confirmReservation" href="/reservas/seleccionar" class="btn btn-grupo5">Confirmar Reserva</a>
+                            <a id="confirmReservation" th:href="@{/confirmarReserva}" class="btn btn-grupo5">Confirmar Reserva</a>
                         </div>
                     </div>
                 </div>
