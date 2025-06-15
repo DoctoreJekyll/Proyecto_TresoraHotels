@@ -87,15 +87,27 @@ public class HotelesController {
     @GetMapping("/contact")
     public String mostrarPaginaContact(ModelMap intefrazConPantalla) {
         ContactDto contacto = new ContactDto();
-        contacto.setNombre("El lobo feroz");
-        intefrazConPantalla.addAttribute("datoscontacto", contacto);
+        contacto.setName("El lobo feroz");
+        intefrazConPantalla.addAttribute("contactInfo", contacto);
         return "contact";
     }
 
     @PostMapping("/contact")
-    public String postMostrarPaginaContact(@ModelAttribute(name="datoscontacto") ContactDto infoContacto) {
-        System.out.println(infoContacto.getNombre());
-        System.out.println(infoContacto.getMensaje());
+    public String postMostrarPaginaContact(@ModelAttribute(name="contactInfo") ContactDto contactInfo) {
+        System.out.println(contactInfo.getName());
+        System.out.println(contactInfo.getMessage());
+
+        emailService.sendEmail(
+
+                "alba2gr@gmail.com",
+                contactInfo.getEmail(),
+                "Gracias por contactar con Tresora",
+                "Hola " + contactInfo.getName() + ",\n\n" +
+                        "Hemos recibido tu mensaje:\n" +
+                        contactInfo.getMessage() + "\n\n" +
+                        "Te contactaremos pronto.\n\n" +
+                        "Atentamente,\nTresora Hotels"
+        );
         return "home";
     }
 
@@ -113,6 +125,16 @@ public class HotelesController {
         System.out.println(reserva.getFechaEntrada());
         System.out.println(reserva.getFechaSalida());
         return "home";
+    }
+
+    @GetMapping("/reservarapida")
+    public String reservarapida( ) {
+        return "reservaRapida";
+    }
+
+    @GetMapping("/confirmarReserva")
+    public String confirmarreserva( ) {
+        return "confirmarReserva";
     }
 
 
