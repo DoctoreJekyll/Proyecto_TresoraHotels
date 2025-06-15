@@ -96,4 +96,36 @@
     border: none;
 }
 
+/* Aumenta el tamaño general de las tarjetas */
+.card {
+    min-height: 550px;
+    font-size: 1.1rem;
+}
+
+/* Aumenta el padding interno */
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Mejora el tamaño del texto del título y precio */
+.card-title {
+    font-size: 1.4rem;
+}
+
+.card-text strong {
+    font-size: 1.2rem;
+}
+
+/* Aumenta el tamaño de la imagen */
+.card-img-top {
+    height: 280px;
+}
+
+/* Espaciado entre secciones */
+section {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+
 
