@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+<head>
+    <title>Informe de Limpieza - Hotel Gominola</title>
+    <link th:href="@{/css/contact.css}" rel="stylesheet" />
+</head>
+<body class="bg-gradient-primary">
+<main layout:fragment="contenido">
+    <section id="informe-limpieza" class="contact-form-section" tabindex="0" aria-labelledby="titulo-informe">
+        <div class="container">
+            <h1 class="mb-4 text-center" id="titulo-informe">Informe de Limpieza</h1>
+            <p class="lead text-center">
+                Completa este formulario para registrar la limpieza de una habitación.
+            </p>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h2 class="mb-4 text-center">Registrar Informe</h2>
+
+                    <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
+                          action="/informes" method="post" enctype="multipart/form-data">
+
+                        <p id="instrucciones-formulario" class="text-muted text-center">
+                            Todos los campos marcados con * son obligatorios.
+                        </p>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="usuario" class="form-label">Empleado *</label>
+                                <select class="form-select" id="usuario" name="idUsuario" required aria-required="true">
+                                    <option value="" disabled selected>Seleccione un empleado</option>
+                                    <option value="1">Juan Pérez</option>
+                                    <option value="2">María Gómez</option>
+                                    <option value="3">Carlos Díaz</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="habitacion" class="form-label">Habitación *</label>
+                                <select class="form-select" id="habitacion" name="idHabitacion" required aria-required="true">
+                                    <option value="" disabled selected>Seleccione una habitación</option>
+                                    <option value="101">Hab. 101 - Piso 1</option>
+                                    <option value="102">Hab. 102 - Piso 1</option>
+                                    <option value="201">Hab. 201 - Piso 2</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="fecha" class="form-label">Fecha de Limpieza *</label>
+                                <input type="date" class="form-control" id="fecha" name="fechaLimpieza" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="hora" class="form-label">Hora de Limpieza *</label>
+                                <input type="time" class="form-control" id="hora" name="horaLimpieza" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="foto1" class="form-label">Foto 1</label>
+                            <input class="form-control" type="file" id="foto1" name="foto1" accept="image/*">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="foto2" class="form-label">Foto 2</label>
+                            <input class="form-control" type="file" id="foto2" name="foto2" accept="image/*">
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn" aria-label="Registrar informe de limpieza">Registrar Informe</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
