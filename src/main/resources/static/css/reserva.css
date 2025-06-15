@@ -1,0 +1,95 @@
+/* Barra flotante y comprimible */
+#bookingBar {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background-color: #121212;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 1050;
+}
+#bookingBar.compressed {
+    transform: translateX(-90%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+#toggleBookingBtn {
+    position: fixed;
+    bottom: 40px;
+    left: 20px;
+    background-color: #00bfff;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    color: #121212;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,191,255,0.6);
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+#toggleBookingBtn:hover {
+    background-color: #0099cc;
+}
+
+/* Inputs y selects estilizados para barra flotante */
+#bookingBar select,
+#bookingBar input[type="date"],
+#bookingBar input[type="text"] {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    min-width: 140px;
+}
+
+#bookingBar label {
+    display: none; /* Oculto para ahorrar espacio */
+}
+
+#bookingBar button {
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    border: none;
+    background-color: #00bfff;
+    color: #121212;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+#bookingBar button:hover {
+    background-color: #0099cc;
+}
+
+/* Para que el body no tenga padding bottom fijo porque la barra no está pegada */
+body {
+    padding-bottom: 0;
+}
+
+/* Responsivo: en pantallas muy pequeñas apilamos inputs */
+@media (max-width: 576px) {
+    #bookingBar {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    #toggleBookingBtn {
+        bottom: 20px;
+    }
+    #bookingBar.compressed {
+        transform: translateX(-100%);
+    }
+}
