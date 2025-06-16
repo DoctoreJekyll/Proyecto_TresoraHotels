@@ -1,0 +1,19 @@
+.fixed-bottom {
+    background-color: #121212 !important;
+    border-top: 1px solid #333;
+}
+
+nav .form-control, nav .form-select {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+
+nav .form-control::placeholder {
+    color: #aaa;
+}
+
+/* Añade margen inferior al body para que el contenido no quede oculto bajo la barra fija */
+body {
+    padding-bottom: 80px; /* Ajusta según la altura de la barra */
+}

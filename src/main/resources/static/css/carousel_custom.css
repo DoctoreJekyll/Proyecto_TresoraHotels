@@ -31,4 +31,64 @@
     z-index: 1;  /* Asegura que el texto quede por encima de la imagen */
 }
 
+/* Mejora el tamaño del slider de servicios */
+.servicesSwiper {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+/* Tarjetas más altas y espaciadas */
+.servicesSwiper .swiper-slide {
+    min-height: 380px;
+    margin-right: 30px !important;
+    margin-left: 10px !important;
+}
+
+/* Espaciado entre imagen y texto */
+.servicesSwiper .swiper-slide img {
+    margin-bottom: 1.5rem;
+}
+
+/* Mejora la legibilidad del texto */
+.servicesSwiper .swiper-slide h5 {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+}
+
+.servicesSwiper .swiper-slide p {
+    font-size: 1.05rem;
+}
+
+/* Espaciado entre sección y borde */
+.servicesSwiper {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+section {
+    scroll-margin-top: 100px;
+}
+
+section h2 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.card {
+    min-height: 580px;
+}
+
+.card-title {
+    font-size: 1.4rem;
+}
+
+.card-text {
+    font-size: 1.05rem;
+}
+
+.container-xl {
+    max-width: 95%;
+}
+
 
