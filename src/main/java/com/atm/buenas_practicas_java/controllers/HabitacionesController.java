@@ -1,16 +1,15 @@
 package com.atm.buenas_practicas_java.controllers;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/informes")
-public class InformesController {
+@RequestMapping("/habitaciones")
+public class HabitacionesController {
 
     // Mostrar lista de informes dummy en /informes o /informes/lista
     @GetMapping({"", "/lista"})
@@ -21,12 +20,15 @@ public class InformesController {
     // Mostrar formulario para nuevo informe
     @GetMapping("/nuevo")
     public String mostrarFormularioInforme(Model model) {
-        return "informeForm";  // El nombre de tu vista Thymeleaf para el formulario
+        return "habitacionForm";  // El nombre de tu vista Thymeleaf para el formulario
     }
 
     // Procesar envío del formulario (simulado)
     @PostMapping("/nuevo")
     public String procesarFormularioInforme(@ModelAttribute Model model) {
-        return "informeForm";
+        return "habitacionForm";
     }
+
+
+
 }
