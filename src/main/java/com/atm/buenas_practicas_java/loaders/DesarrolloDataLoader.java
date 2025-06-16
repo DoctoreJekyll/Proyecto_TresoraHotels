@@ -65,7 +65,4 @@ public void loadDataDesarrollo() {
     log.info("Datos de entidades cargados correctamente.");
 
 }
-
-
-
 }
