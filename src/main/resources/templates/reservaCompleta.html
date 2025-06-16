@@ -11,12 +11,6 @@
 <main layout:fragment="contenido" id="contenido-principal">
         <div class="container">
 
-            <!-- ----------------------------------------Reserva Express----------------------------------------------------------------------------------------- -->
-            <a th:href="@{/reservarapida}" target="_blank" class="d-block-text text-center" style="position: fixed; top: 200px; right: 20px; background-color: #00BFFF; padding: 10px; border-radius: 5px; text-decoration: none;">
-                <i class="bi bi-cart-dash" style="font-size: 1.5rem; color: #FFFFFF;"></i>
-                <p style="margin: 0; font-size: 0.8rem; color: #FFFFFF; letter-spacing: 2px;">RESERVA EXPRESS</p>
-            </a>
-
             <!-- ----------------------------------------Burbuja flotante contacto--------------------------------------------------------------------------------- -->
             <div class="bubble" data-bs-toggle="modal" data-bs-target="#phoneModal" tabindex="0" aria-label="Abrir contacto"><i class="bi-telephone-forward-fill"></i></div>
             <div class="modal fade" id="phoneModal" tabindex="-1" aria-labelledby="phoneModalLabel" aria-hidden="true">
@@ -32,6 +26,37 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- ----------------------------------------Seccion imágenes Hotel playa---------------------------------------------------------------------------------------- -->
+            <div id="carouselHotel1" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselHotel1" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#carouselHotel1" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#carouselHotel1" data-bs-slide-to="2"></button>
+                </div>
+                <div class="carousel-inner carousel_reserva">
+                    <div class="carousel-item active">
+                        <img src="https://media.istockphoto.com/id/1198357641/es/foto/bungalow-frente-a-la-playa-con-vistas-al-mar.jpg?s=2048x2048&w=is&k=20&c=BOW86bY1XHecuFR9w3gfllej3nMUzpifKOVmLpHkryU=" class="d-block" alt="Playa del Hotel Playa">
+                    </div>
+                    <div class="carousel-item carousel_reserva">
+                        <img src="https://media.istockphoto.com/id/537414562/es/foto/el-moderno-dormitorio-terraza-para-tomar-sol-con-vista-al-mar.jpg?s=2048x2048&w=is&k=20&c=qfM4AhAIhpJqb4asn3q0DENhV-vygl3bV5Du7f-IFmM="  class="d-block" alt="Ejemplo habitacion Hotel playa">
+                    </div>
+                    <div class="carousel-item carousel_reserva">
+                        <img src="https://media.istockphoto.com/id/641448082/es/foto/tropical-playa-frente-hotel-resort-con-piscina-sol.jpg?s=2048x2048&w=is&k=20&c=yCY4mCc1HQvNpQQLtTXvULEtE7Gjhk7k5f4Tlg_MepU=" class="d-block" alt="Piscina del Hotel Plata">
+                    </div>
+                    <div class="carousel-caption-overlay">
+                        <h2>Hotel Playa</h2>
+                        <p>Tu experiencia inolvidable comienza aquí.</p>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselHotel1" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselHotel1" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+
             <!-- ----------------------------------------Sección de reserva---------------------------------------------------------------------------------------- -->
             <section class="py-5">
                 <div class="card shadow">

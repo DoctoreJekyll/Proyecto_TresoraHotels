@@ -22,17 +22,16 @@
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar border-bottom rounded" style="background-color: #E0E0E0;">
+<nav class="navbar" style="background-color: #E0E0E0;">
     <div class="container-fluid justify-content-between">
         <a class="navbar-brand" href="#" th:href="@{/}">
-           <!-- img th:src="@{/img/logo.png}" alt="Logo Zen Aura" style="height: 50px;"-->
+            <img src="/images/LogoTresora.jpg" alt="Logo Tresora" style="height: 40px;">
         </a>
         <button class="btn btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
             <span class="navbar-toggler-icon"></span> MENÚ
         </button>
         <div class="offcanvas offcanvas-start offcanvas-fullscreen" tabindex="-1" id="offcanvasMenu">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title">Menú</h5>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
             </div>
             <div class="offcanvas-body d-flex flex-column align-items-start">
@@ -45,6 +44,14 @@
         </div>
     </div>
 </nav>
+
+<!-- ----------------------------------------Reserva Rapida----------------------------------------------------------------------------------------- -->
+<a th:href="@{/reservarapida}" target="_blank" class="d-block-text text-center reserva_rapida" aria-label="Reserva rápida">
+    <p style= "margin: 0; font-size: 0.8rem; color: #FFFFFF; letter-spacing: 2px; font-weight: bold;">RESERVA</p>
+    <i class="bi bi-rocket" style="font-size: 1.75rem; color: #FFFFFF;"></i>
+</a>
+
+<!-- --------------------------------------------------------------------------------------------------------------------------------- -->
 
 <!-- CONTENIDO -->
 <main id="contenido-principal" layout:fragment="contenido">
