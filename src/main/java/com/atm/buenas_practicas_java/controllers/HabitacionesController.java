@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/habitaciones")
 public class HabitacionesController {
 
-    // Mostrar lista de informes dummy en /informes o /informes/lista
+    
     @GetMapping({"", "/lista"})
     public String mostrarInformes(Model model) {
-        return "informeVista";  // El nombre de tu vista Thymeleaf para mostrar informes
+        return "informeVista";
     }
 
     // Mostrar formulario para nuevo informe
     @GetMapping("/nuevo")
     public String mostrarFormularioInforme(Model model) {
-        return "habitacionForm";  // El nombre de tu vista Thymeleaf para el formulario
+        return "habitacionForm";
     }
 
     // Procesar envío del formulario (simulado)
@@ -28,7 +28,5 @@ public class HabitacionesController {
     public String procesarFormularioInforme(@ModelAttribute Model model) {
         return "habitacionForm";
     }
-
-
 
 }
