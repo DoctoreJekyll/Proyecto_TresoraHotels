@@ -11,12 +11,6 @@
 <main layout:fragment="contenido" id="contenido-principal">
         <div class="container">
 
-            <!-- ----------------------------------------Reserva Express----------------------------------------------------------------------------------------- -->
-            <a th:href="@{/reservarapida}" target="_blank" class="d-block-text text-center" style="position: fixed; top: 200px; right: 20px; background-color: #00BFFF; padding: 10px; border-radius: 5px; text-decoration: none;">
-                <i class="bi bi-cart-dash" style="font-size: 1.5rem; color: #FFFFFF;"></i>
-                <p style="margin: 0; font-size: 0.8rem; color: #FFFFFF; letter-spacing: 2px;">RESERVA EXPRESS</p>
-            </a>
-
             <!-- ----------------------------------------Burbuja flotante contacto--------------------------------------------------------------------------------- -->
             <div class="bubble" data-bs-toggle="modal" data-bs-target="#phoneModal" tabindex="0" aria-label="Abrir contacto"><i class="bi-telephone-forward-fill"></i></div>
             <div class="modal fade" id="phoneModal" tabindex="-1" aria-labelledby="phoneModalLabel" aria-hidden="true">
@@ -32,6 +26,37 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- ----------------------------------------Seccion imágenes Hotel montaña---------------------------------------------------------------------------------------- -->
+            <div id="carouselHotel1" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselHotel1" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#carouselHotel1" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#carouselHotel1" data-bs-slide-to="2"></button>
+                </div>
+                <div class="carousel-inner carousel_reserva">
+                    <div class="carousel-item active">
+                        <img src="https://media.istockphoto.com/id/2154117895/es/foto/view-of-an-infinity-pool-at-a-luxury-resort-hotel-on-a-sunny-day-in-spring-or-summer-with-the.jpg?s=2048x2048&w=is&k=20&c=3eWLTQPRg94nmo5DEvlphVMWmhb0BeO0ZkgjXQIId2s=" class="d-block" alt="Montaña del hotel montaña">
+                    </div>
+                    <div class="carousel-item carousel_reserva">
+                        <img src="https://media.istockphoto.com/id/1454430108/es/foto/lujoso-y-oscuro-apartamento-interior-del-dormitorio-principal.jpg?s=2048x2048&w=is&k=20&c=kdR6BZpxULU9liDyiABEA0Duj9ymSaqLMfMtYUwWdBI="  class="d-block" alt="Ejemplo habitacion Hotel montaña">
+                    </div>
+                    <div class="carousel-item carousel_reserva">
+                        <img src="https://media.istockphoto.com/id/90433449/es/foto/set-tables-on-deck-overlooking-tress-and-ocean.jpg?s=2048x2048&w=is&k=20&c=B40hHo-setEqwUxvoGvhvRwh8cVhkKzAibwID_B2k2s=" class="d-block" alt="Restaurante hotel montaña">
+                    </div>
+                    <div class="carousel-caption-overlay">
+                        <h2>Hotel Montaña</h2>
+                        <p>Tu experiencia inolvidable comienza aquí.</p>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselHotel1" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselHotel1" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+
             <!-- ----------------------------------------Sección de reserva---------------------------------------------------------------------------------------- -->
             <section class="py-5">
                 <div class="card shadow">
@@ -72,14 +97,14 @@
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                     <!-- Opción 1 -->
                     <div class="col">
-                        <div class="card h-100 shadow">
+                        <div class="card h-10 shadow">
                             <div id="carouselOption1" class="carousel slide" data-bs-ride="false">
                                 <div class="carousel-inner">
                                     <div class="carousel-item active">
-                                        <img src="https://media.istockphoto.com/id/1453121644/es/foto/habitaci%C3%B3n-moderna-con-cama-doble-mesillas-de-noche-y-sof%C3%A1-cama-de-d%C3%ADa.jpg?s=2048x2048&w=is&k=20&c=7P_MSGqAJhNjV2SyZFkjocXdAy0FmhqvOAycqhmRTL4=" class="d-block w-100 card-img-top" alt="Habitación1">
+                                        <img src="https://media.istockphoto.com/id/1453121644/es/foto/habitaci%C3%B3n-moderna-con-cama-doble-mesillas-de-noche-y-sof%C3%A1-cama-de-d%C3%ADa.jpg?s=2048x2048&w=is&k=20&c=7P_MSGqAJhNjV2SyZFkjocXdAy0FmhqvOAycqhmRTL4=" class="d-block w-100 h-100 card-img-top" alt="Habitación1">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="https://media.istockphoto.com/id/2187202667/es/foto/ba%C3%B1o-de-lujo-moderno-con-lavabos-dobles-y-detalles-en-piedra-natural.jpg?s=2048x2048&w=is&k=20&c=5vJ30dUEjVC3INHhTe6rResnR4vd2LbZoGmxrV-g844=" class="d-block w-100 card-img-top" alt="Baño1">
+                                        <img src="https://media.istockphoto.com/id/2187202667/es/foto/ba%C3%B1o-de-lujo-moderno-con-lavabos-dobles-y-detalles-en-piedra-natural.jpg?s=2048x2048&w=is&k=20&c=5vJ30dUEjVC3INHhTe6rResnR4vd2LbZoGmxrV-g844=" class="d-block w-100 h-100 card-img-top" alt="Baño1">
                                     </div>
                                 </div>
                                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselOption1" data-bs-slide="prev">
@@ -104,14 +129,14 @@
 
                     <!-- Opción 2 -->
                     <div class="col">
-                        <div class="card h-100 shadow">
+                        <div class="card h-10 shadow">
                             <div id="carouselOption2" class="carousel slide" data-bs-ride="false">
                                 <div class="carousel-inner">
                                     <div class="carousel-item active">
-                                        <img src="https://media.istockphoto.com/id/826058468/es/foto/brillante-y-fresco-dormitorio-suite.jpg?s=2048x2048&w=is&k=20&c=KOOmQpGRzYGpEqCoXSTFQLMmo9rHCLI3STjyjGO-pPs=" class="d-block w-100 card-img-top" alt="Habitación2">
+                                        <img src="https://media.istockphoto.com/id/826058468/es/foto/brillante-y-fresco-dormitorio-suite.jpg?s=2048x2048&w=is&k=20&c=KOOmQpGRzYGpEqCoXSTFQLMmo9rHCLI3STjyjGO-pPs=" class="d-block w-100 h-100 card-img-top" alt="Habitación2">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="https://media.istockphoto.com/id/534497980/es/foto/ba%C3%B1o-moderno.jpg?s=2048x2048&w=is&k=20&c=xkx6Q2nYDXPtj3u-tg5b1BOTsRmWX1mfoDVT09v_jDY=" class="d-block w-100 card-img-top" alt="Baño2">
+                                        <img src="https://media.istockphoto.com/id/534497980/es/foto/ba%C3%B1o-moderno.jpg?s=2048x2048&w=is&k=20&c=xkx6Q2nYDXPtj3u-tg5b1BOTsRmWX1mfoDVT09v_jDY=" class="d-block w-100 h-100 card-img-top" alt="Baño2">
                                     </div>
                                 </div>
                                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselOption2" data-bs-slide="prev">
@@ -136,14 +161,14 @@
 
                     <!-- Opción 3 -->
                     <div class="col">
-                        <div class="card h-100 shadow">
+                        <div class="card h-10 shadow">
                             <div id="carouselOption3" class="carousel slide" data-bs-ride="false">
                                 <div class="carousel-inner">
                                     <div class="carousel-item active">
-                                        <img src="https://media.istockphoto.com/id/533338000/es/foto/interior-de-un-dormitorio-del-hotel.jpg?s=2048x2048&w=is&k=20&c=82UPd1Z5o05pZAghgmuBvJZpuQs8ddT_SXnuLGGDPLI=" class="d-block w-100 card-img-top" alt="Habitación3">
+                                        <img src="https://media.istockphoto.com/id/533338000/es/foto/interior-de-un-dormitorio-del-hotel.jpg?s=2048x2048&w=is&k=20&c=82UPd1Z5o05pZAghgmuBvJZpuQs8ddT_SXnuLGGDPLI=" class="d-block w-100 h-100 card-img-top" alt="Habitación3">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="https://media.istockphoto.com/id/2187202667/es/foto/ba%C3%B1o-de-lujo-moderno-con-lavabos-dobles-y-detalles-en-piedra-natural.jpg?s=2048x2048&w=is&k=20&c=5vJ30dUEjVC3INHhTe6rResnR4vd2LbZoGmxrV-g844=" class="d-block w-100 card-img-top" alt="Baño3">
+                                        <img src="https://media.istockphoto.com/id/2187202667/es/foto/ba%C3%B1o-de-lujo-moderno-con-lavabos-dobles-y-detalles-en-piedra-natural.jpg?s=2048x2048&w=is&k=20&c=5vJ30dUEjVC3INHhTe6rResnR4vd2LbZoGmxrV-g844=" class="d-block w-100 h-100 card-img-top" alt="Baño3">
                                     </div>
                                 </div>
                                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselOption3" data-bs-slide="prev">
@@ -167,14 +192,14 @@
                     </div>
                     <!-- Opción 4 -->
                     <div class="col">
-                        <div class="card h-100 shadow">
+                        <div class="card h-10 shadow">
                             <div id="carouselOption4" class="carousel slide" data-bs-ride="false">
                                 <div class="carousel-inner">
                                     <div class="carousel-item active">
-                                        <img src="https://media.istockphoto.com/id/533338000/es/foto/interior-de-un-dormitorio-del-hotel.jpg?s=2048x2048&w=is&k=20&c=82UPd1Z5o05pZAghgmuBvJZpuQs8ddT_SXnuLGGDPLI=" class="d-block w-100 card-img-top" alt="Habitación4">
+                                        <img src="https://media.istockphoto.com/id/533338000/es/foto/interior-de-un-dormitorio-del-hotel.jpg?s=2048x2048&w=is&k=20&c=82UPd1Z5o05pZAghgmuBvJZpuQs8ddT_SXnuLGGDPLI=" class="d-block w-100 h-100 card-img-top" alt="Habitación4">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="https://media.istockphoto.com/id/2187202667/es/foto/ba%C3%B1o-de-lujo-moderno-con-lavabos-dobles-y-detalles-en-piedra-natural.jpg?s=2048x2048&w=is&k=20&c=5vJ30dUEjVC3INHhTe6rResnR4vd2LbZoGmxrV-g844=" class="d-block w-100 card-img-top" alt="Baño4">
+                                        <img src="https://media.istockphoto.com/id/2187202667/es/foto/ba%C3%B1o-de-lujo-moderno-con-lavabos-dobles-y-detalles-en-piedra-natural.jpg?s=2048x2048&w=is&k=20&c=5vJ30dUEjVC3INHhTe6rResnR4vd2LbZoGmxrV-g844=" class="d-block w-100 h-100 card-img-top" alt="Baño4">
                                     </div>
                                 </div>
                                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselOption3" data-bs-slide="prev">
