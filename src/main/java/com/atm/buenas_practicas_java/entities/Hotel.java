@@ -36,7 +36,7 @@ public class Hotel {
     private Set<Factura> facturas = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idHotel")
-    private Set<Habitacion> habitacions = new LinkedHashSet<>();
+    private Set<Habitacion> habitaciones = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idHotel")
     private Set<Usuario> usuarios = new LinkedHashSet<>();
