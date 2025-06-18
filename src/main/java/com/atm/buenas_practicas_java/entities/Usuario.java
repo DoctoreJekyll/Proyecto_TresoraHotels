@@ -20,11 +20,11 @@ public class Usuario {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_rol", nullable = false)
-    private Role idRol;
+    private Rol idRol;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_hotel")
-    private Hotele idHotel;
+    private Hotel idHotel;
 
     @Column(name = "nombre", nullable = false, length = 40)
     private String nombre;

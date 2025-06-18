@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "hoteles")
-public class Hotele {
+public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -36,7 +36,7 @@ public class Hotele {
     private Set<Factura> facturas = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idHotel")
-    private Set<Habitacione> habitaciones = new LinkedHashSet<>();
+    private Set<Habitacion> habitacions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idHotel")
     private Set<Usuario> usuarios = new LinkedHashSet<>();

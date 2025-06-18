@@ -31,7 +31,7 @@ public class Factura {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_hotel", nullable = false)
-    private Hotele idHotel;
+    private Hotel idHotel;
 
     @Column(name = "fecha_emision", nullable = false)
     private LocalDate fechaEmision;

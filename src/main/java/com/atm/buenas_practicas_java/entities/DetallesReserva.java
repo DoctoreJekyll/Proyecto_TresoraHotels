@@ -20,6 +20,6 @@ public class DetallesReserva {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_habitacion")
-    private Habitacione idHabitacion;
+    private Habitacion idHabitacion;
 
 }

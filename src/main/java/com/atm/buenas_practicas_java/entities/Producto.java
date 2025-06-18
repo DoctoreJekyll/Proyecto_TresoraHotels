@@ -21,7 +21,7 @@ public class Producto {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_categoria", nullable = false)
-    private CategoriasProducto idCategoria;
+    private CategoriaProducto idCategoria;
 
     @Column(name = "id_hotel", nullable = false)
     private Integer idHotel;
@@ -45,10 +45,10 @@ public class Producto {
     private LocalDate fechaHasta;
 
     @OneToMany(mappedBy = "idProducto")
-    private Set<Habitacione> habitaciones = new LinkedHashSet<>();
+    private Set<Habitacion> habitacions = new LinkedHashSet<>();
 
     @ManyToMany(mappedBy = "productos")
-    private Set<Habitacione> habitacionesProducto = new LinkedHashSet<>();
+    private Set<Habitacion> habitacionesProducto = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idProducto")
     private Set<ProductosUsuario> productosUsuarios = new LinkedHashSet<>();

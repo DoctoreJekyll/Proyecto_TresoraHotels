@@ -25,7 +25,7 @@ public class Reserva {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_habitacion", nullable = false)
-    private Habitacione idHabitacion;
+    private Habitacion idHabitacion;
 
     @Column(name = "fecha_entrada", nullable = false)
     private LocalDate fechaEntrada;
