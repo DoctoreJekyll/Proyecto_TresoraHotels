@@ -2,14 +2,18 @@ package com.atm.buenas_practicas_java.loaders;
 
 import com.atm.buenas_practicas_java.entities.EntidadHija;
 import com.atm.buenas_practicas_java.entities.EntidadPadre;
+import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.repositories.EntidadHijaRepository;
 import com.atm.buenas_practicas_java.repositories.EntidadPadreRepository;
+import com.atm.buenas_practicas_java.repositories.HotelesRepo;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -34,6 +38,7 @@ public class LocalDataLoader {
 
     private final EntidadPadreRepository repository;
     private final EntidadHijaRepository entidadHijaRepository;
+    private final HotelesRepo  hotelesRepo;
 
     /**
      * Constructor de la clase {@code LocalDataLoader}.
@@ -48,9 +53,10 @@ public class LocalDataLoader {
      *                                Es utilizado para gestionar datos de la entidad hija y su relación con
      *                                la entidad padre.
      */
-    public LocalDataLoader(EntidadPadreRepository repository, EntidadHijaRepository entidadHijaRepository) {
+    public LocalDataLoader(EntidadPadreRepository repository, EntidadHijaRepository entidadHijaRepository, HotelesRepo  hotelesRepo) {
         this.repository = repository;
         this.entidadHijaRepository = entidadHijaRepository;
+        this.hotelesRepo = hotelesRepo;
     }
 
     /**
@@ -92,23 +98,21 @@ public class LocalDataLoader {
      * - Mensaje exitoso al finalizar: "Datos de entidades cargados correctamente."
      */
     @PostConstruct
-    public void loadDataLocal() {
-
-        log.info("Iniciando la carga de datos para el perfil local");
-        int numeroEntidades = 100;
-        EntidadPadre[] entidades = new EntidadPadre[numeroEntidades];
-        Arrays.setAll(entidades, i -> new EntidadPadre("Entidad-" + (Integer.valueOf(i)+1)));
-        repository.saveAll(Arrays.asList(entidades));
-        for (EntidadPadre entidadPadre : entidades) {
-            EntidadHija entidadHija = new EntidadHija("Hija de " + entidadPadre.getNombre());
-            entidadHija.setEntidadPadre(entidadPadre);
-            entidadHijaRepository.save(entidadHija);
+    public void loadDataDesarrollo() {
+        log.info("Test de insertar un hotel en mi tabla de datos");
+        int hotelsNumbers = 3;
+        List<Hotel> hotels = new ArrayList<>();
+        for (int i = 0; i < hotelsNumbers; i++) {
+            Hotel hotel = new Hotel();
+            hotel.setNombre("Hotel " + i);
+            hotel.setCiudad("Ciudad " + i);
+            hotel.setDireccion("Direccion " + i);
+            hotel.setTelefono("Telefono " + i);
+            hotel.setEmail("Email " + i);
+            hotels.add(hotel);
         }
-        log.info("Datos de entidades cargados correctamente.");
+        hotelesRepo.saveAll(hotels);
+        log.info("Hotels en mi tabla de datos");
     }
-
-
-
-
 
 }
