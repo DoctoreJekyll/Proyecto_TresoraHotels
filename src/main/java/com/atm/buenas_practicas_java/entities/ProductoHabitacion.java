@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "productos_habitaciones")
-public class ProductosHabitacione {
+public class ProductoHabitacion {
     @EmbeddedId
-    private ProductosHabitacioneId id;
+    private ProductoHabitacionId id;
 
     @MapsId("idProducto")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -20,6 +20,6 @@ public class ProductosHabitacione {
     @MapsId("idHabitacion")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_habitacion", nullable = false)
-    private Habitacione idHabitacion;
+    private Habitacion idHabitacion;
 
 }

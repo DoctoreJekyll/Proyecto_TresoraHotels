@@ -11,7 +11,7 @@ import java.time.LocalTime;
 @Setter
 @Entity
 @Table(name = "limpieza_habitaciones")
-public class LimpiezaHabitacione {
+public class LimpiezaHabitacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -23,7 +23,7 @@ public class LimpiezaHabitacione {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_habitacion", nullable = false)
-    private Habitacione idHabitacion;
+    private Habitacion idHabitacion;
 
     @Column(name = "fecha_limpieza", nullable = false)
     private LocalDate fechaLimpieza;

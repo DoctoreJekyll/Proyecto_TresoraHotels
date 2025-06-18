@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "habitaciones")
-public class Habitacione {
+public class Habitacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -19,7 +19,7 @@ public class Habitacione {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_hotel", nullable = false)
-    private Hotele idHotel;
+    private Hotel idHotel;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_producto", nullable = false)
@@ -44,7 +44,7 @@ public class Habitacione {
     private Set<DetallesReserva> detallesReservas = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idHabitacion")
-    private Set<LimpiezaHabitacione> limpiezaHabitaciones = new LinkedHashSet<>();
+    private Set<LimpiezaHabitacion> limpiezaHabitaciones = new LinkedHashSet<>();
 
     @ManyToMany
     private Set<Producto> productos = new LinkedHashSet<>();

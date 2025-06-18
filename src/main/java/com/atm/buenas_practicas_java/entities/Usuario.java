@@ -20,11 +20,11 @@ public class Usuario {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_rol", nullable = false)
-    private Role idRol;
+    private Rol idRol;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_hotel")
-    private Hotele idHotel;
+    private Hotel idHotel;
 
     @Column(name = "nombre", nullable = false, length = 40)
     private String nombre;
@@ -63,7 +63,7 @@ public class Usuario {
     private Set<Factura> facturas = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idUsuario")
-    private Set<LimpiezaHabitacione> limpiezaHabitaciones = new LinkedHashSet<>();
+    private Set<LimpiezaHabitacion> limpiezaHabitacions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idUsuario")
     private Set<ProductosUsuario> productosUsuarios = new LinkedHashSet<>();
