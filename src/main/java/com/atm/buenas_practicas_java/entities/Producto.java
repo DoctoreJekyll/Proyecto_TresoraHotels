@@ -32,8 +32,8 @@ public class Producto {
     @Column(name = "descripcion", nullable = false, length = 80)
     private String descripcion;
 
-    @Column(name = "precio_base", nullable = false, precision = 15, scale = 2)
-    private BigDecimal precioBase;
+    @Column(name = "precio_base", nullable = false)
+    private Double precioBase;
 
     @Column(name = "activo")
     private Boolean activo;

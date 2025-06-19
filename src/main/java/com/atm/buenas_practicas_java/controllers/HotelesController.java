@@ -1,6 +1,6 @@
 package com.atm.buenas_practicas_java.controllers;
 
-import com.atm.buenas_practicas_java.dtos.*;
+import com.atm.buenas_practicas_java.dtosOld.*;
 import com.atm.buenas_practicas_java.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -74,14 +74,6 @@ public class HotelesController {
     @GetMapping("/userhome")
     public String mostrarUserHome( ) {
         return "user_home_page";
-    }
-
-    @GetMapping("/hoteles")
-    public String mostrarHoteles(Model model ){
-        List<HotelDto> hotels = HotelsData.hotelsDataList();
-        model.addAttribute("hotels", hotels);
-
-        return "hoteles_web";
     }
 
     @GetMapping("/contact")
