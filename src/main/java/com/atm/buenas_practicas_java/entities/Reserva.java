@@ -1,7 +1,9 @@
 package com.atm.buenas_practicas_java.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -13,6 +15,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "reservas")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
