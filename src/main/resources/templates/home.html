@@ -107,14 +107,14 @@
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div class="col" th:each="hotel : ${hotels}">
                     <div class="card shadow-lg h-100 border-0 rounded-4 bg-gray text-dark">
-                        <img th:src="${hotel.hotel.imageURL}" class="card-img-top" style="height: 250px; object-fit: cover;" alt="Imagen hotel">
+                        <img th:src="${hotel.imageURL}" class="card-img-top" style="height: 250px; object-fit: cover;" alt="Imagen hotel">
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title" th:text="${hotel.hotel.nombre}">Nombre Hotel</h5>
+                            <h5 class="card-title" th:text="${hotel.nombre}">Nombre Hotel</h5>
                             <div class="mb-2">
                                 <span class="text-warning">&#9733;&#9733;&#9733;&#9733;</span><span class="text-muted">&#9733;</span>
                             </div>
-                            <p class="card-text flex-grow-1" th:text="${hotel.hotel.descripcion}">Descripción</p>
-                            <p class="card-text"><strong th:text="'Desde ' + ${hotel.precioMedioHabitaciones} + '€ noche'">Precio</strong></p>
+                            <p class="card-text flex-grow-1" th:text="${hotel.descripcion}">Descripción</p>
+                            <p class="card-text"><strong th:text="'Desde ' + ${hotel.id} + '€ noche'">Precio</strong></p>
                             <a class="btn btn-primary w-100 mt-auto" th:href="@{/hotel_reserva(id=${1})}" target="_blank">Reservar ahora</a>
                         </div>
                     </div>
@@ -164,10 +164,10 @@
                     </div>
                     <div class="carousel-inner">
                         <div class="carousel-item" th:each="hotel, iter : ${hotels}" th:classappend="${iter.index == 0} ? ' active'">
-                            <img th:src="${hotel.hotel.direccionURL}" th:alt="'Ubicación de ' + ${hotel.hotel.nombre}" width="100%" height="500">
+                            <img th:src="${hotel.direccionURL}" th:alt="'Ubicación de ' + ${hotel.nombre}" width="100%" height="500">
                             <div class="carousel-caption d-none d-md-block">
-                                <h5 th:text="${hotel.hotel.nombre}">Nombre Hotel</h5>
-                                <p th:text="${hotel.hotel.direccion}">Ubicación</p>
+                                <h5 th:text="${hotel.nombre}">Nombre Hotel</h5>
+                                <p th:text="${hotel.direccion}">Ubicación</p>
                             </div>
                         </div>
                     </div>

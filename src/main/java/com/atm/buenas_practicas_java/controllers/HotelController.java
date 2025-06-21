@@ -22,8 +22,8 @@ public class HotelController {
 
     @GetMapping({"", "/"})
     public String mostrarHoteles(Model model) {
-        List<HotelViewDTO> hotelsWithPrice = hotelService.obtenerHotelesConPrecioMedio();
-        model.addAttribute("hotels", hotelsWithPrice);
+        List<Hotel> hotels = hotelService.getHotels();
+        model.addAttribute("hotels", hotels);
         return "home";
     }
 
