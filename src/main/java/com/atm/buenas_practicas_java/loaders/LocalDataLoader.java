@@ -1,8 +1,10 @@
 package com.atm.buenas_practicas_java.loaders;
 
+import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.repositories.EntidadHijaRepository;
 import com.atm.buenas_practicas_java.repositories.EntidadPadreRepository;
+import com.atm.buenas_practicas_java.repositories.HabitacionRepo;
 import com.atm.buenas_practicas_java.repositories.HotelesRepo;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
@@ -33,6 +35,7 @@ import java.util.List;
 @Profile("local")
 public class LocalDataLoader {
     private final HotelesRepo  hotelesRepo;
+    private final HabitacionRepo habitacionRepo;
 
     /**
      * Constructor de la clase {@code LocalDataLoader}.
@@ -40,8 +43,9 @@ public class LocalDataLoader {
      * Inicializa un objeto {@code LocalDataLoader} configurado con los repositorios de las entidades,
      * proporcionando la capacidad de interactuar con estas entidades en la base de datos.
      */
-    public LocalDataLoader(HotelesRepo  hotelesRepo) {
+    public LocalDataLoader(HotelesRepo  hotelesRepo,  HabitacionRepo habitacionRepo) {
         this.hotelesRepo = hotelesRepo;
+        this.habitacionRepo = habitacionRepo;
     }
 
     /**
@@ -90,20 +94,44 @@ public class LocalDataLoader {
     public void loadHoteles() {
         log.info("Iniciando carga de hoteles ficticios...");
 
+        SaveAllHoteles();
+        SaveAllHabitaciones();
+
+        log.info("Carga completada");
+    }
+
+    private Hotel hotel1;
+    private Hotel hotel2;
+    private Hotel hotel3;
+
+    private void SaveAllHabitaciones()
+    {
+        List<Habitacion> habitaciones = new ArrayList<>();
+
+        Habitacion habitacion = habitacion1();
+        Habitacion habitacion2 = habitacion2();
+        Habitacion habitacion3 = habitacion3();
+        habitaciones.add(habitacion);
+        habitaciones.add(habitacion2);
+        habitaciones.add(habitacion3);
+
+        habitacionRepo.saveAll(habitaciones);
+    }
+
+    private void SaveAllHoteles()
+    {
         List<Hotel> hoteles = new ArrayList<>();
 
-        Hotel hotel1 = getHotel();
+        hotel1 = getHotel();
         hoteles.add(hotel1);
 
-        Hotel hotel2 = getHotel2();
+        hotel2 = getHotel2();
         hoteles.add(hotel2);
 
-        Hotel hotel3 = getHotel3();
+        hotel3 = getHotel3();
         hoteles.add(hotel3);
 
         hotelesRepo.saveAll(hoteles);
-
-        log.info("Carga completada: {} hoteles insertados.", hoteles.size());
     }
 
     private Hotel getHotel3() {
@@ -143,5 +171,39 @@ public class LocalDataLoader {
         return hotel1;
     }
 
+    private Habitacion habitacion1()
+    {
+        Habitacion habitacion1 = new Habitacion();
+        habitacion1.setIdHotel(hotel1);
+        habitacion1.setIdProducto(null);
+        habitacion1.setNumeroHabitacion(0);
+        habitacion1.setPiso(0);
+        habitacion1.setTipo("Individual");
+        habitacion1.setCapacidad(1);
+        habitacion1.setEstadoOcupacion("Libre");
+        return habitacion1;
+    }
+    private Habitacion habitacion2() {
+        Habitacion habitacion2 = new Habitacion();
+        habitacion2.setIdHotel(hotel2);
+        habitacion2.setIdProducto(null);
+        habitacion2.setNumeroHabitacion(101);
+        habitacion2.setPiso(1);
+        habitacion2.setTipo("Doble");
+        habitacion2.setCapacidad(2);
+        habitacion2.setEstadoOcupacion("Ocupado");
+        return habitacion2;
+    }
 
+    private Habitacion habitacion3() {
+        Habitacion habitacion3 = new Habitacion();
+        habitacion3.setIdHotel(hotel3);
+        habitacion3.setIdProducto(null);
+        habitacion3.setNumeroHabitacion(202);
+        habitacion3.setPiso(2);
+        habitacion3.setTipo("Suite");
+        habitacion3.setCapacidad(4);
+        habitacion3.setEstadoOcupacion("Libre");
+        return habitacion3;
+    }
 }
