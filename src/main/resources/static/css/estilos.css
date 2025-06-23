@@ -177,8 +177,8 @@ body {
 
 /* Cards */
 .card {
-  background-color: white;
-  border: 1px solid #ddd;
+  background-color: gray;
+  border: 2px solid #ddd;
   color: #000000;
 }
 .card-title {

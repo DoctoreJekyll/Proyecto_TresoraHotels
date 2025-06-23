@@ -1,4 +1,4 @@
-package com.atm.buenas_practicas_java.dtos;
+package com.atm.buenas_practicas_java.dtosOld;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +27,6 @@ public class HotelDto {
         this.imgUrl = imgUrl;
         this.services = services;
         this.mapsURL = mapsURL;
-
     }
 
     @Override
