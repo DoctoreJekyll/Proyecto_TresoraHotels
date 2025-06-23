@@ -1,16 +1,16 @@
 package com.atm.buenas_practicas_java.loaders;
 
+import com.atm.buenas_practicas_java.entities.CategoriaProducto;
 import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.entities.Hotel;
-import com.atm.buenas_practicas_java.repositories.EntidadHijaRepository;
-import com.atm.buenas_practicas_java.repositories.EntidadPadreRepository;
-import com.atm.buenas_practicas_java.repositories.HabitacionRepo;
-import com.atm.buenas_practicas_java.repositories.HotelesRepo;
+import com.atm.buenas_practicas_java.entities.Producto;
+import com.atm.buenas_practicas_java.repositories.*;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +36,8 @@ import java.util.List;
 public class LocalDataLoader {
     private final HotelesRepo  hotelesRepo;
     private final HabitacionRepo habitacionRepo;
+    private final ProductoRepo  productoRepo;
+    private final CategoriaProductoRepo categoriaProductoRepo;
 
     /**
      * Constructor de la clase {@code LocalDataLoader}.
@@ -43,9 +45,11 @@ public class LocalDataLoader {
      * Inicializa un objeto {@code LocalDataLoader} configurado con los repositorios de las entidades,
      * proporcionando la capacidad de interactuar con estas entidades en la base de datos.
      */
-    public LocalDataLoader(HotelesRepo  hotelesRepo,  HabitacionRepo habitacionRepo) {
+    public LocalDataLoader(HotelesRepo  hotelesRepo,  HabitacionRepo habitacionRepo, ProductoRepo  productoRepo, CategoriaProductoRepo categoriaProductoRepo) {
         this.hotelesRepo = hotelesRepo;
         this.habitacionRepo = habitacionRepo;
+        this.productoRepo = productoRepo;
+        this.categoriaProductoRepo = categoriaProductoRepo;
     }
 
     /**
@@ -94,8 +98,10 @@ public class LocalDataLoader {
     public void loadHoteles() {
         log.info("Iniciando carga de hoteles ficticios...");
 
-        SaveAllHoteles();
-        //SaveAllHabitaciones();
+        saveAllHoteles();
+        saveAllCategorias();
+        saveAllProductos();
+        saveAllHabitaciones();
 
         log.info("Carga completada");
     }
@@ -104,21 +110,7 @@ public class LocalDataLoader {
     private Hotel hotel2;
     private Hotel hotel3;
 
-    private void SaveAllHabitaciones()
-    {
-        List<Habitacion> habitaciones = new ArrayList<>();
-
-        Habitacion habitacion = habitacion1();
-        Habitacion habitacion2 = habitacion2();
-        Habitacion habitacion3 = habitacion3();
-        habitaciones.add(habitacion);
-        habitaciones.add(habitacion2);
-        habitaciones.add(habitacion3);
-
-        habitacionRepo.saveAll(habitaciones);
-    }
-
-    private void SaveAllHoteles()
+    private void saveAllHoteles()
     {
         List<Hotel> hoteles = new ArrayList<>();
 
@@ -171,11 +163,29 @@ public class LocalDataLoader {
         return hotel1;
     }
 
+    Habitacion habitacion;
+    Habitacion habitacion2;
+    Habitacion habitacion3;
+
+    private void saveAllHabitaciones()
+    {
+        List<Habitacion> habitaciones = new ArrayList<>();
+
+        habitacion = habitacion1();
+        habitacion2 = habitacion2();
+        habitacion3 = habitacion3();
+        habitaciones.add(habitacion);
+        habitaciones.add(habitacion2);
+        habitaciones.add(habitacion3);
+
+        habitacionRepo.saveAll(habitaciones);
+    }
+
     private Habitacion habitacion1()
     {
         Habitacion habitacion1 = new Habitacion();
         habitacion1.setIdHotel(hotel1);
-        habitacion1.setIdProducto(null);
+        habitacion1.setIdProducto(producto);
         habitacion1.setNumeroHabitacion(0);
         habitacion1.setPiso(0);
         habitacion1.setTipo("Individual");
@@ -186,7 +196,7 @@ public class LocalDataLoader {
     private Habitacion habitacion2() {
         Habitacion habitacion2 = new Habitacion();
         habitacion2.setIdHotel(hotel2);
-        habitacion2.setIdProducto(null);
+        habitacion2.setIdProducto(producto2);
         habitacion2.setNumeroHabitacion(101);
         habitacion2.setPiso(1);
         habitacion2.setTipo("Doble");
@@ -198,12 +208,106 @@ public class LocalDataLoader {
     private Habitacion habitacion3() {
         Habitacion habitacion3 = new Habitacion();
         habitacion3.setIdHotel(hotel3);
-        habitacion3.setIdProducto(null);
+        habitacion3.setIdProducto(producto3);
         habitacion3.setNumeroHabitacion(202);
         habitacion3.setPiso(2);
         habitacion3.setTipo("Suite");
         habitacion3.setCapacidad(4);
         habitacion3.setEstadoOcupacion("Libre");
         return habitacion3;
+    }
+
+    private Producto producto;
+    private Producto producto2;
+    private Producto producto3;
+
+    private Producto getProducto()
+    {
+        Producto producto = new Producto();
+        producto.setIdHotel(hotel1.getId());
+        producto.setIdCategoria(categoriaProducto);
+        producto.setNombre("Habitacion simple");
+        producto.setDescripcion("Habitacion simple bien guapa");
+        producto.setPrecioBase(11.0);
+        producto.setActivo(true);
+        producto.setFechaDesde(LocalDate.EPOCH);
+        producto.setFechaHasta(LocalDate.EPOCH);
+        return producto;
+    }
+
+    private Producto getProducto2() {
+        Producto producto = new Producto();
+        producto.setIdHotel(hotel2.getId());
+        producto.setIdCategoria(categoriaProducto2);
+        producto.setNombre("Suite de lujo");
+        producto.setDescripcion("Habitación con cama king size, jacuzzi y vistas al mar");
+        producto.setPrecioBase(323.0);
+        producto.setActivo(true);
+        producto.setFechaDesde(LocalDate.of(2025, 1, 1));
+        producto.setFechaHasta(LocalDate.of(2025, 12, 31));
+        return producto;
+    }
+
+    private Producto getProducto3() {
+        Producto producto = new Producto();
+        producto.setIdHotel(hotel3.getId());
+        producto.setIdCategoria(categoriaProducto3);
+        producto.setNombre("Habitación doble");
+        producto.setDescripcion("Habitación con dos camas individuales y baño privado");
+        producto.setPrecioBase(30.0);
+        producto.setActivo(true);
+        producto.setFechaDesde(LocalDate.of(2025, 6, 1));
+        producto.setFechaHasta(LocalDate.of(2025, 12, 31));
+        return producto;
+    }
+
+    private void saveAllProductos()
+    {
+        List<Producto> productos = new ArrayList<>();
+        producto = getProducto();
+        producto2 = getProducto2();
+        producto3 = getProducto3();
+        productos.add(producto);
+        productos.add(producto2);
+        productos.add(producto3);
+        productoRepo.saveAll(productos);
+    }
+
+    private CategoriaProducto categoriaProducto;
+    private CategoriaProducto categoriaProducto2;
+    private CategoriaProducto categoriaProducto3;
+
+    private CategoriaProducto getCategoriaProducto()
+    {
+        CategoriaProducto categoriaProducto = new CategoriaProducto();
+        categoriaProducto.setNombre("Habitacion categoria 1");
+        categoriaProducto.setDescripcion("Habitacion categoria 1 descripcion");
+        return categoriaProducto;
+    }
+
+    private CategoriaProducto getCategoriaProducto2() {
+        CategoriaProducto categoriaProducto = new CategoriaProducto();
+        categoriaProducto.setNombre("Habitación categoría 2");
+        categoriaProducto.setDescripcion("Habitación categoría 2 con más comodidades");
+        return categoriaProducto;
+    }
+
+    private CategoriaProducto getCategoriaProducto3() {
+        CategoriaProducto categoriaProducto = new CategoriaProducto();
+        categoriaProducto.setNombre("Habitación categoría lujo");
+        categoriaProducto.setDescripcion("Habitación de lujo con servicios exclusivos");
+        return categoriaProducto;
+    }
+
+    private void saveAllCategorias()
+    {
+        List<CategoriaProducto> categorias = new ArrayList<>();
+        categoriaProducto = getCategoriaProducto();
+        categoriaProducto2 = getCategoriaProducto2();
+        categoriaProducto3 = getCategoriaProducto3();
+        categorias.add(categoriaProducto);
+        categorias.add(categoriaProducto2);
+        categorias.add(categoriaProducto3);
+        categoriaProductoRepo.saveAll(categorias);
     }
 }
