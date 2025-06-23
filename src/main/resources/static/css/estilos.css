@@ -99,6 +99,10 @@ body {
   color: #00BFFF;
 }
 
+.table{
+  color:white;
+}
+
 /* Buscador */
 .form-control {
   background-color: #FFFFFF;
