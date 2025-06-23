@@ -9,7 +9,9 @@ import java.util.List;
 
 @Service
 public class CategoriaProductoService {
+
     private final CategoriaProductoRepo productoCatRepo;
+
     public CategoriaProductoService(CategoriaProductoRepo productoCategoriaRepo) {
         this.productoCatRepo = productoCategoriaRepo;
     }
