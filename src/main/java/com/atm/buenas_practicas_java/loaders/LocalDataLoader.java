@@ -95,7 +95,7 @@ public class LocalDataLoader {
         log.info("Iniciando carga de hoteles ficticios...");
 
         SaveAllHoteles();
-        SaveAllHabitaciones();
+        //SaveAllHabitaciones();
 
         log.info("Carga completada");
     }
