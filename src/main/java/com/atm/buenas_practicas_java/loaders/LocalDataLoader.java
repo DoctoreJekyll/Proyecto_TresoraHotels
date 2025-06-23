@@ -1,15 +1,18 @@
 package com.atm.buenas_practicas_java.loaders;
 
-import com.atm.buenas_practicas_java.entities.EntidadHija;
-import com.atm.buenas_practicas_java.entities.EntidadPadre;
+import com.atm.buenas_practicas_java.entities.Habitacion;
+import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.repositories.EntidadHijaRepository;
 import com.atm.buenas_practicas_java.repositories.EntidadPadreRepository;
+import com.atm.buenas_practicas_java.repositories.HabitacionRepo;
+import com.atm.buenas_practicas_java.repositories.HotelesRepo;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -31,26 +34,18 @@ import java.util.Arrays;
 @Log4j2
 @Profile("local")
 public class LocalDataLoader {
-
-    private final EntidadPadreRepository repository;
-    private final EntidadHijaRepository entidadHijaRepository;
+    private final HotelesRepo  hotelesRepo;
+    private final HabitacionRepo habitacionRepo;
 
     /**
      * Constructor de la clase {@code LocalDataLoader}.
      *
      * Inicializa un objeto {@code LocalDataLoader} configurado con los repositorios de las entidades,
      * proporcionando la capacidad de interactuar con estas entidades en la base de datos.
-     *
-     * @param repository              El repositorio de la entidad padre {@code EntidadPadreRepository}.
-     *                                Se utiliza para realizar operaciones de persistencia, actualización,
-     *                                eliminación y consulta relacionadas con la entidad padre.
-     * @param entidadHijaRepository   El repositorio de la entidad hija {@code EntidadHijaRepository}.
-     *                                Es utilizado para gestionar datos de la entidad hija y su relación con
-     *                                la entidad padre.
      */
-    public LocalDataLoader(EntidadPadreRepository repository, EntidadHijaRepository entidadHijaRepository) {
-        this.repository = repository;
-        this.entidadHijaRepository = entidadHijaRepository;
+    public LocalDataLoader(HotelesRepo  hotelesRepo,  HabitacionRepo habitacionRepo) {
+        this.hotelesRepo = hotelesRepo;
+        this.habitacionRepo = habitacionRepo;
     }
 
     /**
@@ -92,23 +87,123 @@ public class LocalDataLoader {
      * - Mensaje exitoso al finalizar: "Datos de entidades cargados correctamente."
      */
     @PostConstruct
-    public void loadDataLocal() {
-
-        log.info("Iniciando la carga de datos para el perfil local");
-        int numeroEntidades = 100;
-        EntidadPadre[] entidades = new EntidadPadre[numeroEntidades];
-        Arrays.setAll(entidades, i -> new EntidadPadre("Entidad-" + (Integer.valueOf(i)+1)));
-        repository.saveAll(Arrays.asList(entidades));
-        for (EntidadPadre entidadPadre : entidades) {
-            EntidadHija entidadHija = new EntidadHija("Hija de " + entidadPadre.getNombre());
-            entidadHija.setEntidadPadre(entidadPadre);
-            entidadHijaRepository.save(entidadHija);
-        }
-        log.info("Datos de entidades cargados correctamente.");
+    public void loadDataDesarrollo() {
+        loadHoteles();
     }
 
+    public void loadHoteles() {
+        log.info("Iniciando carga de hoteles ficticios...");
 
+        SaveAllHoteles();
+        SaveAllHabitaciones();
 
+        log.info("Carga completada");
+    }
 
+    private Hotel hotel1;
+    private Hotel hotel2;
+    private Hotel hotel3;
 
+    private void SaveAllHabitaciones()
+    {
+        List<Habitacion> habitaciones = new ArrayList<>();
+
+        Habitacion habitacion = habitacion1();
+        Habitacion habitacion2 = habitacion2();
+        Habitacion habitacion3 = habitacion3();
+        habitaciones.add(habitacion);
+        habitaciones.add(habitacion2);
+        habitaciones.add(habitacion3);
+
+        habitacionRepo.saveAll(habitaciones);
+    }
+
+    private void SaveAllHoteles()
+    {
+        List<Hotel> hoteles = new ArrayList<>();
+
+        hotel1 = getHotel();
+        hoteles.add(hotel1);
+
+        hotel2 = getHotel2();
+        hoteles.add(hotel2);
+
+        hotel3 = getHotel3();
+        hoteles.add(hotel3);
+
+        hotelesRepo.saveAll(hoteles);
+    }
+
+    private Hotel getHotel3() {
+        Hotel hotel3 = new Hotel();
+        hotel3.setNombre("Costa Azul Resort");
+        hotel3.setDescripcion("Relájate frente al mar Mediterráneo");
+        hotel3.setCiudad("Alicante");
+        hotel3.setDireccion("Avenida del Mar, 55, 03001 Alicante");
+        hotel3.setDireccionURL("https://maps.google.com/?q=Avenida+del+Mar+55+Alicante");
+        hotel3.setImageURL("https://picsum.photos/600/400?random=12");
+        hotel3.setTelefono("+34 611 555 666");
+        hotel3.setEmail("contacto@costazulresort.com");
+        return hotel3;
+    }
+    private Hotel getHotel2() {
+        Hotel hotel2 = new Hotel();
+        hotel2.setNombre("Monteverde Palace");
+        hotel2.setDescripcion("Lujo entre montañas y aire puro");
+        hotel2.setCiudad("Granada");
+        hotel2.setDireccion("Camino de la Sierra, s/n, 18010, Granada");
+        hotel2.setDireccionURL("https://maps.google.com/?q=Camino+de+la+Sierra+Granada");
+        hotel2.setImageURL("https://picsum.photos/600/400?random=8");
+        hotel2.setTelefono("+34 622 333 444");
+        hotel2.setEmail("reservas@monteverdepalace.com");
+        return hotel2;
+    }
+    private Hotel getHotel() {
+        Hotel hotel1 = new Hotel();
+        hotel1.setNombre("Tresora Beach");
+        hotel1.setDescripcion("Un paraíso costero para que te lo goces");
+        hotel1.setCiudad("Málaga");
+        hotel1.setDireccion("Playa de Pedregalejo, Málaga-Este, 29017, Málaga");
+        hotel1.setDireccionURL("https://maps.google.com/?q=Playa+de+Pedregalejo");
+        hotel1.setImageURL("https://picsum.photos/600/400?random=5");
+        hotel1.setTelefono("+34 633 111 222");
+        hotel1.setEmail("info@tresorabeach.com");
+        return hotel1;
+    }
+
+    private Habitacion habitacion1()
+    {
+        Habitacion habitacion1 = new Habitacion();
+        habitacion1.setIdHotel(hotel1);
+        habitacion1.setIdProducto(null);
+        habitacion1.setNumeroHabitacion(0);
+        habitacion1.setPiso(0);
+        habitacion1.setTipo("Individual");
+        habitacion1.setCapacidad(1);
+        habitacion1.setEstadoOcupacion("Libre");
+        return habitacion1;
+    }
+    private Habitacion habitacion2() {
+        Habitacion habitacion2 = new Habitacion();
+        habitacion2.setIdHotel(hotel2);
+        habitacion2.setIdProducto(null);
+        habitacion2.setNumeroHabitacion(101);
+        habitacion2.setPiso(1);
+        habitacion2.setTipo("Doble");
+        habitacion2.setCapacidad(2);
+        habitacion2.setEstadoOcupacion("Ocupado");
+        return habitacion2;
+    }
+
+    private Habitacion habitacion3() {
+        Habitacion habitacion3 = new Habitacion();
+        habitacion3.setIdHotel(hotel3);
+        habitacion3.setIdProducto(null);
+        habitacion3.setNumeroHabitacion(202);
+        habitacion3.setPiso(2);
+        habitacion3.setTipo("Suite");
+        habitacion3.setCapacidad(4);
+        habitacion3.setEstadoOcupacion("Libre");
+        return habitacion3;
+    }
 }
