@@ -38,7 +38,6 @@ public class HotelesController {
         return "user_home_page";
     }
 
-
     @GetMapping("/crearCuenta")
     public String mostrarCrearCuenta(Model model ){
         UserDto userDto = new UserDto();
@@ -145,8 +144,5 @@ public class HotelesController {
         System.out.println(reserva.getFechaSalida());
         return "home";
     }
-
-
-
 
 }

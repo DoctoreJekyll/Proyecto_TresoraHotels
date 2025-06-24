@@ -50,6 +50,7 @@ public class SecurityConfig {
      *
      * @Author No se especificó autor.
      */
+
     @Bean
     public UserDetailsService userDetailsService() {
         String name = environment.getProperty("spring.security.user.name", "user");
@@ -89,7 +90,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(Customizer.withDefaults()) // deshabilitado para pruebas o APIs
-                .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/entities").permitAll()
@@ -103,6 +103,14 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    /*
+    form -> form Para mandar nuestro propio login
+                .loginPage("/usuarios/login")
+                .failureUrl("/login-error")
+                .defaultSuccessUrl("/",true)
+                .permitAll()
+     */
 
     /**
      * Configura y proporciona un bean de tipo {@link AuthenticationManager}.
