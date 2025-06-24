@@ -22,7 +22,7 @@ public class Habitacion {
     private Hotel idHotel;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_producto", nullable = true)
+    @JoinColumn(name = "id_producto", nullable = false)
     private Producto idProducto;
 
     @Column(name = "numero_habitacion", nullable = false)
