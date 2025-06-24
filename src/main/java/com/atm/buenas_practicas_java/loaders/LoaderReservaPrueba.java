@@ -335,7 +335,7 @@ public class LoaderReservaPrueba {
 
     private Reserva getReserva2() {
         Reserva reserva2 = new Reserva();
-        reserva2.setIdUsuario(crearUsuario(1,null,"Yolanda","Rodríguez","yoli_rodri@gmail.com", "555888.YR","Plaza España 6A","666555888", LocalDate.of(1990, 5, 12), LocalDate.of(2025, 6, 23),true,"12345678Z"));
+        reserva2.setIdUsuario(createUsuarioFicticio(999999, "UserPrueba"));
         reserva2.setIdHabitacion(habitacion2());
         reserva2.setFechaEntrada(LocalDate.of(2025, 8, 1));
         reserva2.setFechaSalida(LocalDate.of(2025, 8, 10));
