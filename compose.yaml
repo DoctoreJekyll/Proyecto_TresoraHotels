@@ -10,9 +10,9 @@ services:
       # Nombre de la base de datos que se creará al iniciar el contenedor
       POSTGRES_DB: 'localdb'
       # Usuario que se creará para acceder a la base de datos
-      POSTGRES_USER: 'localuser'
+      POSTGRES_USER: 'DEEPGAMING'
       # Contraseña del usuario creado
-      POSTGRES_PASSWORD: 'password123'
+      POSTGRES_PASSWORD: '06178Vdsa2890.'
     ports:
       # Mapea el puerto 5432 del contenedor al puerto 5432 del anfitrión
       - '5432:5432'
