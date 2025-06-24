@@ -1,0 +1,28 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{/layout/plantilla}"
+	  lang="es">
+<body>
+<div layout:fragment="contenido">
+
+	<h1 th:text="${titulo}">Vista de Lista</h1>
+
+	<main>
+		<table class="table table-bordered align-middle">
+			<thead>
+			<tr>
+				<th th:each="c : ${cabeceras}" th:text="${c}">Columna</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="fila : ${filas}">
+				<td th:each="c : ${cabeceras}" th:text="${fila.get(c)}">Dato</td>
+			</tr>
+			</tbody>
+		</table>
+	</main>
+
+</div>
+</body>
+</html>
