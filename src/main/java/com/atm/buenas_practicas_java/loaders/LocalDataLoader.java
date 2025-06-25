@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -106,40 +107,29 @@ public class LocalDataLoader {
         log.info("Carga completada");
     }
 
+    private Rol rolCliente;
+    private Rol rolEmpleado;
+    private Rol rolLimpieza;
+    private Rol rolAdmin;
+
     public void loadRoles() {
-        log.info("Iniciando carga de roles ficticios...");
-        if(!rolRepo.existsById(1)) {
-            Rol cliente = new Rol();
-            cliente.setId(1);
-            cliente.setNombreRol("cliente");
-            rolRepo.save(cliente);
-        }
-        if(!rolRepo.existsById(2)) {
-            Rol empleado = new Rol();
-            empleado.setId(2);
-            empleado.setNombreRol("empleado");
-            rolRepo.save(empleado);
-        }
-        if(!rolRepo.existsById(3)) {
-            Rol limpieza = new Rol();
-            limpieza.setId(3);
-            limpieza.setNombreRol("limpieza");
-            rolRepo.save(limpieza);
-        }
-        if(!rolRepo.existsById(4)) {
-            Rol admin = new Rol();
-            admin.setId(4);
-            admin.setNombreRol("admin");
-            rolRepo.save(admin);
-        }
+        rolCliente = new Rol();
+        rolCliente.setNombreRol("cliente");
+
+        rolEmpleado = new Rol();
+        rolEmpleado.setNombreRol("empleado");
+
+        rolLimpieza = new Rol();
+        rolLimpieza.setNombreRol("limpieza");
+
+        rolAdmin = new Rol();
+        rolAdmin.setNombreRol("admin");
+
+        rolRepo.saveAll(Arrays.asList(rolCliente, rolEmpleado, rolLimpieza, rolAdmin));
     }
 
     public void loadUsuarios() {
         log.info("Iniciando carga de usuarios ficticios...");
-        Rol rolCliente = rolRepo.findById(1).orElseThrow();
-        Rol rolEmpleado = rolRepo.findById(2).orElseThrow();
-        Rol rolLimpieza = rolRepo.findById(3).orElseThrow();
-        Rol rolAdmin = rolRepo.findById(4).orElseThrow();
         List<Usuario> usuarios = new ArrayList<>();
         usuarios.add(crearUsuario(rolCliente, null, "Lucas", "Martínez", "lucas.martinez@mail.com", "pass1234", "Calle A, Madrid", "612345678", LocalDate.of(1985, 7, 12), LocalDate.of(2023, 5, 1), true, "12345678A"));
         usuarios.add(crearUsuario(rolCliente, null, "Sophie", "Dupont", "sophie.dupont@mail.fr", "bonjour2023", "5 Rue Rivoli, Paris", "3312345678", LocalDate.of(1992, 3, 22), LocalDate.of(2024, 1, 15), true, "FR9876543"));
