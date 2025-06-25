@@ -405,7 +405,7 @@ public void loadReservas() {
     private Reserva getReserva1() {
         Reserva reserva1 = new Reserva();
         reserva1.setIdUsuario(usuarioRepo.getReferenceById(2));
-        reserva1.setIdHabitacion(habitacion);
+        reserva1.setIdHabitacion(habitacion2);
         reserva1.setFechaEntrada(LocalDate.of(2025, 7, 27));
         reserva1.setFechaSalida(LocalDate.of(2025, 7, 29));
         reserva1.setEstado("Confirmada");
@@ -418,7 +418,7 @@ public void loadReservas() {
     private Reserva getReserva2() {
         Reserva reserva2 = new Reserva();
         reserva2.setIdUsuario(usuarioRepo.getReferenceById(5));
-        reserva2.setIdHabitacion(habitacion);
+        reserva2.setIdHabitacion(habitacion3);
         reserva2.setFechaEntrada(LocalDate.of(2025, 8, 1));
         reserva2.setFechaSalida(LocalDate.of(2025, 8, 10));
         reserva2.setEstado("Pendiente");
