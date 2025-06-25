@@ -220,11 +220,29 @@ public class LocalDataLoader {
         return hotel1;
     }
 
+    Habitacion habitacion;
+    Habitacion habitacion2;
+    Habitacion habitacion3;
+
+    private void saveAllHabitaciones()
+    {
+        List<Habitacion> habitaciones = new ArrayList<>();
+
+        habitacion = habitacion1();
+        habitacion2 = habitacion2();
+        habitacion3 = habitacion3();
+        habitaciones.add(habitacion);
+        habitaciones.add(habitacion2);
+        habitaciones.add(habitacion3);
+
+        habitacionRepo.saveAll(habitaciones);
+    }
+
     private Habitacion habitacion1()
     {
         Habitacion habitacion1 = new Habitacion();
         habitacion1.setIdHotel(hotel1);
-        habitacion1.setIdProducto(null);
+        habitacion1.setIdProducto(producto);
         habitacion1.setNumeroHabitacion(0);
         habitacion1.setPiso(0);
         habitacion1.setTipo("Individual");
@@ -235,7 +253,7 @@ public class LocalDataLoader {
     private Habitacion habitacion2() {
         Habitacion habitacion2 = new Habitacion();
         habitacion2.setIdHotel(hotel2);
-        habitacion2.setIdProducto(null);
+        habitacion2.setIdProducto(producto2);
         habitacion2.setNumeroHabitacion(101);
         habitacion2.setPiso(1);
         habitacion2.setTipo("Doble");
@@ -247,7 +265,7 @@ public class LocalDataLoader {
     private Habitacion habitacion3() {
         Habitacion habitacion3 = new Habitacion();
         habitacion3.setIdHotel(hotel3);
-        habitacion3.setIdProducto(null);
+        habitacion3.setIdProducto(producto3);
         habitacion3.setNumeroHabitacion(202);
         habitacion3.setPiso(2);
         habitacion3.setTipo("Suite");
