@@ -22,9 +22,9 @@ public class Reserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-                                        //modificado para meter datos de prueba dataloader!!!!!
-    @ManyToOne(fetch = FetchType.LAZY) // optional = false)
-    @JoinColumn(name = "id_usuario") //nullable = false)
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario idUsuario;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
