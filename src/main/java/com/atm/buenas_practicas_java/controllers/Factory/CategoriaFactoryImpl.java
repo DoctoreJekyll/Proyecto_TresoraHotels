@@ -19,7 +19,6 @@ public class CategoriaFactoryImpl implements IFactoryProvider{
         this.categoriaProductoService = categoriaProductoService;
     }
 
-
     @Override
     public String getTitles() {
         return "Lista de categorias";
