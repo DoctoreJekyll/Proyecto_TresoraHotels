@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+<head>
+    <title>Lista de Informes - Hotel Gominola</title>
+    <link th:href="@{/css/contact.css}" rel="stylesheet" />
+    <style>
+        /* Tabla responsiva con diseño limpio */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+        thead tr {
+            background-color: #00bfff;
+            color: white;
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        tbody tr:nth-child(even) {
+            background-color: rgba(0, 191, 255, 0.1);
+        }
+        img {
+            max-width: 80px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-primary">
+<main layout:fragment="contenido">
+    <section id="lista-informes" class="contact-form-section" tabindex="0" aria-labelledby="titulo-informes">
+        <div class="container">
+            <h1 class="mb-4 text-center" id="titulo-informes">Lista de Informes de Limpieza</h1>
+
+            <table aria-describedby="titulo-informes">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Empleado</th>
+                    <th>Habitación</th>
+                    <th>Fecha Limpieza</th>
+                    <th>Hora Limpieza</th>
+                    <th>Foto 1</th>
+                    <th>Foto 2</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Datos dummy para probar sin backend -->
+                <tr>
+                    <td>1</td>
+                    <td>Juan Pérez</td>
+                    <td>Hab. 101 - Piso 1</td>
+                    <td>2025-06-15</td>
+                    <td>10:30</td>
+                    <td><img src="/images/foto1.jpg" alt="Foto 1 Informe 1"></td>
+                    <td><img src="/images/foto2.jpg" alt="Foto 2 Informe 1"></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>María Gómez</td>
+                    <td>Hab. 102 - Piso 1</td>
+                    <td>2025-06-14</td>
+                    <td>09:45</td>
+                    <td><span>No hay foto</span></td>
+                    <td><img src="/images/foto4.jpg" alt="Foto 2 Informe 2"></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Carlos Díaz</td>
+                    <td>Hab. 201 - Piso 2</td>
+                    <td>2025-06-13</td>
+                    <td>14:00</td>
+                    <td><img src="/images/foto5.jpg" alt="Foto 1 Informe 3"></td>
+                    <td><span>No hay foto</span></td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -42,6 +42,9 @@ public class HotelFactoryImpl implements IFactoryProvider{
                     return row;
                 }).toList();
 
+        System.out.println(">>> Hoteles encontrados: " + hotels.size()); // TEMPORAL
+
+
         return rows;
     }
 
