@@ -75,6 +75,4 @@ public class HotelService {
         return contador == 0 ? 0 : suma / contador;
     }
 
-
-
 }
