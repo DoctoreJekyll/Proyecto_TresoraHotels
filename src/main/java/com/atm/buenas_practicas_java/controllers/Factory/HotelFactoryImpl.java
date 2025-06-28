@@ -41,10 +41,6 @@ public class HotelFactoryImpl implements IFactoryProvider{
                     row.put("email", hotel.getEmail());
                     return row;
                 }).toList();
-
-        System.out.println(">>> Hoteles encontrados: " + hotels.size()); // TEMPORAL
-
-
         return rows;
     }
 

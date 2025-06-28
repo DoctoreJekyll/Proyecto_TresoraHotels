@@ -23,13 +23,8 @@ import java.util.Arrays;
 * iniciales se cargarán según el perfil activo.
 */
 
-@Configuration
-@Log4j2
-@Profile("desarrollo")
-public class DesarrolloDataLoader {
 
-private final EntidadPadreRepository repository;
-private final EntidadHijaRepository entidadHijaRepository;
+
 /**
  * Clase de configuración que permite cargar datos iniciales en los repositorios
  * de entidades para diferentes perfiles de configuración.
@@ -47,25 +42,37 @@ private final EntidadHijaRepository entidadHijaRepository;
  * Cada método anotado con `@Profile` y `@PostConstruct` permite la carga de datos
  * iniciales dependiendo del perfil activo.
  */
-public DesarrolloDataLoader(EntidadPadreRepository repository, EntidadHijaRepository entidadHijaRepository) {
-    this.repository = repository;
-    this.entidadHijaRepository = entidadHijaRepository;
-}
 
-@PostConstruct
-public void loadDataDesarrollo() {
-    log.info("Iniciando la carga de datos para el perfil desarrollo");
-    int numeroEntidades = 10;
-    EntidadPadre[] entidades = new EntidadPadre[numeroEntidades];
-    Arrays.setAll(entidades, i -> new EntidadPadre("Entidad-" + i+1));
-    repository.saveAll(Arrays.asList(entidades));
-    for (EntidadPadre entidadPadre : entidades) {
-        entidadHijaRepository.save(new EntidadHija("Hija de " + entidadPadre.getNombre()));
+
+@Configuration
+@Log4j2
+@Profile("desarrollo")
+public class DesarrolloDataLoader {
+    private final EntidadPadreRepository repository;
+    private final EntidadHijaRepository entidadHijaRepository;
+
+    public DesarrolloDataLoader(EntidadPadreRepository repository, EntidadHijaRepository entidadHijaRepository) {
+        this.repository = repository;
+        this.entidadHijaRepository = entidadHijaRepository;
     }
-    log.info("Datos de entidades cargados correctamente.");
 
-}
+    @PostConstruct
+    public void loadDataDesarrollo() {
 
 
+    }
+
+    private void DummyRepoTest()
+    {
+        log.info("Iniciando la carga de datos para el perfil desarrollo");
+        int numeroEntidades = 10;
+        EntidadPadre[] entidades = new EntidadPadre[numeroEntidades];
+        Arrays.setAll(entidades, i -> new EntidadPadre("Entidad-" + i+1));
+        repository.saveAll(Arrays.asList(entidades));
+        for (EntidadPadre entidadPadre : entidades) {
+            entidadHijaRepository.save(new EntidadHija("Hija de " + entidadPadre.getNombre()));
+        }
+        log.info("Datos de entidades cargados correctamente.");
+    }
 
 }

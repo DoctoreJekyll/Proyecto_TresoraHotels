@@ -94,6 +94,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/entities").permitAll()
                         .requestMatchers("/entities/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/hoteles").permitAll()
                         .requestMatchers("/css/*").permitAll()
                         .requestMatchers("/actuator/*").permitAll()
                         .requestMatchers(HttpMethod.POST,"/entidades/deleteHija/*").authenticated()
