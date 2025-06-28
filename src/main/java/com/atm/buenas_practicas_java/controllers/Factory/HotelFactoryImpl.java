@@ -41,7 +41,6 @@ public class HotelFactoryImpl implements IFactoryProvider{
                     row.put("email", hotel.getEmail());
                     return row;
                 }).toList();
-
         return rows;
     }
 
