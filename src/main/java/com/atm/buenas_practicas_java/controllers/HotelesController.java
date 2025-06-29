@@ -1,6 +1,9 @@
 package com.atm.buenas_practicas_java.controllers;
 
-import com.atm.buenas_practicas_java.dtosOld.*;
+import com.atm.buenas_practicas_java.dtos.ContactDto;
+import com.atm.buenas_practicas_java.dtos.LoginDto;
+import com.atm.buenas_practicas_java.dtos.ReservaDto;
+import com.atm.buenas_practicas_java.dtos.UserDto;
 import com.atm.buenas_practicas_java.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

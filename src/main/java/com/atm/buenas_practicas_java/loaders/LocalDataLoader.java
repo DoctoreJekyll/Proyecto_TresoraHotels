@@ -6,6 +6,7 @@ import com.atm.buenas_practicas_java.repositories.*;
 import com.atm.buenas_practicas_java.repositories.ReservaRepo;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -36,6 +37,7 @@ import java.util.List;
 @Configuration
 @Log4j2
 @Profile("local")
+@RequiredArgsConstructor
 public class LocalDataLoader {
     private final HotelesRepo  hotelesRepo;
     private final HabitacionRepo habitacionRepo;
@@ -46,7 +48,8 @@ public class LocalDataLoader {
     private final ReservaRepo reservaRepo;
     private final LimpiezaHabitacionesRepo  limpiezaHabitacionesRepo;
     private final ContactoRepo contactoRepo;
-
+    private final FacturaRepo facturaRepo;
+    private final MetodoPagoRepo metodoPagoRepo;
 
     /**
      * Constructor de la clase {@code LocalDataLoader}.
@@ -54,23 +57,9 @@ public class LocalDataLoader {
      * Inicializa un objeto {@code LocalDataLoader} configurado con los repositorios de las entidades,
      * proporcionando la capacidad de interactuar con estas entidades en la base de datos.
      */
-    public LocalDataLoader(HotelesRepo hotelesRepo, HabitacionRepo habitacionRepo, ProductoRepo productoRepo,
-                           CategoriaProductoRepo categoriaProductoRepo, UsuarioRepo usuarioRepo,
-                           RolRepo rolRepo, ReservaRepo reservaRepo, LimpiezaHabitacionesRepo limpiezaHabitacionesRepo, ContactoRepo contactoRepo) {
-        this.hotelesRepo = hotelesRepo;
-        this.habitacionRepo = habitacionRepo;
-        this.productoRepo = productoRepo;
-        this.categoriaProductoRepo = categoriaProductoRepo;
-        this.usuarioRepo = usuarioRepo;
-        this.rolRepo = rolRepo;
-        this.reservaRepo = reservaRepo;
-        this.limpiezaHabitacionesRepo = limpiezaHabitacionesRepo;
-        this.contactoRepo = contactoRepo;
-    }
-
     /**
-     * Método anotado con {@code @PostConstruct} que inicializa datos de prueba en
-     * los repositorios para entornos locales. Este método se ejecuta automáticamente
+     * Metodo anotado con {@code @PostConstruct} que inicializa datos de prueba en
+     * los repositorios para entornos locales. Este metodo se ejecuta automáticamente
      * después de la inicialización del bean y antes de que esté disponible para uso,
      * permitiendo cargar datos iniciales necesarios para el perfil local.
      *
@@ -98,7 +87,7 @@ public class LocalDataLoader {
      * - `entidadHijaRepository`: {@code EntidadHijaRepository}, usado para guardar las entidades hijas.
      *
      * Importante:
-     * - Este método está diseñado específicamente para ser utilizado en entornos con
+     * - Este metodo está diseñado específicamente para ser utilizado en entornos con
      *   el perfil local activo.
      * - No debe usarse en entornos de producción, ya que sobrescribirá datos existentes.
      *
@@ -106,6 +95,7 @@ public class LocalDataLoader {
      * - Mensaje al inicio del proceso: "Iniciando la carga de datos para el perfil local".
      * - Mensaje exitoso al finalizar: "Datos de entidades cargados correctamente."
      */
+
     @PostConstruct
     public void loadDataDesarrollo() {
         loadHoteles();
@@ -114,6 +104,8 @@ public class LocalDataLoader {
         loadReservas();
         loadLimpiezaHabitaciones();
         loadContactos();
+        loadMetodoPago();
+        loadFacturas();
     }
 
     public void loadHoteles() {
@@ -527,8 +519,45 @@ public void loadReservas() {
         return contacto2;
     }
 
+    private Factura factura1;
+
+    public Factura getFactura1() {
+        Factura factura1 = new Factura();
+        factura1.setIdUsuario(usuarioRepo.getReferenceById(1));
+        factura1.setIdMetodoPago(metodoPago1);
+        factura1.setIdDetalle(7);
+        factura1.setIdHotel(hotel1);
+        factura1.setFechaEmision(LocalDate.of(2025, 8, 1));
+        factura1.setEstado("pendiente");
+        factura1.setObservaciones("todo correcto");
+        return factura1;
+    }
+
+    public void loadFacturas(){
+        factura1 = getFactura1();
+
+        log.info("Iniciando la carga de facturas ...");
+        facturaRepo.save(factura1);
+        log.info("Datos de facturas cargados");
+    }
 
 
+    private MetodoPago metodoPago1;
+
+    public MetodoPago getMetodoPago1(){
+       MetodoPago metodoPago1 = new MetodoPago();
+        metodoPago1.setNombre("Bizum");
+        metodoPago1.setDescripcion("El pago se ha realizado al bizum del hotel");
+        return metodoPago1;
+    }
+
+    public void loadMetodoPago(){
+        metodoPago1=getMetodoPago1();
+
+        log.info("Iniciando la carga de métodos de pago");
+        metodoPagoRepo.save(metodoPago1);
+        log.info("Datos de métodos de pago cargados :)");
+    }
 }
 
 
