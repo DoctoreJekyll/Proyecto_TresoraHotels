@@ -1,30 +1,55 @@
 package com.atm.buenas_practicas_java.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-@Entity
-@Table(name = "habitaciones")
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
+@Entity
+@Table(name = "habitaciones")
 public class Habitacion {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false)
+    private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_hotel", nullable = false)
+    private Hotel idHotel;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_producto", nullable = false)
+    private Producto idProducto;
 
     @Column(name = "numero_habitacion", nullable = false)
     private Integer numeroHabitacion;
 
-    @Column(nullable = false)
+    @Column(name = "piso", nullable = false)
     private Integer piso;
 
-    public void setNombre(String s) {
-    }
+    @Column(name = "tipo", nullable = false, length = 25)
+    private String tipo;
 
-    // Otros campos que puedas necesitar como tipo, estado, etc.
+    @Column(name = "capacidad", nullable = false)
+    private Integer capacidad;
+
+    @Column(name = "estado_ocupacion", nullable = false, length = 30)
+    private String estadoOcupacion;
+
+    @OneToMany(mappedBy = "idHabitacion")
+    private Set<DetallesReserva> detallesReservas = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "idHabitacion")
+    private Set<LimpiezaHabitacion> limpiezaHabitaciones = new LinkedHashSet<>();
+
+    @ManyToMany
+    private Set<Producto> productos = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "idHabitacion")
+    private Set<Reserva> reservas = new LinkedHashSet<>();
+
 }
-

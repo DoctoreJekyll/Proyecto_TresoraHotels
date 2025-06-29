@@ -1,34 +1,29 @@
 package com.atm.buenas_practicas_java.entities;
 
-import com.atm.buenas_practicas_java.entities.Habitacion;
-import com.atm.buenas_practicas_java.entities.Usuario;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 @Entity
-@Table(name = "informes_limpieza")
-public class InformeLimpieza {
-
+@Table(name = "limpieza_habitaciones")
+public class LimpiezaHabitacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
+    private Usuario idUsuario;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_habitacion", nullable = false)
-    private Habitacion habitacion;
-    
+    private Habitacion idHabitacion;
 
     @Column(name = "fecha_limpieza", nullable = false)
     private LocalDate fechaLimpieza;
@@ -42,10 +37,4 @@ public class InformeLimpieza {
     @Column(name = "foto2")
     private String foto2;
 
-    public void setUsuario(Usuario juanPérez) {
-    }
-
-    public void setHabitacion(Habitacion habitacion) {
-    }
 }
-

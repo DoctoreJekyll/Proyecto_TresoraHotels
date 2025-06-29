@@ -1,6 +1,6 @@
 package com.atm.buenas_practicas_java.controllers;
 
-import com.atm.buenas_practicas_java.dtos.*;
+import com.atm.buenas_practicas_java.dtosOld.*;
 import com.atm.buenas_practicas_java.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,7 +37,6 @@ public class HotelesController {
         System.out.println(login.getEmail());
         return "user_home_page";
     }
-
 
     @GetMapping("/crearCuenta")
     public String mostrarCrearCuenta(Model model ){
@@ -76,14 +75,6 @@ public class HotelesController {
         return "user_home_page";
     }
 
-    @GetMapping("/hoteles")
-    public String mostrarHoteles(Model model ){
-        List<HotelDto> hotels = HotelsData.hotelsDataList();
-        model.addAttribute("hotels", hotels);
-
-        return "hoteles_web";
-    }
-
     @GetMapping("/contact")
     public String mostrarPaginaContact(ModelMap intefrazConPantalla) {
         ContactDto contacto = new ContactDto();
@@ -111,16 +102,16 @@ public class HotelesController {
         return "home";
     }
 
-    @GetMapping("/reserva")
-    public String reserva( ModelMap ModelReserva) {
+    @GetMapping("/reservaPlaya")
+    public String reservaPlaya( ModelMap ModelReserva) {
         ReservaDto reserva= new ReservaDto();
         reserva.setAdultos(4);
         ModelReserva.addAttribute("datosreserva", reserva);
-        return "reservaCompleta";
+        return "reservaHotelPlaya";
     }
 
-    @PostMapping("/reserva")
-    public String postReserva(@ModelAttribute(name="datosreserva") ReservaDto reserva) {
+    @PostMapping("/reservaPlaya")
+    public String postReservaPlaya(@ModelAttribute(name="datosreserva") ReservaDto reserva) {
         System.out.println(reserva.getAdultos());
         System.out.println(reserva.getFechaEntrada());
         System.out.println(reserva.getFechaSalida());
@@ -138,6 +129,20 @@ public class HotelesController {
     }
 
 
+    @GetMapping("/reservaMontaña")
+    public String reservaMontaña( ModelMap ModelReserva) {
+        ReservaDto reserva= new ReservaDto();
+        reserva.setAdultos(4);
+        ModelReserva.addAttribute("datosreserva", reserva);
+        return "reservaHotelMontaña";
+    }
 
+    @PostMapping("/reservaMontaña")
+    public String postReservaMontaña(@ModelAttribute(name="datosreserva") ReservaDto reserva) {
+        System.out.println(reserva.getAdultos());
+        System.out.println(reserva.getFechaEntrada());
+        System.out.println(reserva.getFechaSalida());
+        return "home";
+    }
 
 }
