@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +44,9 @@ public class LocalDataLoader {
     private final UsuarioRepo usuarioRepo;
     private final RolRepo rolRepo;
     private final ReservaRepo reservaRepo;
+    private final LimpiezaHabitacionesRepo  limpiezaHabitacionesRepo;
+    private final ContactoRepo contactoRepo;
+
 
     /**
      * Constructor de la clase {@code LocalDataLoader}.
@@ -52,7 +56,7 @@ public class LocalDataLoader {
      */
     public LocalDataLoader(HotelesRepo hotelesRepo, HabitacionRepo habitacionRepo, ProductoRepo productoRepo,
                            CategoriaProductoRepo categoriaProductoRepo, UsuarioRepo usuarioRepo,
-                           RolRepo rolRepo, ReservaRepo reservaRepo) {
+                           RolRepo rolRepo, ReservaRepo reservaRepo, LimpiezaHabitacionesRepo limpiezaHabitacionesRepo, ContactoRepo contactoRepo) {
         this.hotelesRepo = hotelesRepo;
         this.habitacionRepo = habitacionRepo;
         this.productoRepo = productoRepo;
@@ -60,6 +64,8 @@ public class LocalDataLoader {
         this.usuarioRepo = usuarioRepo;
         this.rolRepo = rolRepo;
         this.reservaRepo = reservaRepo;
+        this.limpiezaHabitacionesRepo = limpiezaHabitacionesRepo;
+        this.contactoRepo = contactoRepo;
     }
 
     /**
@@ -106,7 +112,8 @@ public class LocalDataLoader {
         loadRoles();
         loadUsuarios();
         loadReservas();
-
+        loadLimpiezaHabitaciones();
+        loadContactos();
     }
 
     public void loadHoteles() {
@@ -399,8 +406,8 @@ public void loadReservas() {
 
     private void SaveAllReservas() {
         List<Reserva> reservas = new ArrayList<>();
-        Reserva reserva1 = getReserva1();
-        Reserva reserva2 = getReserva2();
+        reserva1 = getReserva1();
+        reserva2 = getReserva2();
         reservas.add(reserva1);
         reservas.add(reserva2);
         reservaRepo.saveAll(reservas);
@@ -431,6 +438,96 @@ public void loadReservas() {
         reserva2.setComentarios("Alergia almendras");
         return reserva2;
     }
+
+    /*---------------------------------------------------------------------------------------------------------------*/
+    public void loadLimpiezaHabitaciones() {
+        log.info("Cargando datos de limpieza de habitaciones...");
+        SaveAllLimpiezaHabitaciones();
+
+        log.info("Datos de limpieza cargados");
+    }
+
+    private LimpiezaHabitacion limpiezaHabitacion1;
+    private LimpiezaHabitacion limpiezaHabitacion2;
+
+    private void SaveAllLimpiezaHabitaciones(){
+        List<LimpiezaHabitacion> limpiezas = new ArrayList<>();
+
+        limpiezaHabitacion1 = getLimpiezaHabitacion1();
+        limpiezaHabitacion2 = getLimpiezaHabitacion2();
+        limpiezas.add(limpiezaHabitacion1);
+        limpiezas.add(limpiezaHabitacion2);
+        limpiezaHabitacionesRepo.saveAll(limpiezas);
+
+    }
+
+    private LimpiezaHabitacion getLimpiezaHabitacion1() {
+        LimpiezaHabitacion limpiezaHabitacion1 = new LimpiezaHabitacion();
+
+        limpiezaHabitacion1.setIdUsuario(usuarioRepo.getReferenceById(2));
+        limpiezaHabitacion1.setIdHabitacion(habitacion2);
+        limpiezaHabitacion1.setFechaLimpieza(LocalDate.of(2025, 7, 29));
+        limpiezaHabitacion1.setHoraLimpieza(LocalTime.of(12, 23));
+        limpiezaHabitacion1.setFoto1("https://media.istockphoto.com/id/1086675290/es/foto/retrete-sucio-poco-higi%C3%A9nicas-con-manchas-de-cal-en-el-ba%C3%B1o-p%C3%BAblico-cerca.jpg?s=2048x2048&w=is&k=20&c=fWHGeQZ-YdQNgPMLYZ03QcvRAzpLXYBFIBlUkCComtk=");
+        limpiezaHabitacion1.setFoto2("");
+        return limpiezaHabitacion1;
+    }
+    private LimpiezaHabitacion getLimpiezaHabitacion2() {
+        LimpiezaHabitacion limpiezaHabitacion2 = new LimpiezaHabitacion();
+
+        limpiezaHabitacion2.setIdUsuario(usuarioRepo.getReferenceById(2));
+        limpiezaHabitacion2.setIdHabitacion(habitacion3);
+        limpiezaHabitacion2.setFechaLimpieza(LocalDate.of(2025, 8, 1));
+        limpiezaHabitacion2.setHoraLimpieza(LocalTime.of(10, 11));
+        limpiezaHabitacion2.setFoto1("https://media.istockphoto.com/id/2149016574/es/foto/almohada-sucia-en-mano-de-mujer.jpg?s=2048x2048&w=is&k=20&c=2_jT6XjWtKCA6ETydDOZDEzAo4fYOT8BCb_wLFCEaxs=");
+        limpiezaHabitacion2.setFoto2("https://media.istockphoto.com/id/2161307161/es/foto/stains-on-white-shirts.jpg?s=2048x2048&w=is&k=20&c=TleWVC9MOgi5lI3nXkqubTZCYHIFrTzdlfXmxLkxlPU=");
+        return limpiezaHabitacion2;
+    }
+    /*---------------------------------------------------------------------------------------------------------------*/
+
+    private Contacto contacto1;
+    private Contacto contacto2;
+
+    public void loadContactos(){
+        log.info("Iniciando la carga de contactos ficticios...");
+        saveAllContactos();
+
+        log.info("Datos de contactos cargados");
+
+    }
+
+    private void saveAllContactos(){
+        List<Contacto> contactos = new ArrayList<>();
+        contacto1 = getContacto1();
+        contacto2 = getContacto2();
+        contactos.add(contacto1);
+        contactos.add(contacto2);
+        contactoRepo.saveAll(contactos);
+    }
+
+    private Contacto getContacto1() {
+        contacto1 = new Contacto();
+        contacto1.setNombre("Ana Gómez");
+        contacto1.setCorreo("ana.gomez@example.com");
+        contacto1.setTelefono("123456789");
+        contacto1.setIdUsuario(null); // No está asociado a ningún usuario
+        contacto1.setDepartamento("Habitaciones");
+        contacto1.setMensaje("¿Habría posibilidad de llevar a mi mascota?");
+        return contacto1;
+    }
+
+    private Contacto getContacto2() {
+        contacto2 = new Contacto();
+        contacto2.setNombre("Carlos Ruiz");
+        contacto2.setCorreo("carlos.ruiz@example.com");
+        contacto2.setTelefono("987654321");
+        contacto2.setIdUsuario(null);
+        contacto2.setDepartamento("Habitaciones");
+        contacto2.setMensaje("Me gustaría hablar con el departamento de reservas");
+        return contacto2;
+    }
+
+
 
 }
 
