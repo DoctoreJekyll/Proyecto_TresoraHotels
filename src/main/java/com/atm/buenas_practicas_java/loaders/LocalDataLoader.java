@@ -6,6 +6,7 @@ import com.atm.buenas_practicas_java.repositories.*;
 import com.atm.buenas_practicas_java.repositories.ReservaRepo;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -36,6 +37,7 @@ import java.util.List;
 @Configuration
 @Log4j2
 @Profile("local")
+@RequiredArgsConstructor
 public class LocalDataLoader {
     private final HotelesRepo  hotelesRepo;
     private final HabitacionRepo habitacionRepo;
@@ -46,27 +48,12 @@ public class LocalDataLoader {
     private final ReservaRepo reservaRepo;
     private final LimpiezaHabitacionesRepo  limpiezaHabitacionesRepo;
     private final ContactoRepo contactoRepo;
-
-
     /**
      * Constructor de la clase {@code LocalDataLoader}.
      *
      * Inicializa un objeto {@code LocalDataLoader} configurado con los repositorios de las entidades,
      * proporcionando la capacidad de interactuar con estas entidades en la base de datos.
      */
-    public LocalDataLoader(HotelesRepo hotelesRepo, HabitacionRepo habitacionRepo, ProductoRepo productoRepo,
-                           CategoriaProductoRepo categoriaProductoRepo, UsuarioRepo usuarioRepo,
-                           RolRepo rolRepo, ReservaRepo reservaRepo, LimpiezaHabitacionesRepo limpiezaHabitacionesRepo, ContactoRepo contactoRepo) {
-        this.hotelesRepo = hotelesRepo;
-        this.habitacionRepo = habitacionRepo;
-        this.productoRepo = productoRepo;
-        this.categoriaProductoRepo = categoriaProductoRepo;
-        this.usuarioRepo = usuarioRepo;
-        this.rolRepo = rolRepo;
-        this.reservaRepo = reservaRepo;
-        this.limpiezaHabitacionesRepo = limpiezaHabitacionesRepo;
-        this.contactoRepo = contactoRepo;
-    }
 
     /**
      * Método anotado con {@code @PostConstruct} que inicializa datos de prueba en
@@ -457,6 +444,7 @@ public void loadReservas() {
         limpiezaHabitacion2 = getLimpiezaHabitacion2();
         limpiezas.add(limpiezaHabitacion1);
         limpiezas.add(limpiezaHabitacion2);
+
         limpiezaHabitacionesRepo.saveAll(limpiezas);
 
     }
