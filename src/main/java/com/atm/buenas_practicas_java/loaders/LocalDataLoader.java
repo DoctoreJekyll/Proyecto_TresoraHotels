@@ -541,7 +541,6 @@ public void loadReservas() {
         log.info("Datos de facturas cargados");
     }
 
-
     private MetodoPago metodoPago1;
 
     public MetodoPago getMetodoPago1(){
