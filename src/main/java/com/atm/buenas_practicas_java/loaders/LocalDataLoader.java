@@ -48,6 +48,9 @@ public class LocalDataLoader {
     private final ReservaRepo reservaRepo;
     private final LimpiezaHabitacionesRepo  limpiezaHabitacionesRepo;
     private final ContactoRepo contactoRepo;
+    private final FacturaRepo facturaRepo;
+    private final MetodoPagoRepo metodoPagoRepo;
+
     /**
      * Constructor de la clase {@code LocalDataLoader}.
      *
@@ -101,6 +104,8 @@ public class LocalDataLoader {
         loadReservas();
         loadLimpiezaHabitaciones();
         loadContactos();
+        loadMetodoPago();
+        loadFacturas();
     }
 
     public void loadHoteles() {
@@ -515,8 +520,44 @@ public void loadReservas() {
         return contacto2;
     }
 
+    private Factura factura1;
 
+    public Factura getFactura1() {
+        Factura factura1 = new Factura();
+        factura1.setIdUsuario(usuarioRepo.getReferenceById(1));
+        factura1.setIdMetodoPago(metodoPago1);
+        factura1.setIdDetalle(7);
+        factura1.setIdHotel(hotel1);
+        factura1.setFechaEmision(LocalDate.of(2025, 8, 1));
+        factura1.setEstado("pendiente");
+        factura1.setObservaciones("todo correcto");
+        return factura1;
+    }
 
+    public void loadFacturas(){
+        factura1 = getFactura1();
+
+        log.info("Iniciando la carga de facturas ...");
+        facturaRepo.save(factura1);
+        log.info("Datos de facturas cargados");
+    }
+
+    private MetodoPago metodoPago1;
+
+    public MetodoPago getMetodoPago1(){
+       MetodoPago metodoPago1 = new MetodoPago();
+        metodoPago1.setNombre("Bizum");
+        metodoPago1.setDescripcion("El pago se ha realizado al bizum del hotel");
+        return metodoPago1;
+    }
+
+    public void loadMetodoPago(){
+        metodoPago1=getMetodoPago1();
+
+        log.info("Iniciando la carga de métodos de pago");
+        metodoPagoRepo.save(metodoPago1);
+        log.info("Datos de métodos de pago cargados :)");
+    }
 }
 
 
