@@ -1,9 +1,7 @@
-package com.atm.buenas_practicas_java.controllers.Factory;
+package com.atm.buenas_practicas_java.controllers.FactoryImpl;
 
-import com.atm.buenas_practicas_java.entities.Habitacion;
-import com.atm.buenas_practicas_java.entities.Hotel;
+import com.atm.buenas_practicas_java.controllers.Factory.IFactoryProvider;
 import com.atm.buenas_practicas_java.entities.Producto;
-import com.atm.buenas_practicas_java.services.HotelService;
 import com.atm.buenas_practicas_java.services.ProductoService;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class ProductoFactoryImpl implements IFactoryProvider{
+public class ProductoFactoryImpl implements IFactoryProvider {
 
     private final ProductoService productoService;
 

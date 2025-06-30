@@ -20,13 +20,21 @@ public abstract class AbstractBusinessService <E, ID, DTO,  REPO extends JpaRepo
         this.serviceMapper = mapper;
     }
     //Buscamos por id
-    public Optional<E> buscar(ID id){return  this.repo.findById(id);}
+    public Optional<E> buscar(ID id){
+        return  this.repo.findById(id);}
+
+    //Buscar por id
+    public Optional<DTO> encuentraPorId(ID id){
+
+        return this.repo.findById(id).map(this.serviceMapper::toDto);
+    }
+
     //Lista de todos los DTOs buscarTodos devolvera lista y paginas
     public List<DTO> buscarTodos(){
         return  this.serviceMapper.toDto(this.repo.findAll());
     }
 
-    public List<E> buscarEntidades(){
+    public List<E> buscarEntidades()    {
         return  this.repo.findAll();
     }
     public Set<E> buscarEntidadesSet(){
@@ -43,11 +51,7 @@ public abstract class AbstractBusinessService <E, ID, DTO,  REPO extends JpaRepo
         return  repo.findAll(pageable).map(this.serviceMapper::toDto);
     }
 
-    //Buscar por id
-    public Optional<DTO> encuentraPorId(ID id){
 
-        return this.repo.findById(id).map(this.serviceMapper::toDto);
-    }
     public Optional<E> encuentraPorIdEntity(ID id){
 
         return this.repo.findById(id);

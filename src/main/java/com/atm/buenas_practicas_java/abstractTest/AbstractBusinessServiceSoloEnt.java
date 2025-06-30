@@ -1,15 +1,16 @@
 package com.atm.buenas_practicas_java.abstractTest;
 
+import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.*;
 
+@Getter
 public abstract class AbstractBusinessServiceSoloEnt<E, ID,  REPO extends JpaRepository<E,ID>>  {
+    //Obtener el repo
     private final REPO repo;
-
-
 
     protected AbstractBusinessServiceSoloEnt(REPO repo) {
         this.repo = repo;
@@ -17,25 +18,29 @@ public abstract class AbstractBusinessServiceSoloEnt<E, ID,  REPO extends JpaRep
     }
 
     public List<E> buscarEntidades(){
+        //check
         return  this.repo.findAll();
     }
     public Set<E> buscarEntidadesSet(){
+        //check
         Set<E> eSet = new HashSet<E>(this.repo.findAll());
         return  eSet;
     }
 
     public Optional<E> encuentraPorIdEntity(ID id){
-
+        //check
         return this.repo.findById(id);
     }
     public Optional<E> encuentraPorId(ID id){
-
+        //check
         return this.repo.findById(id);
     }
     public Page<E> buscarTodos(Pageable pageable){
+        //check
         return  repo.findAll(pageable);
     }
     public Set<E> buscarTodosSet(){
+        //check
         Set<E> eSet = new HashSet<E>(this.repo.findAll());
         return  eSet;
     }
@@ -61,6 +66,4 @@ public abstract class AbstractBusinessServiceSoloEnt<E, ID,  REPO extends JpaRep
     public void eliminarPorId(ID id){
         this.repo.deleteById(id);
     }
-    //Obtener el repo
-    public REPO getRepo(){return  repo;}
 }
