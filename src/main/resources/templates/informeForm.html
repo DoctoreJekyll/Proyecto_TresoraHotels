@@ -20,7 +20,8 @@
                     <h2 class="mb-4 text-center">Registrar Informe</h2>
 
                     <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
-                          action="/informes" method="post" enctype="multipart/form-data">
+                          th:action="@{/informes/guardar}" method="post"
+                          th:object="${limpiezaHabitacion}">
 
                         <p id="instrucciones-formulario" class="text-muted text-center">
                             Todos los campos marcados con * son obligatorios.
@@ -29,21 +30,23 @@
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <label for="usuario" class="form-label">Empleado *</label>
-                                <select class="form-select" id="usuario" name="idUsuario" required aria-required="true">
-                                    <option value="" disabled selected>Seleccione un empleado</option>
-                                    <option value="1">Juan Pérez</option>
-                                    <option value="2">María Gómez</option>
-                                    <option value="3">Carlos Díaz</option>
+                                <select class="form-select" id="usuario" th:field="*{idUsuario}" required aria-required="true">
+                                    <option value="" disabled
+                                            th:selected="*{idUsuario == null}">Seleccione un empleado</option>
+                                    <option th:each="usuario : ${usuarios}"
+                                            th:value="${usuario.id}"
+                                            th:text="${usuario.nombre}">Empleado</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="habitacion" class="form-label">Habitación *</label>
-                                <select class="form-select" id="habitacion" name="idHabitacion" required aria-required="true">
-                                    <option value="" disabled selected>Seleccione una habitación</option>
-                                    <option value="101">Hab. 101 - Piso 1</option>
-                                    <option value="102">Hab. 102 - Piso 1</option>
-                                    <option value="201">Hab. 201 - Piso 2</option>
+                                <select class="form-select" id="habitacion" th:field="*{idHabitacion}" required aria-required="true">
+                                    <option value="" disabled
+                                            th:selected="*{idHabitacion == null}">Seleccione una habitación</option>
+                                    <option th:each="habitacion : ${habitaciones}"
+                                            th:value="${habitacion.id}"
+                                            th:text="'Hab. ' + ${habitacion.getTipo()} + ' - Piso ' + ${habitacion.piso}">Habitación</option>
                                 </select>
                             </div>
                         </div>
@@ -51,23 +54,23 @@
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <label for="fecha" class="form-label">Fecha de Limpieza *</label>
-                                <input type="date" class="form-control" id="fecha" name="fechaLimpieza" required>
+                                <input type="date" class="form-control" id="fecha" th:field="*{fechaLimpieza}" required />
                             </div>
 
                             <div class="col-md-6">
                                 <label for="hora" class="form-label">Hora de Limpieza *</label>
-                                <input type="time" class="form-control" id="hora" name="horaLimpieza" required>
+                                <input type="time" class="form-control" id="hora" th:field="*{horaLimpieza}" required />
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="foto1" class="form-label">Foto 1</label>
-                            <input class="form-control" type="file" id="foto1" name="foto1" accept="image/*">
+                            <label for="foto1" class="form-label">Foto 1 (URL o texto)</label>
+                            <input class="form-control" type="text" id="foto1" th:field="*{foto1}" placeholder="Introduce URL o texto" />
                         </div>
 
                         <div class="mb-4">
-                            <label for="foto2" class="form-label">Foto 2</label>
-                            <input class="form-control" type="file" id="foto2" name="foto2" accept="image/*">
+                            <label for="foto2" class="form-label">Foto 2 (URL o texto)</label>
+                            <input class="form-control" type="text" id="foto2" th:field="*{foto2}" placeholder="Introduce URL o texto" />
                         </div>
 
                         <div class="text-center">
