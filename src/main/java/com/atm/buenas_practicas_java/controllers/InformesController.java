@@ -23,10 +23,10 @@ public class InformesController {
     private final UsuarioService usuarioService;
     private final HabitacionService habitacionService;
 
-    public InformesController(InformesService informesService, HabitacionService habitacionService, UsuarioService usuarioService, HabitacionService habitacionService1) {
+    public InformesController(InformesService informesService, UsuarioService usuarioService, HabitacionService habitacionService) {
         this.informesService = informesService;
         this.usuarioService = usuarioService;
-        this.habitacionService = habitacionService1;
+        this.habitacionService = habitacionService;
     }
 
     // Mostrar formulario para nuevo informe
