@@ -2,33 +2,17 @@ package com.atm.buenas_practicas_java.services;
 
 import com.atm.buenas_practicas_java.entities.Producto;
 import com.atm.buenas_practicas_java.repositories.ProductoRepo;
+import com.atm.buenas_practicas_java.services.templateMethod.AbstractTemplateServicesEntities;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductoService {
-    private final ProductoRepo productoRepo;
+public class ProductoService extends AbstractTemplateServicesEntities<Producto, Integer, ProductoRepo> {
+
     public ProductoService(ProductoRepo productoRepo) {
-        this.productoRepo = productoRepo;
+        super(productoRepo);
     }
-
-    public List<Producto> findAll() {
-        return productoRepo.findAll();
-    }
-
-    public Optional<Producto> findById(int id) {
-        return productoRepo.findById(id);
-    }
-
-    public void save(Producto producto) {
-        productoRepo.save(producto);
-    }
-
-    public void deleteById(int id) {
-        productoRepo.deleteById(id);
-    }
-
 
 }

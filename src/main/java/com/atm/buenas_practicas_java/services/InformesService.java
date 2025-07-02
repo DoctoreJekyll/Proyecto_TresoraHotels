@@ -6,10 +6,14 @@ import com.atm.buenas_practicas_java.services.templateMethod.AbstractTemplateSer
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class InformesService extends AbstractTemplateServicesEntities<LimpiezaHabitacion, Integer, LimpiezaHabitacionesRepo> {
 
     public InformesService(LimpiezaHabitacionesRepo repo) {
         super(repo);
     }
+
 }

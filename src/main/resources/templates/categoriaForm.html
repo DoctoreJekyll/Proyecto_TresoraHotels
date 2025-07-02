@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+<head>
+    <title>Nueva Categoría de Producto - Hotel Gominola</title>
+    <link th:href="@{/css/contact.css}" rel="stylesheet" />
+</head>
+<body class="bg-gradient-primary">
+<main layout:fragment="contenido">
+    <section id="formulario-categoria" class="contact-form-section" tabindex="0" aria-labelledby="titulo-categoria">
+        <div class="container">
+            <h1 class="mb-4 text-center" id="titulo-categoria">Nueva Categoría de Producto</h1>
+            <p class="lead text-center">
+                Completa el formulario para registrar una nueva categoría de productos.
+            </p>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="mb-4 text-center">Registrar Categoría</h2>
+
+                    <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
+                          th:action="@{/categorias/guardar}" method="post"
+                          th:object="${categoria}">
+
+                        <input type="hidden" th:field="*{id}" />
+
+                        <p id="instrucciones-formulario" class="text-muted text-center">
+                            Todos los campos marcados con * son obligatorios.
+                        </p>
+
+                        <div class="mb-4">
+                            <label for="nombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="nombre"
+                                   th:field="*{nombre}" required aria-required="true"
+                                   placeholder="Introduce el nombre de la categoría" maxlength="30"/>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion"
+                                      th:field="*{descripcion}" rows="3" maxlength="80"
+                                      placeholder="Introduce una breve descripción (opcional)"></textarea>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn" aria-label="Registrar categoría">Registrar Categoría</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

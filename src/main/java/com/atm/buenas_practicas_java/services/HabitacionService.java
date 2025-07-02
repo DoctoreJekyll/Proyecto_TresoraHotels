@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Service
 public class HabitacionService extends AbstractTemplateServicesEntities<Habitacion, Integer, HabitacionRepo> {
+
     public HabitacionService(HabitacionRepo habitacionRepo) {
         super(habitacionRepo);
     }

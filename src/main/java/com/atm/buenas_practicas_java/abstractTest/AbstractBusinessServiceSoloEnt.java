@@ -14,7 +14,6 @@ public abstract class AbstractBusinessServiceSoloEnt<E, ID,  REPO extends JpaRep
 
     protected AbstractBusinessServiceSoloEnt(REPO repo) {
         this.repo = repo;
-
     }
 
     public List<E> buscarEntidades(){
