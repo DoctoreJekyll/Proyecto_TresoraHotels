@@ -11,22 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/habitaciones")
 public class HabitacionesController {
 
-    
-    @GetMapping({"", "/lista"})
-    public String mostrarInformes(Model model) {
-        return "informeVista";
-    }
 
-    // Mostrar formulario para nuevo informe
-    @GetMapping("/nuevo")
-    public String mostrarFormularioInforme(Model model) {
-        return "habitacionForm";
-    }
 
-    // Procesar envío del formulario (simulado)
-    @PostMapping("/nuevo")
-    public String procesarFormularioInforme(@ModelAttribute Model model) {
-        return "habitacionForm";
-    }
 
 }

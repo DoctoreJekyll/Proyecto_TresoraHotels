@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+<head>
+    <title>Formulario de Producto</title>
+    <link th:href="@{/css/contact.css}" rel="stylesheet" />
+</head>
+<body class="bg-gradient-primary">
+<main layout:fragment="contenido">
+    <section class="contact-form-section" tabindex="0" aria-labelledby="titulo-producto">
+        <div class="container">
+            <h1 class="mb-4 text-center" id="titulo-producto">Formulario de Producto</h1>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <form class="contact-form" role="form"
+                          th:action="@{/productos/guardar}" method="post"
+                          th:object="${producto}">
+
+                        <!-- Campo oculto para edición -->
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="categoria" class="form-label">Categoria</label>
+                                <select class="form-select" id="categoria" th:field="*{idCategoria}" required aria-required="true">
+                                    <option value="" disabled
+                                            th:selected="*{idCategoria == null}">Seleccione un empleado</option>
+                                    <option th:each="cat : ${categorias}"
+                                            th:value="${cat.id}"
+                                            th:text="${cat.nombre}"></option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="hotel" class="form-label">Habitación *</label>
+                                <select class="form-select" id="hotel" th:field="*{idHotel}" required aria-required="true">
+                                    <option value="" disabled
+                                            th:selected="*{idHotel == null}">Seleccione una habitación</option>
+                                    <option th:each="hotel : ${hoteles}"
+                                            th:value="${hotel.id}"
+                                            th:text="'Hot. ' + ${hotel.getNombre} + ' - Tlf ' + ${hotel.telefono}">Hotel</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="nombre" class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required maxlength="30" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="descripcion" class="form-label">Descripción *</label>
+                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" required maxlength="80"></textarea>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="precioBase" class="form-label">Precio Base *</label>
+                                <input type="number" step="0.01" class="form-control" id="precioBase" th:field="*{precioBase}" required />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="activo" class="form-label d-block">Activo</label>
+                                <input type="checkbox" id="activo" th:field="*{activo}" />
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="fechaDesde" class="form-label">Fecha Desde</label>
+                                <input type="date" class="form-control" id="fechaDesde" th:field="*{fechaDesde}" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="fechaHasta" class="form-label">Fecha Hasta</label>
+                                <input type="date" class="form-control" id="fechaHasta" th:field="*{fechaHasta}" />
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Registrar Producto</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
