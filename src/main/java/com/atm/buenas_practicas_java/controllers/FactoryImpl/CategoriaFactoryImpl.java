@@ -36,7 +36,7 @@ public class CategoriaFactoryImpl implements IFactoryProvider {
                     Map<String, Object> row = new LinkedHashMap<>();
                     row.put("id", categoriaProducto.getId());
                     row.put("nombre", categoriaProducto.getNombre());
-                    row.put("descripcion", categoriaProducto.getDescripcion());
+                    row.put("description", categoriaProducto.getDescripcion());
                     return row;
                 }).toList();
 
