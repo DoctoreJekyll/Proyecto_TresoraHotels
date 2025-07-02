@@ -6,6 +6,7 @@ import com.atm.buenas_practicas_java.repositories.*;
 import com.atm.buenas_practicas_java.repositories.ReservaRepo;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -36,6 +37,7 @@ import java.util.List;
 @Configuration
 @Log4j2
 @Profile("local")
+@RequiredArgsConstructor
 public class LocalDataLoader {
     private final HotelesRepo  hotelesRepo;
     private final HabitacionRepo habitacionRepo;
@@ -44,8 +46,9 @@ public class LocalDataLoader {
     private final UsuarioRepo usuarioRepo;
     private final RolRepo rolRepo;
     private final ReservaRepo reservaRepo;
-    private final LimpiezaHabitacionesRepo limpiezaHabitacionesRepo;
+    private final LimpiezaHabitacionesRepo  limpiezaHabitacionesRepo;
     private final ContactoRepo contactoRepo;
+    private final FacturaRepo facturaRepo;
 
 
     /**
@@ -54,21 +57,6 @@ public class LocalDataLoader {
      * Inicializa un objeto {@code LocalDataLoader} configurado con los repositorios de las entidades,
      * proporcionando la capacidad de interactuar con estas entidades en la base de datos.
      */
-    public LocalDataLoader(HotelesRepo hotelesRepo, HabitacionRepo habitacionRepo, ProductoRepo productoRepo,
-                           CategoriaProductoRepo categoriaProductoRepo, UsuarioRepo usuarioRepo,
-                           RolRepo rolRepo, ReservaRepo reservaRepo, LimpiezaHabitacionesRepo limpiezaHabitacionesRepo,
-                           ContactoRepo contactoRepo) {
-                           RolRepo rolRepo, ReservaRepo reservaRepo, LimpiezaHabitacionesRepo limpiezaHabitacionesRepo) {
-        this.hotelesRepo = hotelesRepo;
-        this.habitacionRepo = habitacionRepo;
-        this.productoRepo = productoRepo;
-        this.categoriaProductoRepo = categoriaProductoRepo;
-        this.usuarioRepo = usuarioRepo;
-        this.rolRepo = rolRepo;
-        this.reservaRepo = reservaRepo;
-        this.limpiezaHabitacionesRepo = limpiezaHabitacionesRepo;
-        this.contactoRepo = contactoRepo;
-    }
 
     /**
      * Método anotado con {@code @PostConstruct} que inicializa datos de prueba en
@@ -80,30 +68,30 @@ public class LocalDataLoader {
      * - Crea 10 instancias de la entidad `EntidadPadre` con nombres predefinidos.
      * - Guarda las instancias de `EntidadPadre` en el repositorio correspondiente.
      * - Para cada instancia de `EntidadPadre`, crea una entidad relacionada de tipo
-     * `EntidadHija` con un nombre identificativo, y la asocia a la entidad padre
-     * pertinente.
+     *   `EntidadHija` con un nombre identificativo, y la asocia a la entidad padre
+     *   pertinente.
      * - Guarda las entidades hijas en el repositorio `entidadHijaRepository`.
      * - Registra mensajes informativos en el log sobre el inicio y finalización del proceso.
      *
      * Proceso:
      * 1. Se define un número fijo de entidades padre (10).
      * 2. Se utiliza un array para almacenar las instancias y se inicializa con un nombre
-     * único para cada entidad padre.
+     *    único para cada entidad padre.
      * 3. Todas las entidades padre se guardan de forma simultánea utilizando
-     * {@code repository.saveAll}.
+     *    {@code repository.saveAll}.
      * 4. Para cada entidad padre, se crea una instancia de la entidad hija, se establece
-     * la relación con el padre y se guarda en el repositorio correspondiente.
+     *    la relación con el padre y se guarda en el repositorio correspondiente.
      * 5. Se registran logs informativos sobre el estado del proceso.
-     * <p>
+     *
      * Dependencias principales:
      * - `repository`: {@code EntidadPadreRepository}, usado para almacenar las entidades padre.
      * - `entidadHijaRepository`: {@code EntidadHijaRepository}, usado para guardar las entidades hijas.
-     * <p>
+     *
      * Importante:
      * - Este método está diseñado específicamente para ser utilizado en entornos con
-     * el perfil local activo.
+     *   el perfil local activo.
      * - No debe usarse en entornos de producción, ya que sobrescribirá datos existentes.
-     * <p>
+     *
      * Logs:
      * - Mensaje al inicio del proceso: "Iniciando la carga de datos para el perfil local".
      * - Mensaje exitoso al finalizar: "Datos de entidades cargados correctamente."
@@ -116,6 +104,7 @@ public class LocalDataLoader {
         loadReservas();
         loadLimpiezaHabitaciones();
         loadContactos();
+        loadFacturas();
     }
 
     public void loadHoteles() {
@@ -133,7 +122,8 @@ public class LocalDataLoader {
     private Hotel hotel2;
     private Hotel hotel3;
 
-    private void saveAllHoteles() {
+    private void saveAllHoteles()
+    {
         List<Hotel> hoteles = new ArrayList<>();
 
         hotel1 = getHotel();
@@ -160,7 +150,6 @@ public class LocalDataLoader {
         hotel3.setEmail("contacto@costazulresort.com");
         return hotel3;
     }
-
     private Hotel getHotel2() {
         Hotel hotel2 = new Hotel();
         hotel2.setNombre("Monteverde Palace");
@@ -173,7 +162,6 @@ public class LocalDataLoader {
         hotel2.setEmail("reservas@monteverdepalace.com");
         return hotel2;
     }
-
     private Hotel getHotel() {
         Hotel hotel1 = new Hotel();
         hotel1.setNombre("Tresora Beach");
@@ -191,8 +179,8 @@ public class LocalDataLoader {
     Habitacion habitacion2;
     Habitacion habitacion3;
 
-
-    private void saveAllHabitaciones() {
+    private void saveAllHabitaciones()
+    {
         List<Habitacion> habitaciones = new ArrayList<>();
 
         habitacion = habitacion1();
@@ -205,7 +193,8 @@ public class LocalDataLoader {
         habitacionRepo.saveAll(habitaciones);
     }
 
-    private Habitacion habitacion1() {
+    private Habitacion habitacion1()
+    {
         Habitacion habitacion1 = new Habitacion();
         habitacion1.setIdHotel(hotel1);
         habitacion1.setIdProducto(producto);
@@ -216,7 +205,6 @@ public class LocalDataLoader {
         habitacion1.setEstadoOcupacion("Libre");
         return habitacion1;
     }
-
     private Habitacion habitacion2() {
         Habitacion habitacion2 = new Habitacion();
         habitacion2.setIdHotel(hotel2);
@@ -245,7 +233,8 @@ public class LocalDataLoader {
     private Producto producto2;
     private Producto producto3;
 
-    private Producto getProducto() {
+    private Producto getProducto()
+    {
         Producto producto = new Producto();
         producto.setIdHotel(hotel1.getId());
         producto.setIdCategoria(categoriaProducto);
@@ -284,7 +273,8 @@ public class LocalDataLoader {
         return producto;
     }
 
-    private void saveAllProductos() {
+    private void saveAllProductos()
+    {
         List<Producto> productos = new ArrayList<>();
         producto = getProducto();
         producto2 = getProducto2();
@@ -299,7 +289,8 @@ public class LocalDataLoader {
     private CategoriaProducto categoriaProducto2;
     private CategoriaProducto categoriaProducto3;
 
-    private CategoriaProducto getCategoriaProducto() {
+    private CategoriaProducto getCategoriaProducto()
+    {
         CategoriaProducto categoriaProducto = new CategoriaProducto();
         categoriaProducto.setNombre("Habitacion categoria 1");
         categoriaProducto.setDescripcion("Habitacion categoria 1 descripcion");
@@ -320,7 +311,8 @@ public class LocalDataLoader {
         return categoriaProducto;
     }
 
-    private void saveAllCategorias() {
+    private void saveAllCategorias()
+    {
         List<CategoriaProducto> categorias = new ArrayList<>();
         categoriaProducto = getCategoriaProducto();
         categoriaProducto2 = getCategoriaProducto2();
@@ -367,183 +359,6 @@ public class LocalDataLoader {
         usuarios.add(crearUsuario(rolLimpieza, hotel3, "Mateo", "Reyes", "mateo.reyes@limpieza.com", "limpieza3", "Hotel Playa, Piso 3", "624567890", LocalDate.of(1990, 1, 5), LocalDate.of(2023, 9, 20), true, "DNI998877"));
         usuarios.add(crearUsuario(rolAdmin, null, "Admin", "Principal", "admin@hoteles.com", "adminroot", "Oficina Central", "600000001", LocalDate.of(1975, 1, 1), LocalDate.of(2020, 1, 1), true, "ADM0001"));
         usuarios.add(crearUsuario(rolCliente, null, "Emma", "Lopez", "emma.lopez@mail.com", "emmalopez", "Calle Falsa 123, Zaragoza", "611112222", LocalDate.of(1995, 8, 23), LocalDate.of(2024, 4, 3), true, "23456789L"));
-
-    private void saveAllHabitaciones() {
-        List<Habitacion> habitaciones = new ArrayList<>();
-
-        habitacion = habitacion1();
-        habitacion2 = habitacion2();
-        habitacion3 = habitacion3();
-        habitaciones.add(habitacion);
-        habitaciones.add(habitacion2);
-        habitaciones.add(habitacion3);
-
-        habitacionRepo.saveAll(habitaciones);
-    }
-
-    private Habitacion habitacion1() {
-        Habitacion habitacion1 = new Habitacion();
-        habitacion1.setIdHotel(hotel1);
-        habitacion1.setIdProducto(producto);
-        habitacion1.setNumeroHabitacion(0);
-        habitacion1.setPiso(0);
-        habitacion1.setTipo("Individual");
-        habitacion1.setCapacidad(1);
-        habitacion1.setEstadoOcupacion("Libre");
-        return habitacion1;
-    }
-
-    private Habitacion habitacion2() {
-        Habitacion habitacion2 = new Habitacion();
-        habitacion2.setIdHotel(hotel2);
-        habitacion2.setIdProducto(producto2);
-        habitacion2.setNumeroHabitacion(101);
-        habitacion2.setPiso(1);
-        habitacion2.setTipo("Doble");
-        habitacion2.setCapacidad(2);
-        habitacion2.setEstadoOcupacion("Ocupado");
-        return habitacion2;
-    }
-
-    private Habitacion habitacion3() {
-        Habitacion habitacion3 = new Habitacion();
-        habitacion3.setIdHotel(hotel3);
-        habitacion3.setIdProducto(producto3);
-        habitacion3.setNumeroHabitacion(202);
-        habitacion3.setPiso(2);
-        habitacion3.setTipo("Suite");
-        habitacion3.setCapacidad(4);
-        habitacion3.setEstadoOcupacion("Libre");
-        return habitacion3;
-    }
-
-    private Producto producto;
-    private Producto producto2;
-    private Producto producto3;
-
-    private Producto getProducto() {
-        Producto producto = new Producto();
-        producto.setIdHotel(hotel1.getId());
-        producto.setIdCategoria(categoriaProducto);
-        producto.setNombre("Habitacion simple");
-        producto.setDescripcion("Habitacion simple bien guapa");
-        producto.setPrecioBase(11.0);
-        producto.setActivo(true);
-        producto.setFechaDesde(LocalDate.EPOCH);
-        producto.setFechaHasta(LocalDate.EPOCH);
-        return producto;
-    }
-
-    private Producto getProducto2() {
-        Producto producto = new Producto();
-        producto.setIdHotel(hotel2.getId());
-        producto.setIdCategoria(categoriaProducto2);
-        producto.setNombre("Suite de lujo");
-        producto.setDescripcion("Habitación con cama king size, jacuzzi y vistas al mar");
-        producto.setPrecioBase(323.0);
-        producto.setActivo(true);
-        producto.setFechaDesde(LocalDate.of(2025, 1, 1));
-        producto.setFechaHasta(LocalDate.of(2025, 12, 31));
-        return producto;
-    }
-
-    private Producto getProducto3() {
-        Producto producto = new Producto();
-        producto.setIdHotel(hotel3.getId());
-        producto.setIdCategoria(categoriaProducto3);
-        producto.setNombre("Habitación doble");
-        producto.setDescripcion("Habitación con dos camas individuales y baño privado");
-        producto.setPrecioBase(30.0);
-        producto.setActivo(true);
-        producto.setFechaDesde(LocalDate.of(2025, 6, 1));
-        producto.setFechaHasta(LocalDate.of(2025, 12, 31));
-        return producto;
-    }
-
-    private void saveAllProductos() {
-        List<Producto> productos = new ArrayList<>();
-        producto = getProducto();
-        producto2 = getProducto2();
-        producto3 = getProducto3();
-        productos.add(producto);
-        productos.add(producto2);
-        productos.add(producto3);
-        productoRepo.saveAll(productos);
-    }
-
-    private CategoriaProducto categoriaProducto;
-    private CategoriaProducto categoriaProducto2;
-    private CategoriaProducto categoriaProducto3;
-
-    private CategoriaProducto getCategoriaProducto() {
-        CategoriaProducto categoriaProducto = new CategoriaProducto();
-        categoriaProducto.setNombre("Habitacion categoria 1");
-        categoriaProducto.setDescripcion("Habitacion categoria 1 descripcion");
-        return categoriaProducto;
-    }
-
-    private CategoriaProducto getCategoriaProducto2() {
-        CategoriaProducto categoriaProducto = new CategoriaProducto();
-        categoriaProducto.setNombre("Habitación categoría 2");
-        categoriaProducto.setDescripcion("Habitación categoría 2 con más comodidades");
-        return categoriaProducto;
-    }
-
-    private CategoriaProducto getCategoriaProducto3() {
-        CategoriaProducto categoriaProducto = new CategoriaProducto();
-        categoriaProducto.setNombre("Habitación categoría lujo");
-        categoriaProducto.setDescripcion("Habitación de lujo con servicios exclusivos");
-        return categoriaProducto;
-    }
-
-    private void saveAllCategorias() {
-        List<CategoriaProducto> categorias = new ArrayList<>();
-        categoriaProducto = getCategoriaProducto();
-        categoriaProducto2 = getCategoriaProducto2();
-        categoriaProducto3 = getCategoriaProducto3();
-        categorias.add(categoriaProducto);
-        categorias.add(categoriaProducto2);
-        categorias.add(categoriaProducto3);
-        categoriaProductoRepo.saveAll(categorias);
-    }
-
-    /*---------------------------------------------------------------------------------------------------------------*/
-
-    private Rol rolCliente;
-    private Rol rolEmpleado;
-    private Rol rolLimpieza;
-    private Rol rolAdmin;
-
-    public void loadRoles() {
-        rolCliente = new Rol();
-        rolCliente.setNombreRol("cliente");
-
-        rolEmpleado = new Rol();
-        rolEmpleado.setNombreRol("empleado");
-
-        rolLimpieza = new Rol();
-        rolLimpieza.setNombreRol("limpieza");
-
-        rolAdmin = new Rol();
-        rolAdmin.setNombreRol("admin");
-
-        rolRepo.saveAll(Arrays.asList(rolCliente, rolEmpleado, rolLimpieza, rolAdmin));
-    }
-
-    public void loadUsuarios() {
-        log.info("Iniciando carga de usuarios ficticios...");
-        List<Usuario> usuarios = new ArrayList<>();
-        usuarios.add(crearUsuario(rolCliente, null, "Lucas", "Martínez", "lucas.martinez@mail.com", "pass1234", "Calle A, Madrid", "612345678", LocalDate.of(1985, 7, 12), LocalDate.of(2023, 5, 1), true, "12345678A"));
-        usuarios.add(crearUsuario(rolCliente, null, "Sophie", "Dupont", "sophie.dupont@mail.fr", "bonjour2023", "5 Rue Rivoli, Paris", "3312345678", LocalDate.of(1992, 3, 22), LocalDate.of(2024, 1, 15), true, "FR9876543"));
-        usuarios.add(crearUsuario(rolCliente, null, "Ahmed", "El-Sayed", "ahmed.sayed@mail.com", "egypt321", "Cairo Road 3, Cairo", "201234567890", LocalDate.of(1990, 12, 1), LocalDate.of(2023, 11, 2), true, "EGP223344"));
-        usuarios.add(crearUsuario(rolEmpleado, hotel1, "Marta", "Gómez", "marta.gomez@hotelciudad.com", "empleado1", "Hotel Ciudad, Madrid", "613456789", LocalDate.of(1988, 6, 5), LocalDate.of(2022, 3, 20), true, "78965432Z"));
-        usuarios.add(crearUsuario(rolEmpleado, hotel2, "Carlos", "Ruiz", "carlos.ruiz@hotelcampo.com", "empleado2", "Hotel Campo, Sevilla", "611234567", LocalDate.of(1991, 2, 10), LocalDate.of(2022, 6, 15), true, "15975362Y"));
-        usuarios.add(crearUsuario(rolLimpieza, hotel1, "Lola", "Fernández", "lola.fernandez@limpieza.com", "limpieza1", "Hotel Ciudad, Piso 1", "622334455", LocalDate.of(1978, 11, 11), LocalDate.of(2021, 1, 10), true, "ESL123456"));
-        usuarios.add(crearUsuario(rolLimpieza, hotel2, "Ana", "Torres", "ana.torres@limpieza.com", "limpieza2", "Hotel Campo, Piso 2", "623456789", LocalDate.of(1982, 4, 19), LocalDate.of(2022, 4, 1), true, "ESL654321"));
-        usuarios.add(crearUsuario(rolLimpieza, hotel3, "Mateo", "Reyes", "mateo.reyes@limpieza.com", "limpieza3", "Hotel Playa, Piso 3", "624567890", LocalDate.of(1990, 1, 5), LocalDate.of(2023, 9, 20), true, "DNI998877"));
-        usuarios.add(crearUsuario(rolAdmin, null, "Admin", "Principal", "admin@hoteles.com", "adminroot", "Oficina Central", "600000001", LocalDate.of(1975, 1, 1), LocalDate.of(2020, 1, 1), true, "ADM0001"));
-        usuarios.add(crearUsuario(rolCliente, null, "Emma", "Lopez", "emma.lopez@mail.com", "emmalopez", "Calle Falsa 123, Zaragoza", "611112222", LocalDate.of(1995, 8, 23), LocalDate.of(2024, 4, 3), true, "23456789L"));
-
 
         usuarioRepo.saveAll(usuarios);
         log.info("Usuarios cargados: {}", usuarios.size());
@@ -569,13 +384,13 @@ public class LocalDataLoader {
         return usuario;
     }
 
-/*-------------------------------------------------------------------------------------------------------------------*/
-public void loadReservas() {
-    log.info("Loading reservas ficticias...");
-    SaveAllReservas();
+    /*-------------------------------------------------------------------------------------------------------------------*/
+    public void loadReservas() {
+        log.info("Loading reservas ficticias...");
+        SaveAllReservas();
 
-    log.info("Reservas ficticias loaded");
-}
+        log.info("Reservas ficticias loaded");
+    }
 
     private Reserva reserva1;
     private Reserva reserva2;
@@ -633,6 +448,7 @@ public void loadReservas() {
         limpiezaHabitacion2 = getLimpiezaHabitacion2();
         limpiezas.add(limpiezaHabitacion1);
         limpiezas.add(limpiezaHabitacion2);
+
         limpiezaHabitacionesRepo.saveAll(limpiezas);
 
     }
@@ -703,9 +519,39 @@ public void loadReservas() {
         return contacto2;
     }
 
+    private Factura factura1;
 
+    public Factura getFactura1() {
+        Factura factura1 = new Factura();
+        factura1.setIdUsuario(usuarioRepo.getReferenceById(1));
+        factura1.setIdMetodoPago(metodoPago1);
+        factura1.setIdDetalle(7);
+        factura1.setIdHotel(hotel1);
+        factura1.setFechaEmision(LocalDate.of(2025, 8, 1));
+        factura1.setEstado("pendiente");
+        factura1.setObservaciones("todo correcto");
+        return factura1;
+    }
+
+    public void loadFacturas(){
+        factura1 = getFactura1();
+
+        log.info("Iniciando la carga de facturas ...");
+        facturaRepo.save(factura1);
+        log.info("Datos de facturas cargados");
+    }
+
+    private MetodoPago metodoPago1;
+
+    public MetodoPago getMetodoPago1(){
+        MetodoPago metodoPago1 = new MetodoPago();
+        metodoPago1.setNombre("Bizum");
+        metodoPago1.setDescripcion("El pago se ha realizado al bizum del hotel");
+        return metodoPago1;
+    }
 
 }
+
 
 
 
