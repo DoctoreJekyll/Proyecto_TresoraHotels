@@ -29,7 +29,7 @@ public class HotelFactoryImpl implements IFactoryProvider {
 
     @Override
     public List<Map<String, Object>> getRows() {
-        List<Hotel> hotels = hotelService.getHotels();
+        List<Hotel> hotels = hotelService.findAll();
         List<Map<String, Object>> rows = hotels.stream()
                 .map(hotel -> {
                     Map<String, Object> row = new LinkedHashMap<>();

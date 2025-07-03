@@ -36,11 +36,11 @@ public class ProductosController {
         List<CategoriaProducto> categoriaProducto = categoriaProductoService.findAll();
         model.addAttribute("categoriaProducto", categoriaProducto);
 
-        List<Hotel> hotel = hotelService.getHotels();
+        List<Hotel> hotel = hotelService.getRepo().findAll();
         model.addAttribute("hotel", hotel);
 
         model.addAttribute("categorias", categoriaProductoService.findAll());
-        model.addAttribute("hoteles", hotelService.getHotels());
+        model.addAttribute("hoteles", hotelService.findAll());
         return "productosForm";
     }
 
@@ -57,7 +57,7 @@ public class ProductosController {
 
         model.addAttribute("producto", producto);
         model.addAttribute("categorias", categoriaProductoService.findAll());
-        model.addAttribute("hoteles", hotelService.getHotels());
+        model.addAttribute("hoteles", hotelService.getRepo().findAll());
 
         return "productosForm";
     }
