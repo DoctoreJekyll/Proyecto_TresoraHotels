@@ -8,10 +8,7 @@ import com.atm.buenas_practicas_java.services.HotelService;
 import com.atm.buenas_practicas_java.services.ProductoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,7 +42,7 @@ public class ProductosController {
     }
 
     @PostMapping("/guardar")
-    public String guardarProducto(Producto producto) {
+    public String guardarProducto(@ModelAttribute Producto producto) {
         productoService.save(producto);
         return "redirect:/lista/productos";
     }
@@ -57,7 +54,7 @@ public class ProductosController {
 
         model.addAttribute("producto", producto);
         model.addAttribute("categorias", categoriaProductoService.findAll());
-        model.addAttribute("hoteles", hotelService.getRepo().findAll());
+        model.addAttribute("hoteles", hotelService.findAll());
 
         return "productosForm";
     }

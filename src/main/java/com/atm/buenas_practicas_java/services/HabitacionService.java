@@ -14,4 +14,8 @@ public class HabitacionService extends AbstractTemplateServicesEntities<Habitaci
     public HabitacionService(HabitacionRepo habitacionRepo) {
         super(habitacionRepo);
     }
+
+    public Optional<Habitacion> findByIdWithHotelAndProducto(Integer id) {
+        return getRepo().findByIdWithHotelAndProducto(id);
+    }
 }
