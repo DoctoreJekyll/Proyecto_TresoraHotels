@@ -15,4 +15,8 @@ public class ProductoService extends AbstractTemplateServicesEntities<Producto, 
         super(productoRepo);
     }
 
+    public Optional<Producto> findByIdWithCategoria(Integer id) {
+        return getRepo().findByIdWithCategoria(id);
+    }
+
 }

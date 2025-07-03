@@ -52,8 +52,13 @@ public class ProductosController {
 
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable Integer id, Model model) {
-        Producto producto = productoService.findById(id).orElseThrow();
+        Producto producto = productoService.findByIdWithCategoria(id).orElseThrow();
+
+
         model.addAttribute("producto", producto);
+        model.addAttribute("categorias", categoriaProductoService.findAll());
+        model.addAttribute("hoteles", hotelService.getHotels());
+
         return "productosForm";
     }
 
