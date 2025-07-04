@@ -44,6 +44,6 @@ public class MetodoPagoFactoryImpl implements IFactoryProvider {
 
     @Override
     public String getEntityName() {
-        return "metodoPago";
+        return "metodopago";
     }
 }
