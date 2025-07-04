@@ -1,5 +1,6 @@
-package com.atm.buenas_practicas_java.controllers.Factory;
+package com.atm.buenas_practicas_java.controllers.FactoryImpl;
 
+import com.atm.buenas_practicas_java.controllers.Factory.IFactoryProvider;
 import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.services.HotelService;
 import org.springframework.stereotype.Component;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class HotelFactoryImpl implements IFactoryProvider{
+public class HotelFactoryImpl implements IFactoryProvider {
 
     private final HotelService hotelService;
 
@@ -28,7 +29,7 @@ public class HotelFactoryImpl implements IFactoryProvider{
 
     @Override
     public List<Map<String, Object>> getRows() {
-        List<Hotel> hotels = hotelService.getHotels();
+        List<Hotel> hotels = hotelService.findAll();
         List<Map<String, Object>> rows = hotels.stream()
                 .map(hotel -> {
                     Map<String, Object> row = new LinkedHashMap<>();
