@@ -25,7 +25,7 @@ public class MetodoPagoFactoryImpl implements IFactoryProvider {
 
     @Override
     public List<String> getHeaders() {
-        return List.of("id, nombre, descripcion");
+        return List.of("id", "nombre", "descripcion");
     }
 
     @Override
