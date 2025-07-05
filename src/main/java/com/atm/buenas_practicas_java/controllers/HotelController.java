@@ -26,8 +26,4 @@ public class HotelController {
         model.addAttribute("hotels", hotels);
         return "home";
     }
-
-
-
-
 }

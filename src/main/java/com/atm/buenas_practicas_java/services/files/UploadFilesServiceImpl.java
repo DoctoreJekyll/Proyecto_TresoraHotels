@@ -11,12 +11,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-
+@Service
 public class UploadFilesServiceImpl implements IUploadFilesService {
     @Override
     public String handleFileUpload(MultipartFile file) {
         try{
-            String fileName = UUID.randomUUID().toString()+"."+file.getOriginalFilename();
+            String fileName = UUID.randomUUID().toString() + "." + file.getOriginalFilename();
             byte[] bytes = file.getBytes();
             String fileOriginalName = file.getOriginalFilename();
 
@@ -36,7 +36,7 @@ public class UploadFilesServiceImpl implements IUploadFilesService {
             String fileExtensionName = fileOriginalName.substring(fileOriginalName.lastIndexOf("."));
             String newFileName = fileName + fileExtensionName;
 
-            File folder = new File("src/main/resources/pictures");
+            File folder = new File("/opt/imagenes");
             if(!folder.exists()){
                 folder.mkdir();
             }
@@ -44,7 +44,7 @@ public class UploadFilesServiceImpl implements IUploadFilesService {
             Path path = Paths.get(folder.getPath() + "/" + newFileName);
             Files.write(path, bytes);
 
-            return "File uploaded successfully";
+            return newFileName;
 
         }catch(Exception e){
             e.printStackTrace();

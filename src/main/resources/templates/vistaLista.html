@@ -22,7 +22,13 @@
 			</thead>
 			<tbody>
 			<tr th:each="fila : ${filas}">
-				<td th:each="c : ${cabeceras}" th:text="${fila.get(c)}">Dato</td>
+				<td th:each="c : ${cabeceras}">
+					<span th:if="${c != 'imgURL'}" th:text="${fila.get(c)}">Dato</span>
+					<span th:if="${c == 'imgURL'}">
+					<img th:if="${fila.get(c)} != null" th:src="${fila.get(c)}"  alt="Imagen" style="max-height: 100px;" class="img-thumbnail" />
+					<span th:if="${fila.get(c)} == null">Sin imagen</span>
+					</span>
+				</td>
 				<td>
 					<a th:href="@{'/' + ${rutaEntidad} + '/editar/' + ${fila.get('id')}}"
 					   class="btn btn-sm btn-primary me-1">Editar</a>

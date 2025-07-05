@@ -19,9 +19,10 @@
                 <div class="col-lg-10">
                     <h2 class="mb-4 text-center" th:text="${habitacion.id} != null ? 'Editar Habitación' : 'Registrar Habitación'"></h2>
 
+                    <!-- ✅ enctype añadido -->
                     <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
                           th:action="@{/habitaciones/guardar}" method="post"
-                          th:object="${habitacion}">
+                          th:object="${habitacion}" enctype="multipart/form-data">
 
                         <p id="instrucciones-formulario" class="text-muted text-center">
                             Todos los campos marcados con * son obligatorios.
@@ -78,6 +79,22 @@
                             <div class="col-md-6">
                                 <label for="estadoOcupacion" class="form-label">Estado de Ocupación *</label>
                                 <input type="text" class="form-control" id="estadoOcupacion" th:field="*{estadoOcupacion}" maxlength="30" required />
+                            </div>
+                        </div>
+
+                        <!-- ✅ Campo imagen -->
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label for="imagen" class="form-label">Imagen de la habitación</label>
+                                <input type="file" class="form-control" id="imagen" name="imagen" accept=".jpg,.jpeg,.png" />
+                                <div class="form-text">Formatos permitidos: JPG, JPEG, PNG (máx. 5MB).</div>
+                            </div>
+
+                            <!-- ✅ Previsualización si ya existe imagen -->
+                            <div class="col-md-6" th:if="${habitacion.imagenUrl != null}">
+                                <label class="form-label">Imagen actual:</label><br />
+                                <img th:src="@{${habitacion.imagenUrl}}" alt="Imagen habitación"
+                                     class="img-thumbnail" style="max-height: 200px;" />
                             </div>
                         </div>
 
