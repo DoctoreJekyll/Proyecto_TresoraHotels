@@ -1,7 +1,6 @@
 package com.atm.buenas_practicas_java.controllers;
 
 import com.atm.buenas_practicas_java.entities.MetodoPago;
-import com.atm.buenas_practicas_java.services.CategoriaProductoService;
 import com.atm.buenas_practicas_java.services.MetodoPagoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,7 +36,7 @@ public class MetodoPagoController {
     }
 
     @GetMapping("/editar/{id}")
-    public String mostrarFormularioEditar(@PathVariable Integer id, Model model){
+    public String mostrarFormularioMetodosPagosEditar(@PathVariable Integer id, Model model){
         MetodoPago metodoPago = metodoPagoService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Método de pago no encontrado"));
         model.addAttribute("metodoPago", metodoPago);

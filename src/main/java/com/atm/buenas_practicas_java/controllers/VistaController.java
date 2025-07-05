@@ -30,3 +30,4 @@ public class VistaController {
         return "vistaLista";
     }
 }
+//Ahorramos html
