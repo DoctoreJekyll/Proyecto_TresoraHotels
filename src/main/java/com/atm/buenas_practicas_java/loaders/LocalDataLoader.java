@@ -204,6 +204,7 @@ public class LocalDataLoader {
         habitacion1.setTipo("Individual");
         habitacion1.setCapacidad(1);
         habitacion1.setEstadoOcupacion("Libre");
+        habitacion1.setImagenUrl("no image");
         return habitacion1;
     }
     private Habitacion habitacion2() {
@@ -215,6 +216,7 @@ public class LocalDataLoader {
         habitacion2.setTipo("Doble");
         habitacion2.setCapacidad(2);
         habitacion2.setEstadoOcupacion("Ocupado");
+        habitacion2.setImagenUrl("no image");
         return habitacion2;
     }
 
@@ -227,6 +229,7 @@ public class LocalDataLoader {
         habitacion3.setTipo("Suite");
         habitacion3.setCapacidad(4);
         habitacion3.setEstadoOcupacion("Libre");
+        habitacion3.setImagenUrl("no image");
         return habitacion3;
     }
 

@@ -22,7 +22,6 @@ public class Habitacion {
     private Hotel idHotel;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-
     @JoinColumn(name = "id_producto", nullable = false)
     private Producto idProducto;
 
@@ -40,6 +39,9 @@ public class Habitacion {
 
     @Column(name = "estado_ocupacion", nullable = false, length = 30)
     private String estadoOcupacion;
+
+    @Column(name = "imagenUrl", nullable = false, length = 300)
+    private String imagenUrl;
 
     @OneToMany(mappedBy = "idHabitacion")
     private Set<DetallesReserva> detallesReservas = new LinkedHashSet<>();

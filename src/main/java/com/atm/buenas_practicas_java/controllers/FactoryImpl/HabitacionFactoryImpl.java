@@ -25,7 +25,7 @@ public class HabitacionFactoryImpl implements IFactoryProvider {
 
     @Override
     public List<String> getHeaders() {
-        return List.of("id", "idHotel", "idProducto", "numeroHabitacion", "piso","tipo","capacidad","estado");
+        return List.of("id", "idHotel", "idProducto", "numeroHabitacion", "piso","tipo","capacidad","estado", "imagenUrl");
     }
 
     @Override
@@ -46,6 +46,7 @@ public class HabitacionFactoryImpl implements IFactoryProvider {
                     row.put("tipo", habitacion.getTipo());
                     row.put("capacidad", habitacion.getCapacidad());
                     row.put("estado", habitacion.getEstadoOcupacion());
+                    row.put("imagenUrl", habitacion.getImagenUrl());
                     return row;
                 }).toList();
 
