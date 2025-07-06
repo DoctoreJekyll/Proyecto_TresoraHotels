@@ -3,6 +3,7 @@ package com.atm.buenas_practicas_java.controllers;
 import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.entities.Producto;
+import com.atm.buenas_practicas_java.services.EmailService;
 import com.atm.buenas_practicas_java.services.HabitacionService;
 import com.atm.buenas_practicas_java.services.HotelService;
 import com.atm.buenas_practicas_java.services.ProductoService;
@@ -25,6 +26,8 @@ public class HabitacionesController {
     private final ProductoService productoService;
 
     private final IUploadFilesService  uploadFilesService;
+
+    private final EmailService emailService;
 
 
     @GetMapping("/nuevo")
@@ -52,6 +55,17 @@ public class HabitacionesController {
         }
 
         habitacionService.save(habitacion);
+
+
+        emailService.sendEmail(
+                "notificaciones@agestturnos.es",
+                "jarmar0805@gmail.com",
+                "Su habitacion",
+                "Esta es su habitacion " + habitacion.getNumeroHabitacion() + " Capacidad: " + habitacion.getCapacidad()
+        );
+
+        System.out.println("email sent");
+
         return "redirect:/lista/habitaciones";
     }
 
