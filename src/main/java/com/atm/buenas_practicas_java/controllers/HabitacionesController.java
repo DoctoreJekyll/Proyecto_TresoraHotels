@@ -56,7 +56,6 @@ public class HabitacionesController {
 
         habitacionService.save(habitacion);
 
-
         emailService.sendEmail(
                 "notificaciones@agestturnos.es",
                 "jarmar0805@gmail.com",
