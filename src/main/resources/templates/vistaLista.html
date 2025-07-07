@@ -6,18 +6,48 @@
 <body>
 <div layout:fragment="contenido">
 
-	<h1 th:text="${titulo}">Vista de Lista</h1>
-
 	<main>
-		<table class="table table-bordered align-middle">
-			<thead>
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<h1 th:text="${titulo}">Vista de Lista</h1>
+			<a th:href="@{'/' + ${rutaEntidad} + '/nuevo'}" class="btn btn-success" title="Añadir nuevo">
+				+ Añadir
+			</a>
+		</div>
+
+		<table class="table table-bordered align-middle text-center">
+			<thead class="table-dark">
 			<tr>
 				<th th:each="c : ${cabeceras}" th:text="${c}">Columna</th>
+				<th>Acciones</th>
 			</tr>
 			</thead>
 			<tbody>
 			<tr th:each="fila : ${filas}">
-				<td th:each="c : ${cabeceras}" th:text="${fila.get(c)}">Dato</td>
+				<td th:each="c : ${cabeceras}">
+					<div th:if="${#strings.toLowerCase(c).contains('imagen')}">
+						<img th:if="${fila.get(c)} != null"
+							 th:src="@{${fila.get(c)}}"
+							 alt="Imagen"
+							 style="max-height: 100px;" class="img-thumbnail" onerror="this.style.display='none'" />
+						<span th:if="${fila.get(c)} == null">Sin imagen</span>
+					</div>
+					<span th:if="${!#strings.toLowerCase(c).contains('imagen')}"
+						  th:text="${fila.get(c)}">Dato</span>
+				</td>
+
+				<td>
+					<a th:href="@{'/' + ${rutaEntidad} + '/editar/' + ${fila.get('id')}}"
+					   class="btn btn-sm btn-primary me-1">Editar</a>
+
+					<form th:action="@{'/' + ${rutaEntidad} + '/eliminar/' + ${fila.get('id')}}"
+						  method="post" style="display:inline">
+						<button type="submit"
+								class="btn btn-sm btn-danger"
+								onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">
+							Eliminar
+						</button>
+					</form>
+				</td>
 			</tr>
 			</tbody>
 		</table>

@@ -1,9 +1,8 @@
-package com.atm.buenas_practicas_java.controllers.Factory;
+package com.atm.buenas_practicas_java.controllers.FactoryImpl;
 
+import com.atm.buenas_practicas_java.controllers.Factory.IFactoryProvider;
 import com.atm.buenas_practicas_java.entities.CategoriaProducto;
-import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.services.CategoriaProductoService;
-import com.atm.buenas_practicas_java.services.HotelService;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
@@ -11,14 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class CategoriaFactoryImpl implements IFactoryProvider{
+public class CategoriaFactoryImpl implements IFactoryProvider {
 
     private final CategoriaProductoService categoriaProductoService;
 
     public CategoriaFactoryImpl(CategoriaProductoService categoriaProductoService) {
         this.categoriaProductoService = categoriaProductoService;
     }
-
 
     @Override
     public String getTitles() {
@@ -38,7 +36,7 @@ public class CategoriaFactoryImpl implements IFactoryProvider{
                     Map<String, Object> row = new LinkedHashMap<>();
                     row.put("id", categoriaProducto.getId());
                     row.put("nombre", categoriaProducto.getNombre());
-                    row.put("descripcion", categoriaProducto.getDescripcion());
+                    row.put("description", categoriaProducto.getDescripcion());
                     return row;
                 }).toList();
 

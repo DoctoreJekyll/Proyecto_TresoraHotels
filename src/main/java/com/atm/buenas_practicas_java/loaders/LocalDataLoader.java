@@ -49,7 +49,7 @@ public class LocalDataLoader {
     private final LimpiezaHabitacionesRepo  limpiezaHabitacionesRepo;
     private final ContactoRepo contactoRepo;
     private final FacturaRepo facturaRepo;
-
+    private final MetodoPagoRepo metodoPagoRepo;
 
     /**
      * Constructor de la clase {@code LocalDataLoader}.
@@ -104,6 +104,7 @@ public class LocalDataLoader {
         loadReservas();
         loadLimpiezaHabitaciones();
         loadContactos();
+        loadMetodoPago();
         loadFacturas();
     }
 
@@ -203,6 +204,7 @@ public class LocalDataLoader {
         habitacion1.setTipo("Individual");
         habitacion1.setCapacidad(1);
         habitacion1.setEstadoOcupacion("Libre");
+        habitacion1.setImagenUrl("no image");
         return habitacion1;
     }
     private Habitacion habitacion2() {
@@ -214,6 +216,7 @@ public class LocalDataLoader {
         habitacion2.setTipo("Doble");
         habitacion2.setCapacidad(2);
         habitacion2.setEstadoOcupacion("Ocupado");
+        habitacion2.setImagenUrl("no image");
         return habitacion2;
     }
 
@@ -226,6 +229,7 @@ public class LocalDataLoader {
         habitacion3.setTipo("Suite");
         habitacion3.setCapacidad(4);
         habitacion3.setEstadoOcupacion("Libre");
+        habitacion3.setImagenUrl("no image");
         return habitacion3;
     }
 
@@ -384,13 +388,13 @@ public class LocalDataLoader {
         return usuario;
     }
 
-    /*-------------------------------------------------------------------------------------------------------------------*/
-    public void loadReservas() {
-        log.info("Loading reservas ficticias...");
-        SaveAllReservas();
+/*-------------------------------------------------------------------------------------------------------------------*/
+public void loadReservas() {
+    log.info("Loading reservas ficticias...");
+    SaveAllReservas();
 
-        log.info("Reservas ficticias loaded");
-    }
+    log.info("Reservas ficticias loaded");
+}
 
     private Reserva reserva1;
     private Reserva reserva2;
@@ -544,14 +548,20 @@ public class LocalDataLoader {
     private MetodoPago metodoPago1;
 
     public MetodoPago getMetodoPago1(){
-        MetodoPago metodoPago1 = new MetodoPago();
+       MetodoPago metodoPago1 = new MetodoPago();
         metodoPago1.setNombre("Bizum");
         metodoPago1.setDescripcion("El pago se ha realizado al bizum del hotel");
         return metodoPago1;
     }
 
-}
+    public void loadMetodoPago(){
+        metodoPago1=getMetodoPago1();
 
+        log.info("Iniciando la carga de métodos de pago");
+        metodoPagoRepo.save(metodoPago1);
+        log.info("Datos de métodos de pago cargados :)");
+    }
+}
 
 
 
