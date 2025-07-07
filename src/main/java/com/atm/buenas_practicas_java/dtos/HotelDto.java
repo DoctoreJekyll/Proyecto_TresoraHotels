@@ -27,7 +27,6 @@ public class HotelDto {
         this.imgUrl = imgUrl;
         this.services = services;
         this.mapsURL = mapsURL;
-
     }
 
     @Override

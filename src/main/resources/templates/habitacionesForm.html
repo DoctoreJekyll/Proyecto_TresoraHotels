@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+<head>
+    <title>Formulario de Habitaciones - Hotel Gominola</title>
+    <link th:href="@{/css/contact.css}" rel="stylesheet" />
+</head>
+<body class="bg-gradient-primary">
+<main layout:fragment="contenido">
+    <section id="form-habitacion" class="contact-form-section" tabindex="0" aria-labelledby="titulo-habitacion">
+        <div class="container">
+            <h1 class="mb-4 text-center" id="titulo-habitacion">Formulario de Habitaciones</h1>
+            <p class="lead text-center">
+                Completa este formulario para registrar o editar una habitación.
+            </p>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h2 class="mb-4 text-center"
+                        th:text="${habitacion.id} != null ? 'Editar Habitación' : 'Registrar Habitación'"></h2>
+
+                    <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
+                          th:action="@{/habitaciones/guardar}" method="post"
+                          th:object="${habitacion}" enctype="multipart/form-data">
+
+                        <p id="instrucciones-formulario" class="text-muted text-center">
+                            Todos los campos marcados con * son obligatorios.
+                        </p>
+
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="idHotel" class="form-label">Hotel *</label>
+                                <select class="form-select" id="idHotel" th:field="*{idHotel}" required>
+                                    <option value="" disabled th:selected="*{idHotel == null}">Seleccione un hotel</option>
+                                    <option th:each="hotel : ${hoteles}"
+                                            th:value="${hotel.id}"
+                                            th:text="${hotel.nombre}">Hotel</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="idProducto" class="form-label">Producto *</label>
+                                <select class="form-select" id="idProducto" th:field="*{idProducto}" required>
+                                    <option value="" disabled th:selected="*{idProducto == null}">Seleccione un producto</option>
+                                    <option th:each="producto : ${productos}"
+                                            th:value="${producto.id}"
+                                            th:text="${producto.nombre}">Producto</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <label for="numeroHabitacion" class="form-label">Número de Habitación *</label>
+                                <input type="number" class="form-control" id="numeroHabitacion" th:field="*{numeroHabitacion}" min="1" required />
+                            </div>
+
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <label for="piso" class="form-label">Piso *</label>
+                                <input type="number" class="form-control" id="piso" th:field="*{piso}" min="0" required />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="tipo" class="form-label">Tipo *</label>
+                                <input type="text" class="form-control" id="tipo" th:field="*{tipo}" maxlength="25" required />
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="capacidad" class="form-label">Capacidad *</label>
+                                <input type="number" class="form-control" id="capacidad" th:field="*{capacidad}" min="1" required />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="estadoOcupacion" class="form-label">Estado de Ocupación *</label>
+                                <input type="text" class="form-control" id="estadoOcupacion" th:field="*{estadoOcupacion}" maxlength="30" required />
+                            </div>
+                        </div>
+
+                        <!-- ✅ Campo imagen -->
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label for="imagen" class="form-label">Imagen de la habitación</label>
+                                <input type="file" class="form-control" id="imagen" name="imagen" accept=".jpg,.jpeg,.png" />
+                                <div class="form-text">Formatos permitidos: JPG, JPEG, PNG (máx. 5MB).</div>
+                            </div>
+
+                            <!-- ✅ Previsualización si ya existe imagen -->
+                            <div class="col-md-6" th:if="${habitacion.imagenUrl != null}">
+                                <label class="form-label">Imagen actual:</label><br />
+                                <img th:src="@{${habitacion.imagenUrl}}" alt="Imagen habitación"
+                                     class="img-thumbnail" style="max-height: 200px;" onerror="this.style.display='none'" />
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary" aria-label="Guardar habitación">Guardar Habitación</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

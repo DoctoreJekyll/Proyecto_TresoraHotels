@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+<head>
+    <title>Informe de Limpieza - Hotel Gominola</title>
+    <link th:href="@{/css/contact.css}" rel="stylesheet" />
+</head>
+<body class="bg-gradient-primary">
+<main layout:fragment="contenido">
+    <section id="informe-limpieza" class="contact-form-section" tabindex="0" aria-labelledby="titulo-informe">
+        <div class="container">
+            <h1 class="mb-4 text-center" id="titulo-informe">Informe de Limpieza</h1>
+            <p class="lead text-center">
+                Completa este formulario para registrar la limpieza de una habitación.
+            </p>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h2 class="mb-4 text-center">Registrar Informe</h2>
+
+                    <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
+                          th:action="@{/informes/guardar}" method="post"
+                          th:object="${limpiezaHabitacion}">
+
+                        <p id="instrucciones-formulario" class="text-muted text-center">
+                            Todos los campos marcados con * son obligatorios.
+                        </p>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="usuario" class="form-label">Empleado *</label>
+                                <select class="form-select" id="usuario" th:field="*{idUsuario}" required aria-required="true">
+                                    <option value="" disabled
+                                            th:selected="*{idUsuario == null}">Seleccione un empleado</option>
+                                    <option th:each="usuario : ${usuarios}"
+                                            th:value="${usuario.id}"
+                                            th:text="${usuario.nombre}">Empleado</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="habitacion" class="form-label">Habitación *</label>
+                                <select class="form-select" id="habitacion" th:field="*{idHabitacion}" required aria-required="true">
+                                    <option value="" disabled
+                                            th:selected="*{idHabitacion == null}">Seleccione una habitación</option>
+                                    <option th:each="habitacion : ${habitaciones}"
+                                            th:value="${habitacion.id}"
+                                            th:text="'Hab. ' + ${habitacion.getTipo()} + ' - Piso ' + ${habitacion.piso}">Habitación</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="fecha" class="form-label">Fecha de Limpieza *</label>
+                                <input type="date" class="form-control" id="fecha" th:field="*{fechaLimpieza}" required />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="hora" class="form-label">Hora de Limpieza *</label>
+                                <input type="time" class="form-control" id="hora" th:field="*{horaLimpieza}" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="foto1" class="form-label">Foto 1 (URL o texto)</label>
+                            <input class="form-control" type="text" id="foto1" th:field="*{foto1}" placeholder="Introduce URL o texto" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="foto2" class="form-label">Foto 2 (URL o texto)</label>
+                            <input class="form-control" type="text" id="foto2" th:field="*{foto2}" placeholder="Introduce URL o texto" />
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn" aria-label="Registrar informe de limpieza">Registrar Informe</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
