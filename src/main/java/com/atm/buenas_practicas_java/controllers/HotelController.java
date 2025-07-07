@@ -22,7 +22,7 @@ public class HotelController {
 
     @GetMapping({"", "/"})
     public String mostrarHoteles(Model model) {
-        List<Hotel> hotels = hotelService.getHotels();
+        List<Hotel> hotels = hotelService.findAll();
         model.addAttribute("hotels", hotels);
         return "home";
     }
