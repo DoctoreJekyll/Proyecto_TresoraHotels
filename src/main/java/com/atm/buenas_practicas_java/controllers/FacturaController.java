@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/factura")
+@RequestMapping("/facturas")
 
 public class FacturaController {
 
@@ -52,7 +52,7 @@ public class FacturaController {
     @PostMapping("/guardar")
     public String guardarFactura(@ModelAttribute Factura factura) {
         facturaService.save(factura);
-        return "redirect:/lista/factura";
+        return "redirect:/lista/facturas";
     }
 
     @GetMapping("/editar/{id}")
@@ -60,12 +60,22 @@ public class FacturaController {
         Factura factura = facturaService.findByIdWithRelations(id)
                 .orElseThrow (()-> new RuntimeException("Factura no encontrada"));
         model.addAttribute("factura", factura);
+
+        List<Hotel> hoteles = hotelService.findAll();
+        model.addAttribute("hoteles", hoteles);
+
+        List<Usuario> usuarios = usuarioService.findAll();
+        model.addAttribute("usuarios", usuarios);
+
+        List<MetodoPago> metodoPagos = metodoPagoService.findAll();
+        model.addAttribute("metodosPagos", metodoPagos);
+
         return "facturaForm";
     }
 
     @PostMapping("/eliminar/{id}")
     public String eliminarFactura(@PathVariable Integer id) {
         facturaService.deleteById(id);
-        return "redirect:/lista/factura";
+        return "redirect:/lista/facturas";
     }
 }

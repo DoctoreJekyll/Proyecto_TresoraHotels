@@ -50,7 +50,7 @@ public class FacturaFactoryImpl implements IFactoryProvider {
 
     @Override
     public String getEntityName() {
-        return "factura";
+        return "facturas";
     }
 
 }

@@ -20,7 +20,7 @@
           <h2 class="mb-4 text-center">Registrar Factura</h2>
 
           <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
-                th:action="@{/factura/guardar}" method="post"
+                th:action="@{/facturas/guardar}" method="post"
                 th:object="${factura}">
 
             <input type="hidden" th:field="*{id}" />
@@ -74,7 +74,9 @@
             <div class="mb-4">
               <label for="fechaEmision" class="form-label">Fecha de Emisión *</label>
               <input type="date" class="form-control" id="fechaEmision"
-                     th:field="*{fechaEmision}" required aria-required="true" />
+                     name="fechaEmision"
+                     th:value="${#temporals.format(factura.fechaEmision, 'yyyy-MM-dd')}"
+                     required aria-required="true">
             </div>
 
             <!-- Estado -->
