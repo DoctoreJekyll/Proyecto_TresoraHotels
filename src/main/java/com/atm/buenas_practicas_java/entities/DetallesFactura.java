@@ -21,4 +21,5 @@ public class DetallesFactura {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_producto_usuario", nullable = false)
     private ProductosUsuario idProductoUsuario;
+
 }

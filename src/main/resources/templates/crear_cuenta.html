@@ -14,42 +14,31 @@
             <div class="col-md-6">
                 <div class="card shadow-lg p-4" style="background-color: #E0E0E0;">
                     <h2 class="text-center mb-4">CREAR CUENTA</h2>
-                    <form id="registroForm" th:action="@{/usuarios/crear-cuenta}" th:object="${userData}" method="post">
-
+                    <form id="registroForm">
                         <div class="mb-3">
                             <label for="nombre" class="form-label">NOMBRE</label>
-                            <input th:field="*{nombre}" type="text" class="form-control" id="nombre" required>
-                            <div th:if="${#fields.hasErrors('nombre')}" class="text-danger" th:errors="*{nombre}"></div>
+                            <input type="text" class="form-control" id="nombre" required>
                         </div>
-
                         <div class="mb-3">
                             <label for="apellidos" class="form-label">APELLIDOS</label>
-                            <input th:field="*{apellidos}" type="text" class="form-control" id="apellidos" required>
-                            <div th:if="${#fields.hasErrors('apellidos')}" class="text-danger" th:errors="*{apellidos}"></div>
+                            <input type="text" class="form-control" id="apellidos" required>
                         </div>
-
                         <div class="mb-3">
                             <label for="email" class="form-label">CORREO ELECTRÓNICO</label>
-                            <input th:field="*{email}" type="email" class="form-control" id="email" required>
-                            <div th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="*{email}"></div>
+                            <input type="email" class="form-control" id="email" required>
                         </div>
-
                         <div class="mb-3">
                             <label for="password" class="form-label">CONTRASEÑA</label>
-                            <input th:field="*{password}" type="password" class="form-control" id="password" required>
-                            <div th:if="${#fields.hasErrors('password')}" class="text-danger" th:errors="*{password}"></div>
+                            <input type="password" class="form-control" id="password" required>
                         </div>
-
                         <div class="mb-3">
                             <label for="confirmPassword" class="form-label">REPETIR CONTRASEÑA</label>
-                            <input th:field="*{confirmPassword}" type="password" class="form-control" id="confirmPassword" required>
-                            <div th:if="${#fields.hasErrors('confirmPassword')}" class="text-danger" th:errors="*{confirmPassword}"></div>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                            <div id="passwordMismatch" class="text-danger mt-2 d-none">⚠️ Las contraseñas no coinciden.</div>
                         </div>
-
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-grupo5">CREAR CUENTA</button>
+                            <button type="submit" class="btn btn-primary">CREAR CUENTA</button>
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -61,18 +50,13 @@
             <div class="modal-content text-dark" style="background-color: #E0E0E0;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalExitoLabel">Cuenta creada correctamente</h5>
-
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-
+                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
                     Siga las instrucciones del correo de confirmación para completar su perfil.
                 </div>
                 <div class="modal-footer">
-
-                    <button type="button" class="btn btn-outline-grupo5" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Cerrar</button>
-
                 </div>
             </div>
         </div>

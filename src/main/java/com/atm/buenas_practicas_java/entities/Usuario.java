@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -45,10 +46,11 @@ public class Usuario {
     @Column(name = "direccion", length = Integer.MAX_VALUE)
     private String direccion;
 
-    @Column(name = "telefono", nullable = false, length = 15)
+    @Column(name = "telefono", length = 15)
     private String telefono;
 
-    @Column(name = "fecha_nacimiento", nullable = false)
+    @Column(name = "fecha_nacimiento")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaNacimiento;
 
     @Column(name = "fecha_alta", nullable = false)
