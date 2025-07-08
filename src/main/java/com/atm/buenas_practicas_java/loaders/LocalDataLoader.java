@@ -502,7 +502,7 @@ public void loadReservas() {
         contacto1.setNombre("Ana Gómez");
         contacto1.setCorreo("ana.gomez@example.com");
         contacto1.setTelefono("123456789");
-        contacto1.setIdUsuario(null); // No está asociado a ningún usuario
+//        contacto1.setIdUsuario(null); // No está asociado a ningún usuario
         contacto1.setDepartamento("Habitaciones");
         contacto1.setMensaje("¿Habría posibilidad de llevar a mi mascota?");
         return contacto1;
@@ -513,7 +513,7 @@ public void loadReservas() {
         contacto2.setNombre("Carlos Ruiz");
         contacto2.setCorreo("carlos.ruiz@example.com");
         contacto2.setTelefono("987654321");
-        contacto2.setIdUsuario(null);
+//        contacto2.setIdUsuario(null);
         contacto2.setDepartamento("Habitaciones");
         contacto2.setMensaje("Me gustaría hablar con el departamento de reservas");
         return contacto2;

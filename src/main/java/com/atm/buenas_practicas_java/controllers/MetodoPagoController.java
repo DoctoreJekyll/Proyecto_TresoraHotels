@@ -18,34 +18,30 @@ public class MetodoPagoController {
         this.metodoPagoService = metodoPagoService;
     }
 
-
     @GetMapping("/nuevo")
-    public String mostrarFormularioMetodoPago(Model model)
-    {
+    public String mostrarFormularioMetodoPago(Model model) {
       MetodoPago metodoPago = new MetodoPago();
       model.addAttribute("metodoPago", metodoPago);
       return "metodoPagoForm";
-
     }
 
     @PostMapping("/guardar")
-    public String guardarMetodoPago(@ModelAttribute MetodoPago metodoPago)
-    {
+    public String guardarMetodoPago(@ModelAttribute MetodoPago metodoPago) {
         metodoPagoService.save(metodoPago);
         return "redirect:/lista/metodopago";
     }
 
     @GetMapping("/editar/{id}")
-    public String mostrarFormularioMetodosPagosEditar(@PathVariable Integer id, Model model){
+    public String mostrarFormularioMetodosPagosEditar(@PathVariable Integer id, Model model) {
         MetodoPago metodoPago = metodoPagoService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Método de pago no encontrado"));
         model.addAttribute("metodoPago", metodoPago);
         return "metodoPagoForm";
-
-        //       Optional<MetodoPago> metodoPago = metodoPagoService.findById(id);
+    }
+//        Optional<MetodoPago> metodoPago = metodoPagoService.findById(id);
 //        MetodoPago metodoPago1 = metodoPago.get();
 //        model.addAttribute("metodoPago", metodoPago1);
-    }
+
     @PostMapping("eliminar/{id}")
     public String eliminarMetodoPago (@PathVariable Integer id) {
         metodoPagoService.deleteById(id);
