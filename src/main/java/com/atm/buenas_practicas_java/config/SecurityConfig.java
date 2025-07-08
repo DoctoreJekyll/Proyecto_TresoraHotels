@@ -89,14 +89,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(Customizer.withDefaults()) // deshabilitado para pruebas o APIs
-                .httpBasic(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .failureUrl("/login-error")
+                        .defaultSuccessUrl("/",true)
+                        .permitAll())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/entities").permitAll()
                         .requestMatchers("/entities/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/hoteles").permitAll()
                         .requestMatchers("/css/*").permitAll()
                         .requestMatchers("/actuator/*").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/entidades/deleteHija/*").authenticated()
                         .anyRequest().authenticated()
                 );
