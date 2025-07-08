@@ -73,7 +73,7 @@
     <hr class="my-4">
 
     <div class="text-center">
-        <form th:action="@{/usuarios/eliminar}" method="post" th:object="${usuario}" onsubmit="return confirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.');">
+        <form th:action="@{/usuarios/eliminar}" method="post" th:object="${usuario}" onsubmit="return confirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer y perderás todas las facturas asociadas a tu perfil.');">
             <input type="hidden" th:field="*{id}" />
             <button type="submit" class="btn btn-outline-danger">Eliminar Cuenta</button>
         </form>
