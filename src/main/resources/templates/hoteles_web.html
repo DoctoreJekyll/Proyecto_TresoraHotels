@@ -170,7 +170,28 @@
         </div>
     </div>
 
+    <!-- Barra de reservas flotante -->
+    <nav id="bookingBar">
+        <select name="hotel" aria-label="Selecciona Hotel">
+            <option selected disabled>Seleccione Hotel</option>
+            <option>Hotel Playa</option>
+            <option>Hotel Centro</option>
+            <option>Hotel Montaña</option>
+        </select>
 
+        <input type="date" name="fechaEntrada" aria-label="Fecha Entrada" placeholder="Entrada">
+
+        <input type="date" name="fechaSalida" aria-label="Fecha Salida" placeholder="Salida">
+
+        <input type="text" name="habitacionesAdultos" placeholder="1 Hab / 2 Adultos" aria-label="Habitaciones y Adultos">
+
+        <button type="submit" aria-label="Buscar">Buscar</button>
+    </nav>
+
+    <!-- Botón para abrir/cerrar la barra -->
+    <button id="toggleBookingBtn" aria-expanded="true" aria-controls="bookingBar" title="Abrir/Cerrar barra reservas">
+        &#9776;
+    </button>
 
 </main>
 </body>
