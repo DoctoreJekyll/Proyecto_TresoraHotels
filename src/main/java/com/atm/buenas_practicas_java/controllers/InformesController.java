@@ -36,7 +36,7 @@ public class InformesController {
         model.addAttribute("limpiezaHabitacion", limpiezaHabitacion);
 
         List<Usuario> usuarios = new ArrayList<>();
-        usuarios = usuarioService.findAll();
+        usuarios = usuarioService.findAllEntities();
         model.addAttribute("usuarios", usuarios);
 
         List<Habitacion> habitaciones = new ArrayList<>();

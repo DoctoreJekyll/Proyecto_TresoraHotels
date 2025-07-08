@@ -39,7 +39,7 @@ public class FacturaController {
         List<Hotel> hoteles = hotelService.findAll();
         model.addAttribute("hoteles", hoteles);
 
-        List<Usuario> usuarios = usuarioService.findAll();
+        List<Usuario> usuarios = usuarioService.findAllEntities();
         model.addAttribute("usuarios", usuarios);
 
         List<MetodoPago> metodosPagos = metodoPagoService.findAll();
@@ -76,7 +76,7 @@ public class FacturaController {
         List<Hotel> hoteles = hotelService.findAll();
         model.addAttribute("hoteles", hoteles);
 
-        List<Usuario> usuarios = usuarioService.findAll();
+        List<Usuario> usuarios = usuarioService.findAllEntities();
         model.addAttribute("usuarios", usuarios);
 
         List<MetodoPago> metodoPagos = metodoPagoService.findAll();
