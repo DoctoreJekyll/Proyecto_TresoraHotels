@@ -70,12 +70,18 @@
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <label for="fechaDesde" class="form-label">Fecha Desde</label>
-                                <input type="date" class="form-control" id="fechaDesde" th:field="*{fechaDesde}" />
+                                <input type="date" class="form-control" id="fechaDesde"
+                                       name="fechaDesde"
+                                       th:value="${#temporals.format(producto.fechaDesde, 'yyyy-MM-dd')}"
+                                       required aria-required="true" />
                             </div>
 
                             <div class="col-md-6">
                                 <label for="fechaHasta" class="form-label">Fecha Hasta</label>
-                                <input type="date" class="form-control" id="fechaHasta" th:field="*{fechaHasta}" />
+                                <input type="date" class="form-control" id="fechaHasta"
+                                       name="fechaHasta"
+                                       th:value="${#temporals.format(producto.fechaHasta, 'yyyy-MM-dd')}"
+                                       required aria-required="true" />
                             </div>
                         </div>
 
