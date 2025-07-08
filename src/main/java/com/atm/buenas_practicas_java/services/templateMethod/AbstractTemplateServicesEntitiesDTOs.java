@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.*;
 
+@Getter
 public abstract class AbstractTemplateServicesEntitiesDTOs<
         ENT, DTO, ID,
         REPO extends JpaRepository<ENT, ID>,

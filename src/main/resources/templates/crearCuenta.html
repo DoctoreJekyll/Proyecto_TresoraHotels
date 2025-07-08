@@ -14,33 +14,42 @@
             <div class="col-md-6">
                 <div class="card shadow-lg p-4" style="background-color: #E0E0E0;">
                     <h2 class="text-center mb-4">CREAR CUENTA</h2>
-                    <form id="registroForm" th:action="@{/crear-cuenta}" th:object="${userData}" method="post">
+                    <form id="registroForm" th:action="@{/usuarios/crear-cuenta}" th:object="${userData}" method="post">
+
                         <div class="mb-3">
                             <label for="nombre" class="form-label">NOMBRE</label>
-                            <input th:field="${userData.name}" type="text" class="form-control" id="nombre" required>
+                            <input th:field="*{nombre}" type="text" class="form-control" id="nombre" required>
+                            <div th:if="${#fields.hasErrors('nombre')}" class="text-danger" th:errors="*{nombre}"></div>
                         </div>
+
                         <div class="mb-3">
                             <label for="apellidos" class="form-label">APELLIDOS</label>
-                            <input th:field="${userData.lastName}" type="text" class="form-control" id="apellidos" required>
+                            <input th:field="*{apellidos}" type="text" class="form-control" id="apellidos" required>
+                            <div th:if="${#fields.hasErrors('apellidos')}" class="text-danger" th:errors="*{apellidos}"></div>
                         </div>
+
                         <div class="mb-3">
                             <label for="email" class="form-label">CORREO ELECTRÓNICO</label>
-                            <input th:field="${userData.email}" type="email" class="form-control" id="email" required>
+                            <input th:field="*{email}" type="email" class="form-control" id="email" required>
+                            <div th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="*{email}"></div>
                         </div>
+
                         <div class="mb-3">
                             <label for="password" class="form-label">CONTRASEÑA</label>
-                            <input th:field="${userData.password}" type="password" class="form-control" id="password" required>
+                            <input th:field="*{password}" type="password" class="form-control" id="password" required>
+                            <div th:if="${#fields.hasErrors('password')}" class="text-danger" th:errors="*{password}"></div>
                         </div>
+
                         <div class="mb-3">
                             <label for="confirmPassword" class="form-label">REPETIR CONTRASEÑA</label>
-                            <input th:field="${userData.password}" type="password" class="form-control" id="confirmPassword" required>
-                            <div id="passwordMismatch" class="text-danger mt-2 d-none">⚠️ Las contraseñas no coinciden.</div>
+                            <input th:field="*{confirmPassword}" type="password" class="form-control" id="confirmPassword" required>
+                            <div th:if="${#fields.hasErrors('confirmPassword')}" class="text-danger" th:errors="*{confirmPassword}"></div>
                         </div>
+
                         <div class="d-grid">
-
                             <button type="submit" class="btn btn-grupo5">CREAR CUENTA</button>
-
                         </div>
+
                     </form>
                 </div>
             </div>
