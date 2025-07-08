@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+<head>
+  <title>Nueva Factura - Hotel Gominola</title>
+  <link th:href="@{/css/contact.css}" rel="stylesheet" />
+</head>
+<body class="bg-gradient-primary">
+<main layout:fragment="contenido">
+  <section id="formulario-factura" class="contact-form-section" tabindex="0" aria-labelledby="titulo-factura">
+    <div class="container">
+      <h1 class="mb-4 text-center" id="titulo-factura">Nueva Factura</h1>
+      <p class="lead text-center">
+        Completa el formulario para registrar una nueva factura.
+      </p>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <h2 class="mb-4 text-center">Registrar Factura</h2>
+
+          <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
+                th:action="@{/facturas/guardar}" method="post"
+                th:object="${factura}">
+
+            <input type="hidden" th:field="*{id}" />
+
+            <p id="instrucciones-formulario" class="text-muted text-center">
+              Todos los campos marcados con * son obligatorios.
+            </p>
+
+            <!-- Usuario -->
+            <div class="mb-4">
+              <label for="idUsuario" class="form-label">Usuario *</label>
+              <select class="form-select" id="idUsuario" th:field="*{idUsuario}" required aria-required="true">
+                <option value="" disabled selected>Seleccione un usuario</option>
+                <option th:each="usuario : ${usuarios}"
+                        th:value="${usuario.id}"
+                        th:text="${usuario.nombre}">Usuario</option>
+              </select>
+            </div>
+
+            <!-- Metodo de Pago -->
+            <div class="mb-4">
+              <label for="idMetodoPago" class="form-label">Método de Pago *</label>
+              <select class="form-select" id="idMetodoPago" th:field="*{idMetodoPago}" required aria-required="true">
+                <option value="" disabled selected>Seleccione un método</option>
+                <option th:each="metodo : ${metodosPagos}"
+                        th:value="${metodo.id}"
+                        th:text="${metodo.nombre}">Método</option>
+              </select>
+            </div>
+
+            <!-- Hotel -->
+            <div class="mb-4">
+              <label for="idHotel" class="form-label">Hotel *</label>
+              <select class="form-select" id="idHotel" th:field="*{idHotel}" required aria-required="true">
+                <option value="" disabled selected>Seleccione un hotel</option>
+                <option th:each="hotel : ${hoteles}"
+                        th:value="${hotel.id}"
+                        th:text="${hotel.nombre}">Hotel</option>
+              </select>
+            </div>
+
+            <!-- ID Detalle -->
+            <div class="mb-4">
+              <label for="idDetalle" class="form-label">ID Detalle *</label>
+              <input type="number" class="form-control" id="idDetalle"
+                     th:field="*{idDetalle}" required aria-required="true"
+                     placeholder="Ingrese el ID del detalle relacionado" />
+            </div>
+
+            <!-- Fecha de Emisión -->
+            <div class="mb-4">
+              <label for="fechaEmision" class="form-label">Fecha de Emisión *</label>
+              <input type="date" class="form-control" id="fechaEmision"
+                     name="fechaEmision"
+                     th:value="${#temporals.format(factura.fechaEmision, 'yyyy-MM-dd')}"
+                     required aria-required="true">
+            </div>
+
+            <!-- Estado -->
+            <div class="mb-4">
+              <label for="estado" class="form-label">Estado *</label>
+              <input type="text" class="form-control" id="estado"
+                     th:field="*{estado}" required aria-required="true"
+                     maxlength="255"
+                     placeholder="Ingrese el estado de la factura (Ej: Pagada, Pendiente)" />
+            </div>
+
+            <!-- Observaciones -->
+            <div class="mb-4">
+              <label for="observaciones" class="form-label">Observaciones</label>
+              <textarea class="form-control" id="observaciones"
+                        th:field="*{observaciones}" rows="3" maxlength="80"
+                        placeholder="Observaciones adicionales (opcional)"></textarea>
+            </div>
+
+            <!-- Botón -->
+            <div class="text-center">
+              <button type="submit" class="btn" aria-label="Registrar factura">Registrar Factura</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
