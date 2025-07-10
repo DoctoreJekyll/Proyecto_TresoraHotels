@@ -45,7 +45,7 @@ public class HabitacionFactoryImpl implements IFactoryProvider {
                     row.put("piso", habitacion.getPiso());
                     row.put("tipo", habitacion.getTipo());
                     row.put("capacidad", habitacion.getCapacidad());
-                    row.put("estado", habitacion.getEstadoOcupacion());
+                    row.put("estado", habitacion.getOcupada());
                     row.put("imagenUrl", habitacion.getImagenUrl());
                     return row;
                 }).toList();

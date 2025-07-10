@@ -37,8 +37,8 @@ public class Habitacion {
     @Column(name = "capacidad", nullable = false)
     private Integer capacidad;
 
-    @Column(name = "estado_ocupacion", nullable = false, length = 30)
-    private String estadoOcupacion;
+    @Column(name = "ocupada", nullable = false, length = 30)
+    private Boolean ocupada;
 
     @Column(name = "imagenUrl", nullable = false, length = 300)
     private String imagenUrl;

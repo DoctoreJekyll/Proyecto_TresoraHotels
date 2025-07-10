@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -13,5 +14,7 @@ public interface ProductoRepo extends JpaRepository<Producto, Integer> {
 
     @Query("SELECT p FROM Producto p LEFT JOIN FETCH p.idCategoria WHERE p.id = :id")
     Optional<Producto> findByIdWithCategoria(@Param("id") Integer id);
+
+    List<Producto> findAllByActivoTrue();
 
 }
