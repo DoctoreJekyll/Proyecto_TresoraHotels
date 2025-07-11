@@ -8,10 +8,10 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class ProductoFormularioDTO {
-    private Integer idProducto;
+public class ProductoConfirmadoDTO {
+    private String nombre;
     private Integer cantidad;
     private LocalDate fecha;
     private Integer descuento;
-    private CategoriaProducto categoria;
+    private Integer categoria;
 }

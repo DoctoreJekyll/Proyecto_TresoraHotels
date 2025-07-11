@@ -19,11 +19,11 @@ public class Habitacion {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_hotel", nullable = false)
-    private Hotel idHotel;
+    private Hotel hotel;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_producto", nullable = false)
-    private Producto idProducto;
+    private Producto producto;
 
     @Column(name = "numero_habitacion", nullable = false)
     private Integer numeroHabitacion;

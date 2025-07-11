@@ -37,8 +37,11 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         this.emailService = emailService;
     }
 
-    public Reserva crearReservaConProductos(ReservaRapidaDTO dto) {
+    public Habitacion obtenerHotelPorHabitacionId(Integer idHabitacion) {
+        return habitacionRepository.findHabitacionConHotel(idHabitacion);
+    }
 
+    public Reserva crearReservaConProductos(ReservaRapidaDTO dto) {
         // 1. Buscar o crear el usuario
         Usuario usuario = usuarioRepository.findByEmail(dto.getEmail())
                 .orElseGet(() -> {
@@ -58,6 +61,10 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         Habitacion habitacion = habitacionRepository.findById(dto.getIdHabitacion())
                 .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
 
+        // Obtener hotel sin cargar toda la habitacion
+        Habitacion hotelPorHabitacionId = obtenerHotelPorHabitacionId(dto.getIdHabitacion());
+        dto.setHotel(hotelPorHabitacionId.getHotel().getId());
+
         // 3. Crear la reserva
         Reserva reserva = new Reserva();
         reserva.setIdUsuario(usuario);
@@ -74,26 +81,29 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
             Set<ProductosUsuario> productosUsuarios = new LinkedHashSet<>();
 
             for (ProductoFormularioDTO p : dto.getProductos()) {
-                if (p.getIdProducto() == null) continue; // ⛔ ignora productos no seleccionados
+                if (p.getIdProducto() == null) continue;
 
                 Producto producto = productoRepository.findById(p.getIdProducto())
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
-                ProductosUsuario pu = new ProductosUsuario();
-                pu.setIdProducto(producto);
-                pu.setIdUsuario(usuario);
-                pu.setIdReserva(reserva);
-                pu.setCantidad(p.getCantidad());
-                pu.setFecha(p.getFecha());
-                pu.setDescuento(p.getDescuento());
-                pu.setFacturado(false);
+                // FILTRAR POR CATEGORÍA DESDE LA ENTIDAD, NO EL DTO
+                if (producto.getIdCategoria().getId() == 2) {
+                    ProductosUsuario pu = new ProductosUsuario();
+                    pu.setIdProducto(producto);
+                    pu.setIdUsuario(usuario);
+                    pu.setIdReserva(reserva);
+                    pu.setCantidad(p.getCantidad());
+                    pu.setFecha(p.getFecha());
+                    pu.setDescuento(p.getDescuento());
+                    pu.setFacturado(false);
 
-                productosUsuarios.add(pu);
+                    productosUsuarios.add(pu);
+                }
             }
-
-
             reserva.setProductosUsuarios(productosUsuarios);
         }
+
+        //sendEmail(usuario);
 
         return this.save(reserva);
     }

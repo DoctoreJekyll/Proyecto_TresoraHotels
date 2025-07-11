@@ -36,10 +36,10 @@ public class HabitacionFactoryImpl implements IFactoryProvider {
                     Map<String, Object> row = new LinkedHashMap<>();
                     row.put("id", habitacion.getId());
                     System.out.println(habitacion.getId());
-                    row.put("idHotel", habitacion.getIdHotel().getId());
-                    System.out.println(habitacion.getIdHotel().getId());
-                    row.put("idProducto", habitacion.getIdProducto().getId());
-                    System.out.println(habitacion.getIdProducto().getId());
+                    row.put("idHotel", habitacion.getHotel().getId());
+                    System.out.println(habitacion.getHotel().getId());
+                    row.put("idProducto", habitacion.getProducto().getId());
+                    System.out.println(habitacion.getProducto().getId());
                     row.put("numeroHabitacion", habitacion.getNumeroHabitacion());
                     System.out.println(habitacion.getNumeroHabitacion());
                     row.put("piso", habitacion.getPiso());

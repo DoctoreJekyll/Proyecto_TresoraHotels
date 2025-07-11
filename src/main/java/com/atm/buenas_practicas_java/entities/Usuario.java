@@ -10,7 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -60,7 +59,7 @@ public class Usuario {
     private LocalDate fechaAlta;
 
     @PrePersist
-    void placedAt(){
+    void alta(){
         this.fechaAlta = Instant.now().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 

@@ -18,6 +18,9 @@
 
                 <p class="card-text mb-4">Complete los campos para reservar su estancia. Todos los campos son obligatorios.</p>
 
+                <!-- Campo oculto Hotel (id) -->
+                <input type="hidden" th:field="*{hotel}" id="hotel" />
+
                 <!-- Nombre -->
                 <div class="form-group mb-4">
                     <label for="nombre">Nombre</label>
@@ -30,13 +33,22 @@
                     <input type="email" th:field="*{email}" id="email" class="form-control" required />
                 </div>
 
-                <!-- Habitación -->
+                <!-- Habitación (agrupada por hotel) -->
                 <div class="form-group mb-4">
                     <label for="idHabitacion">Habitación</label>
                     <select th:field="*{idHabitacion}" id="idHabitacion" class="form-control" required>
-                        <option th:each="habitacion : ${habitaciones}"
-                                th:value="${habitacion.id}"
-                                th:text="${habitacion.getTipo()}">Habitación</option>
+                        <option value="" disabled selected>Seleccione habitación</option>
+
+                        <!-- Agrupar por hotel -->
+                        <th:block th:each="entry : ${habitacionesPorHotel}">
+                            <optgroup th:label="${entry.key.nombre}">
+                                <option th:each="habitacion : ${entry.value}"
+                                        th:value="${habitacion.id}"
+                                        th:text="${habitacion.tipo + ' - N° ' + habitacion.numeroHabitacion}"
+                                        th:attr="data-hotel-id=${habitacion.hotel.id}">
+                                </option>
+                            </optgroup>
+                        </th:block>
                     </select>
                 </div>
 
@@ -69,7 +81,6 @@
                     <p class="services-label mb-2">Servicios adicionales:</p>
 
                     <div th:each="producto, iterStat : ${productos}" class="checkbox-group mb-3">
-                        <!-- Checkbox -->
                         <div class="form-check mb-2">
                             <input type="checkbox"
                                    th:id="'producto_' + ${iterStat.index}"
@@ -82,25 +93,22 @@
                                    class="form-check-label"></label>
                         </div>
 
-                        <!-- Cantidad -->
                         <input type="number"
                                th:name="'productos[' + ${iterStat.index} + '].cantidad'"
                                placeholder="Cantidad"
                                class="form-control mb-1"
-                               style="max-width: 100px;" min="1" />
+                               style="max-width: 100px;" min="1" disabled />
 
-                        <!-- Fecha -->
                         <input type="date"
                                th:name="'productos[' + ${iterStat.index} + '].fecha'"
                                class="form-control mb-1"
-                               style="max-width: 200px;" />
+                               style="max-width: 200px;" disabled />
 
-                        <!-- Descuento -->
                         <input type="number"
                                th:name="'productos[' + ${iterStat.index} + '].descuento'"
                                placeholder="% desc"
                                class="form-control mb-3"
-                               style="max-width: 100px;" min="0" max="100" />
+                               style="max-width: 100px;" min="0" max="100" disabled />
                     </div>
                 </div>
 
@@ -113,18 +121,38 @@
     </div>
 </main>
 
-<!-- JS para deshabilitar campos si checkbox no está marcado -->
+<!-- JS para sincronizar hotel según habitación y habilitar inputs productos -->
 <script th:inline="javascript">
     /*<![CDATA[*/
     document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll('.checkbox-group').forEach(function (group) {
+        const habitacionSelect = document.getElementById('idHabitacion');
+        const hotelInput = document.getElementById('hotel');
+
+        const actualizarHotel = () => {
+            const selectedOption = habitacionSelect.options[habitacionSelect.selectedIndex];
+            const hotelId = selectedOption ? selectedOption.getAttribute('data-hotel-id') : '';
+            hotelInput.value = hotelId || '';
+        };
+
+        habitacionSelect.addEventListener('change', actualizarHotel);
+        actualizarHotel();
+
+        // Control para activar/desactivar inputs relacionados con productos opcionales
+        document.querySelectorAll('.checkbox-group').forEach(function (group, index) {
             const checkbox = group.querySelector('input[type="checkbox"]');
             const inputs = group.querySelectorAll('input[type="number"], input[type="date"]');
+
             const toggleInputs = () => {
-                inputs.forEach(i => i.disabled = !checkbox.checked);
+                const checked = checkbox.checked;
+                console.log(`Producto #${index} checkbox está ${checked ? 'marcado' : 'desmarcado'}`);
+                inputs.forEach(i => i.disabled = !checked);
             };
+
+            // Escuchar cambios en el checkbox
             checkbox.addEventListener('change', toggleInputs);
-            toggleInputs(); // Inicialización
+
+            // Ejecutar una vez al cargar para establecer el estado correcto
+            toggleInputs();
         });
     });
     /*]]>*/

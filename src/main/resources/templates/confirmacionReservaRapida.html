@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+
+<head>
+    <title>Confirmación de Reserva</title>
+</head>
+
+<body class="bg-gradient-primary">
+
+<main layout:fragment="contenido" id="main-content" class="main-container" role="main" aria-labelledby="confirmation-title">
+    <div class="center-wrapper" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; width: 100%;">
+        <div class="card form-card" style="max-width: 640px; width: 100%; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <h1 id="confirmation-title" class="card-title text-center">¡Reserva Confirmada!</h1>
+
+            <p class="card-text text-center mt-3 mb-4">Gracias por reservar con nosotros. Aquí tienes los detalles:</p>
+
+            <!-- Datos del huésped -->
+            <div class="mb-4">
+                <h4 class="mb-2">Datos del huésped</h4>
+                <p><strong>ID de reserva:</strong> <span th:text="${reservaConfirmada.idReserva}">#</span></p>
+                <p><strong>Nombre:</strong> <span th:text="${reservaConfirmada.nombre}">Nombre</span></p>
+                <p><strong>Email:</strong> <span th:text="${reservaConfirmada.email}">Email</span></p>
+                <p><strong>Número de huéspedes:</strong> <span th:text="${reservaConfirmada.pax}">2</span></p>
+                <p><strong>Comentarios:</strong> <span th:text="${reservaConfirmada.comentarios} ?: 'Sin comentarios'">-</span></p>
+            </div>
+
+            <!-- Detalles de la estancia -->
+            <div class="mb-4">
+                <h4 class="mb-2">Detalles de la estancia</h4>
+                <p><strong>Habitación:</strong> <span th:text="${reservaConfirmada.habitacion}">Doble</span></p>
+                <p><strong>Fecha de entrada:</strong> <span th:text="${reservaConfirmada.fechaEntrada}">2025-07-10</span></p>
+                <p><strong>Fecha de salida:</strong> <span th:text="${reservaConfirmada.fechaSalida}">2025-07-12</span></p>
+            </div>
+
+            <!-- Productos -->
+            <div class="mb-4" th:if="${#lists.size(reservaConfirmada.productos) > 0}">
+                <h4 class="mb-2">Servicios Adicionales</h4>
+                <table class="table table-sm table-striped">
+                    <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Cantidad</th>
+                        <th>Fecha</th>
+                        <th>Descuento</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="prod : ${reservaConfirmada.productos}">
+                        <td th:text="${prod.nombre}">Producto</td>
+                        <td th:text="${prod.categoria}">Categoría</td>
+                        <td th:text="${prod.cantidad}">1</td>
+                        <td th:text="${prod.fecha}">2025-07-11</td>
+                        <td th:text="${prod.descuento + '%'}">10%</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center mt-4">
+                <a th:href="@{/}" class="btn btn-outline-light">Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

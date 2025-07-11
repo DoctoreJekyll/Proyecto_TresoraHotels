@@ -8,17 +8,16 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ReservaRapidaDTO {
-    private Integer hotel;
-    private String nombre; // si no estás logueado
+public class ConfirmacionReservaDTO {
+    private Integer idReserva;
+    private String nombre;
     private String email;
-    private Integer idHabitacion;
+    private String habitacion;
     private LocalDate fechaEntrada;
     private LocalDate fechaSalida;
     private Integer pax;
     private String comentarios;
 
-    // Productos contratados desde el formulario (opcional)
-    private List<ProductoFormularioDTO> productos;
-
+    // Servicios adicionales seleccionados
+    private List<ProductoConfirmadoDTO> productos;
 }

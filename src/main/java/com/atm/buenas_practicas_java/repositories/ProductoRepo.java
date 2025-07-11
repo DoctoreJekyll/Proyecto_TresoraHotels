@@ -17,4 +17,5 @@ public interface ProductoRepo extends JpaRepository<Producto, Integer> {
 
     List<Producto> findAllByActivoTrue();
 
+    List<Producto> findAllByActivoTrueAndIdCategoria_Id(Integer idCategoria);
 }
