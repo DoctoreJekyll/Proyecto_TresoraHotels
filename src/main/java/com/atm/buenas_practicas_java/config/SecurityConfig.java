@@ -1,6 +1,9 @@
 package com.atm.buenas_practicas_java.config;
 
 import com.atm.buenas_practicas_java.services.CustomUserDetailsService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -10,10 +13,15 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 /**
  * Clase de configuración de seguridad para la aplicación.
@@ -34,6 +42,32 @@ public class SecurityConfig {
 
     public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
+    }
+
+    @Component
+    public static class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            Authentication authentication) throws IOException, ServletException {
+            var authorities = authentication.getAuthorities();
+
+            boolean isCliente = authorities.stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"));
+            boolean isAdminEmpLimpieza = authorities.stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")
+                            || a.getAuthority().equals("ROLE_EMPLEADO")
+                            || a.getAuthority().equals("ROLE_LIMPIEZA"));
+
+            if (isCliente) {
+                response.sendRedirect("/userhome");
+            } else if (isAdminEmpLimpieza) {
+                response.sendRedirect("/panel");
+            } else {
+                response.sendRedirect("/login?error");
+            }
+        }
     }
 
 
@@ -93,14 +127,14 @@ public class SecurityConfig {
      * @Author No se especificó autor.
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationSuccessHandler successHandler) throws Exception {
         http
                 .csrf(Customizer.withDefaults()) // deshabilitado para pruebas o APIs
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .usernameParameter("email")     // ← Aquí el cambio importante
+                        .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/panel", true)
+                        .successHandler(successHandler)
                         .failureUrl("/login-error")
                         .permitAll())
                 .logout(logout -> logout
