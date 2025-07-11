@@ -39,37 +39,12 @@ import java.io.IOException;
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
+    private final CustomAuthenticationSuccessHandler successHandler;
 
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, CustomAuthenticationSuccessHandler successHandler) {
         this.customUserDetailsService = customUserDetailsService;
+        this.successHandler = successHandler;
     }
-
-    @Component
-    public static class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-
-        @Override
-        public void onAuthenticationSuccess(HttpServletRequest request,
-                                            HttpServletResponse response,
-                                            Authentication authentication) throws IOException, ServletException {
-            var authorities = authentication.getAuthorities();
-
-            boolean isCliente = authorities.stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"));
-            boolean isAdminEmpLimpieza = authorities.stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")
-                            || a.getAuthority().equals("ROLE_EMPLEADO")
-                            || a.getAuthority().equals("ROLE_LIMPIEZA"));
-
-            if (isCliente) {
-                response.sendRedirect("/userhome");
-            } else if (isAdminEmpLimpieza) {
-                response.sendRedirect("/panel");
-            } else {
-                response.sendRedirect("/login?error");
-            }
-        }
-    }
-
 
 //    private final Environment environment;
 //
