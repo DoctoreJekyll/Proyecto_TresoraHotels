@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{/layout/plantilla}">
 <head>
 
@@ -44,6 +44,13 @@
                             <label for="confirmPassword" class="form-label">REPETIR CONTRASEÑA</label>
                             <input th:field="*{confirmPassword}" type="password" class="form-control" id="confirmPassword" required>
                             <div th:if="${#fields.hasErrors('confirmPassword')}" class="text-danger" th:errors="*{confirmPassword}"></div>
+                        </div>
+
+                        <div class="mb-3" sec:authorize="hasRole('ADMIN')">
+                            <label for="rol" class="form-label">ROL</label>
+                            <select class="form-select" id="rol" name="rolId" required>
+                                <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombreRol}">Rol</option>
+                            </select>
                         </div>
 
                         <div class="d-grid">

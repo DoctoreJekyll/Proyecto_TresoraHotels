@@ -1,5 +1,6 @@
 package com.atm.buenas_practicas_java.config;
 
+import com.atm.buenas_practicas_java.services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -29,12 +30,18 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CustomUserDetailsService customUserDetailsService;
 
-    private final Environment environment;
-
-    public SecurityConfig(Environment environment) {
-        this.environment = environment;
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+        this.customUserDetailsService = customUserDetailsService;
     }
+
+
+//    private final Environment environment;
+//
+//    public SecurityConfig(Environment environment) {
+//        this.environment = environment;
+//    }
 
 
     /**
@@ -50,18 +57,18 @@ public class SecurityConfig {
      *
      * @Author No se especificó autor.
      */
-    @Bean
-    public UserDetailsService userDetailsService() {
-        String name = environment.getProperty("spring.security.user.name", "user");
-        String password = environment.getProperty("spring.security.user.password", "password");
-
-        var user = User.withUsername(name)
-                .password("{noop}" + password) // {noop} indica que no se usa encoder para simplificar (solo pruebas)
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(user);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        String name = environment.getProperty("spring.security.user.name", "user@hoteles.com");
+//        String password = environment.getProperty("spring.security.user.password", "password");
+//
+//        var user = User.withUsername(name)
+//                .password("{noop}" + password) // {noop} indica que no se usa encoder para simplificar (solo pruebas)
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user);
+//    }
 
     /**
      * Configura una cadena de filtros de seguridad para gestionar la seguridad HTTP de la aplicación.
@@ -91,19 +98,30 @@ public class SecurityConfig {
                 .csrf(Customizer.withDefaults()) // deshabilitado para pruebas o APIs
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .usernameParameter("email")     // ← Aquí el cambio importante
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/panel", true)
                         .failureUrl("/login-error")
-                        .defaultSuccessUrl("/",true)
                         .permitAll())
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/entities").permitAll()
-                        .requestMatchers("/entities/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/hoteles").permitAll()
-                        .requestMatchers("/css/*").permitAll()
-                        .requestMatchers("/actuator/*").permitAll()
-                        .requestMatchers("/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/entidades/deleteHija/*").authenticated()
-                        .anyRequest().authenticated()
-                );
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout").permitAll())
+                .authorizeHttpRequests(auth -> auth
+                        // Recursos públicos
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/login", "/login-error", "/usuarios/crear-cuenta").permitAll()
+
+                        // Rutas específicas por rol
+                        .requestMatchers("/panel").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")
+                        .requestMatchers("/lista/usuarios").hasAnyRole("ADMIN", "EMPLEADO")
+                        .requestMatchers("/lista/facturas").hasAnyRole("ADMIN", "EMPLEADO")
+                        .requestMatchers("/lista/reservas").hasAnyRole("ADMIN", "EMPLEADO")
+                        .requestMatchers("/lista/informes").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")
+                        .requestMatchers("/lista/habitaciones", "/lista/productos", "/lista/metodopago", "/lista/categorias").hasRole("ADMIN")
+
+
+                        // Cualquier otra ruta requiere autenticación
+                        .anyRequest().authenticated());
 
         return http.build();
     }

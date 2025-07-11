@@ -7,12 +7,15 @@ import com.atm.buenas_practicas_java.services.RolService;
 import com.atm.buenas_practicas_java.services.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Controller
@@ -26,11 +29,18 @@ public class UsuarioController {
     @GetMapping("/crear-cuenta")
     public String mostrarFormularioRegistro(Model model) {
         model.addAttribute("userData", new UsuarioDTO());
+        // Si el usuario es ADMIN, añadimos los roles al modelo
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            List<Rol> roles = rolService.findAll(); // obtiene todos los roles
+            model.addAttribute("roles", roles);
+        }
         return "crearCuenta";
     }
 
     @PostMapping("/crear-cuenta")
     public String procesarFormularioRegistro(@Valid @ModelAttribute("userData") UsuarioDTO dto,
+                                             @RequestParam(name = "rolId", required = false) Integer rolId,
                                              BindingResult result, Model model) {
 
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
@@ -54,8 +64,18 @@ public class UsuarioController {
         usuario.setFechaAlta(LocalDate.now());
         usuario.setActivo(true);
 
-        Rol rol = rolService.findByNombre("cliente")
-                .orElseThrow(() -> new RuntimeException("Rol cliente no encontrado"));
+        Rol rol;
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin && rolId != null) {
+            rol = rolService.findById(rolId).orElseThrow(() -> new RuntimeException("Rol no válido"));
+        } else {
+            rol = rolService.findByNombre("cliente")
+                    .orElseThrow(() -> new RuntimeException("Rol cliente no encontrado"));
+        }
+
         usuario.setIdRol(rol);
 
         usuarioService.saveEntity(usuario);
