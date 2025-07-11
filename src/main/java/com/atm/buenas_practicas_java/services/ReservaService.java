@@ -5,6 +5,8 @@ import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
 import com.atm.buenas_practicas_java.entities.*;
 import com.atm.buenas_practicas_java.repositories.*;
 import com.atm.buenas_practicas_java.services.templateMethod.AbstractTemplateServicesEntities;
+import com.atm.buenas_practicas_java.util.PasswordGenerator;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,19 +20,21 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
     private final HabitacionRepo habitacionRepository;
     private final ProductoRepo productoRepository;
     private final RolRepo rolRepository;
+    private final EmailService emailService;
 
 
     public ReservaService(
             ReservaRepo reservaRepository,
             UsuarioRepo usuarioRepository,
             HabitacionRepo habitacionRepository,
-            ProductoRepo productoRepository, RolRepo rolRepository
+            ProductoRepo productoRepository, RolRepo rolRepository, EmailService emailService
     ) {
         super(reservaRepository);
         this.usuarioRepository = usuarioRepository;
         this.habitacionRepository = habitacionRepository;
         this.productoRepository = productoRepository;
         this.rolRepository = rolRepository;
+        this.emailService = emailService;
     }
 
     public Reserva crearReservaConProductos(ReservaRapidaDTO dto) {
@@ -41,6 +45,11 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
                     Usuario nuevo = new Usuario();
                     nuevo.setNombre(dto.getNombre());
                     nuevo.setEmail(dto.getEmail());
+
+                    String rawPassword = PasswordGenerator.generateRandomPassword();
+                    String encodedPassword = new BCryptPasswordEncoder().encode(rawPassword);
+                    nuevo.setPassword(encodedPassword);
+
                     nuevo.setIdRol(rolRepository.getReferenceById(1));
                     return usuarioRepository.save(nuevo);
                 });
@@ -65,6 +74,8 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
             Set<ProductosUsuario> productosUsuarios = new LinkedHashSet<>();
 
             for (ProductoFormularioDTO p : dto.getProductos()) {
+                if (p.getIdProducto() == null) continue; // ⛔ ignora productos no seleccionados
+
                 Producto producto = productoRepository.findById(p.getIdProducto())
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
@@ -80,9 +91,21 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
                 productosUsuarios.add(pu);
             }
 
+
             reserva.setProductosUsuarios(productosUsuarios);
         }
 
         return this.save(reserva);
+    }
+
+    private void sendEmail(Usuario usuario)
+    {
+        emailService.sendEmail(
+                "notificaciones@agestturnos.es",
+                "jarmar0805@gmail.com",
+                "Su usuario temporal",
+                "Hemos creado un usuario temporal en nuestra base de datos para que pueda acceder a su perfil y ver su reserva/n" +
+                        "Sus datos son " + "User " + usuario.getEmail() + "Contraseña temporal " + usuario.getPassword()
+        );
     }
 }

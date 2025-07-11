@@ -67,33 +67,39 @@
                 <!-- Productos opcionales -->
                 <div class="form-group mb-4">
                     <p class="services-label mb-2">Servicios adicionales:</p>
-                    <div th:each="producto, iterStat : ${productos}" class="checkbox-group mb-3">
 
-                        <!-- Checkbox de selección del producto -->
-                        <input type="checkbox"
-                               th:field="{productos[${iterStat.index}].idProducto}"
-                               th:value="${producto.id}"
-                               class="form-check-input me-2"
-                               th:id="'producto_' + ${iterStat.index}" />
+                    <div th:each="producto, iterStat : ${productos}" class="checkbox-group mb-3">
+                        <!-- Checkbox -->
+                        <div class="form-check mb-2">
+                            <input type="checkbox"
+                                   th:id="'producto_' + ${iterStat.index}"
+                                   th:name="'productos[' + ${iterStat.index} + '].idProducto'"
+                                   th:value="${producto.id}"
+                                   class="form-check-input me-2" />
+
+                            <label th:for="'producto_' + ${iterStat.index}"
+                                   th:text="${producto.nombre}"
+                                   class="form-check-label"></label>
+                        </div>
 
                         <!-- Cantidad -->
                         <input type="number"
-                               th:field="{productos[${iterStat.index}].cantidad}"
+                               th:name="'productos[' + ${iterStat.index} + '].cantidad'"
                                placeholder="Cantidad"
-                               class="form-control mt-1"
+                               class="form-control mb-1"
                                style="max-width: 100px;" min="1" />
 
                         <!-- Fecha -->
                         <input type="date"
-                               th:field="{productos[${iterStat.index}].fecha}"
-                               class="form-control mt-1"
+                               th:name="'productos[' + ${iterStat.index} + '].fecha'"
+                               class="form-control mb-1"
                                style="max-width: 200px;" />
 
                         <!-- Descuento -->
                         <input type="number"
-                               th:field="{productos[${iterStat.index}].descuento}"
+                               th:name="'productos[' + ${iterStat.index} + '].descuento'"
                                placeholder="% desc"
-                               class="form-control mt-1"
+                               class="form-control mb-3"
                                style="max-width: 100px;" min="0" max="100" />
                     </div>
                 </div>
@@ -106,6 +112,23 @@
         </div>
     </div>
 </main>
+
+<!-- JS para deshabilitar campos si checkbox no está marcado -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.checkbox-group').forEach(function (group) {
+            const checkbox = group.querySelector('input[type="checkbox"]');
+            const inputs = group.querySelectorAll('input[type="number"], input[type="date"]');
+            const toggleInputs = () => {
+                inputs.forEach(i => i.disabled = !checkbox.checked);
+            };
+            checkbox.addEventListener('change', toggleInputs);
+            toggleInputs(); // Inicialización
+        });
+    });
+    /*]]>*/
+</script>
 
 </body>
 </html>
