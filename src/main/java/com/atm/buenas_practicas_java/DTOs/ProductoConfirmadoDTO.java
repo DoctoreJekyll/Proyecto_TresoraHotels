@@ -1,6 +1,5 @@
 package com.atm.buenas_practicas_java.DTOs;
 
-import com.atm.buenas_practicas_java.entities.CategoriaProducto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +13,5 @@ public class ProductoConfirmadoDTO {
     private LocalDate fecha;
     private Integer descuento;
     private Integer categoria;
+    private double precioBase;
 }

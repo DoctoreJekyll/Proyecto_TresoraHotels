@@ -25,7 +25,7 @@ public class HabitacionFactoryImpl implements IFactoryProvider {
 
     @Override
     public List<String> getHeaders() {
-        return List.of("id", "idHotel", "idProducto", "numeroHabitacion", "piso","tipo","capacidad","estado", "imagenUrl");
+        return List.of("id", "hotel", "producto", "numeroHabitacion", "piso","tipo","capacidad","estado", "imagenUrl");
     }
 
     @Override
@@ -36,9 +36,9 @@ public class HabitacionFactoryImpl implements IFactoryProvider {
                     Map<String, Object> row = new LinkedHashMap<>();
                     row.put("id", habitacion.getId());
                     System.out.println(habitacion.getId());
-                    row.put("idHotel", habitacion.getHotel().getId());
+                    row.put("hotel", habitacion.getHotel().getId());
                     System.out.println(habitacion.getHotel().getId());
-                    row.put("idProducto", habitacion.getProducto().getId());
+                    row.put("producto", habitacion.getProducto().getId());
                     System.out.println(habitacion.getProducto().getId());
                     row.put("numeroHabitacion", habitacion.getNumeroHabitacion());
                     System.out.println(habitacion.getNumeroHabitacion());

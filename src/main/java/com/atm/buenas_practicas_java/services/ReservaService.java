@@ -57,13 +57,12 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
                     return usuarioRepository.save(nuevo);
                 });
 
-        // 2. Obtener la habitación
-        Habitacion habitacion = habitacionRepository.findById(dto.getIdHabitacion())
-                .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
+        Habitacion habitacion = habitacionRepository.findHabitacionConHotel(dto.getIdHabitacion());
+        if (habitacion == null) {
+            throw new RuntimeException("Habitación no encontrada con el hotel");
+        }
+        dto.setHotel(habitacion.getHotel().getId()); // Ya viene cargado
 
-        // Obtener hotel sin cargar toda la habitacion
-        Habitacion hotelPorHabitacionId = obtenerHotelPorHabitacionId(dto.getIdHabitacion());
-        dto.setHotel(hotelPorHabitacionId.getHotel().getId());
 
         // 3. Crear la reserva
         Reserva reserva = new Reserva();
@@ -105,6 +104,8 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
 
         //sendEmail(usuario);
 
+        habitacion.setOcupada(true);
+        habitacionRepository.save(habitacion);
         return this.save(reserva);
     }
 

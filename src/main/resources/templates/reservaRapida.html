@@ -11,15 +11,118 @@
 
 <main layout:fragment="contenido" id="main-content" class="main-container" role="main" aria-labelledby="booking-title">
     <div class="center-wrapper" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; width: 100%;">
+
+        <!-- script aquí dentro -->
+        <script th:inline="javascript">
+            document.addEventListener("DOMContentLoaded", function () {
+                console.log("🟢 DOM completamente cargado");
+
+                const habitacionSelect = document.getElementById('idHabitacion');
+                const hotelInput = document.getElementById('hotel');
+                const hotelSelect = document.getElementById('hotelSelect');
+                const precioTotalEl = document.getElementById('precioTotal');
+
+                hotelSelect.addEventListener('change', function () {
+                    const hotelId = this.value;
+                    hotelInput.value = hotelId;
+
+                    habitacionSelect.innerHTML = '<option value="" disabled selected>Seleccione habitación</option>';
+
+                    fetch('/reservas/api/habitaciones?hotelId=' + hotelId)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("🛏 Habitaciones recibidas:", data);
+                            data.forEach(habitacion => {
+                                const option = document.createElement('option');
+                                option.value = habitacion.id;
+                                option.textContent = habitacion.tipo + ' - Nº ' + habitacion.numeroHabitacion;
+                                option.dataset.precio = habitacion.precioBase;
+                                habitacionSelect.appendChild(option);
+                            });
+                            calcularPrecioTotal();
+                        })
+                        .catch(err => {
+                            console.error('Error cargando habitaciones:', err);
+                        });
+                });
+
+                function calcularPrecioTotal() {
+                    let total = 0;
+
+                    const selectedOption = habitacionSelect.options[habitacionSelect.selectedIndex];
+                    const precioHabitacion = selectedOption && selectedOption.dataset.precio
+                        ? parseFloat(selectedOption.dataset.precio)
+                        : 0;
+
+                    const fechaEntrada = new Date(document.getElementById('fechaEntrada').value);
+                    const fechaSalida = new Date(document.getElementById('fechaSalida').value);
+
+                    const msPorDia = 1000 * 60 * 60 * 24;
+                    const noches = Math.max(1, Math.round((fechaSalida - fechaEntrada) / msPorDia));
+
+                    total += precioHabitacion * noches;
+
+                    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="productos"]');
+                    checkboxes.forEach(cb => {
+                        if (cb.checked && cb.dataset.precio) {
+                            total += parseFloat(cb.dataset.precio);
+                        }
+                    });
+
+                    precioTotalEl.innerText = total.toFixed(2) + ' €';
+
+                    const desglose = document.getElementById("desglosePrecio");
+                    if (desglose && precioHabitacion > 0) {
+                        desglose.innerText =
+                            `(${precioHabitacion.toFixed(2)} € x ${noches} noche${noches > 1 ? 's' : ''})`;
+                    } else if (desglose) {
+                        desglose.innerText = '';
+                    }
+                }
+
+                // Recalcular precio al cambiar habitación o productos
+                habitacionSelect.addEventListener('change', calcularPrecioTotal);
+                document.querySelectorAll('input[type="checkbox"][name^="productos"]').forEach(cb => {
+                    cb.addEventListener('change', calcularPrecioTotal);
+                });
+
+                document.getElementById('fechaEntrada').addEventListener('change', calcularPrecioTotal);
+                document.getElementById('fechaSalida').addEventListener('change', calcularPrecioTotal);
+
+                // 🔐 Validación de servicios adicionales antes de enviar formulario
+                document.getElementById("booking-form").addEventListener("submit", function (e) {
+                    const servicios = document.querySelectorAll('.checkbox-group');
+                    let error = false;
+
+                    servicios.forEach(group => {
+                        const checkbox = group.querySelector('input[type="checkbox"]');
+                        if (checkbox && checkbox.checked) {
+                            const cantidad = group.querySelector('input[name$=".cantidad"]');
+                            const fecha = group.querySelector('input[name$=".fecha"]');
+
+                            if (!cantidad.value || !fecha.value) {
+                                error = true;
+                            }
+                        }
+                    });
+
+                    if (error) {
+                        e.preventDefault();
+                        alert("Si seleccionas un servicio adicional, debes rellenar los campos: cantidad y fecha.");
+                    }
+                });
+
+                calcularPrecioTotal(); // Inicial
+            });
+        </script>
+
+
         <div class="card form-card" style="max-width: 512px; width: 100%; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
             <h1 id="booking-title" class="card-title text-center">Reserva Rápida</h1>
 
             <form th:action="@{/reservas/rapida}" th:object="${reservaDTO}" method="post" id="booking-form">
 
                 <p class="card-text mb-4">Complete los campos para reservar su estancia. Todos los campos son obligatorios.</p>
-
-                <!-- Campo oculto Hotel (id) -->
-                <input type="hidden" th:field="*{hotel}" id="hotel" />
 
                 <!-- Nombre -->
                 <div class="form-group mb-4">
@@ -33,22 +136,26 @@
                     <input type="email" th:field="*{email}" id="email" class="form-control" required />
                 </div>
 
-                <!-- Habitación (agrupada por hotel) -->
+                <!-- Hotel -->
+                <div class="form-group mb-4">
+                    <label for="hotelSelect">Hotel</label>
+                    <select id="hotelSelect" class="form-control" required>
+                        <option value="" disabled selected>Seleccione un hotel</option>
+                        <option th:each="hotel : ${hoteles}"
+                                th:value="${hotel.id}"
+                                th:text="${hotel.nombre}">
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Campo oculto Hotel (formulario) -->
+                <input type="hidden" th:field="*{hotel}" id="hotel" />
+
+                <!-- Habitación (cambia según hotel) -->
                 <div class="form-group mb-4">
                     <label for="idHabitacion">Habitación</label>
                     <select th:field="*{idHabitacion}" id="idHabitacion" class="form-control" required>
                         <option value="" disabled selected>Seleccione habitación</option>
-
-                        <!-- Agrupar por hotel -->
-                        <th:block th:each="entry : ${habitacionesPorHotel}">
-                            <optgroup th:label="${entry.key.nombre}">
-                                <option th:each="habitacion : ${entry.value}"
-                                        th:value="${habitacion.id}"
-                                        th:text="${habitacion.tipo + ' - N° ' + habitacion.numeroHabitacion}"
-                                        th:attr="data-hotel-id=${habitacion.hotel.id}">
-                                </option>
-                            </optgroup>
-                        </th:block>
                     </select>
                 </div>
 
@@ -86,7 +193,9 @@
                                    th:id="'producto_' + ${iterStat.index}"
                                    th:name="'productos[' + ${iterStat.index} + '].idProducto'"
                                    th:value="${producto.id}"
-                                   class="form-check-input me-2" />
+                                   th:attr="data-precio=${producto.precioBase}"
+                                   class="form-check-input me-2"
+                                   onchange="calcularPrecioTotal()" />
 
                             <label th:for="'producto_' + ${iterStat.index}"
                                    th:text="${producto.nombre}"
@@ -97,20 +206,32 @@
                                th:name="'productos[' + ${iterStat.index} + '].cantidad'"
                                placeholder="Cantidad"
                                class="form-control mb-1"
-                               style="max-width: 100px;" min="1" disabled />
+                               style="max-width: 100px;" min="1"/>
 
                         <input type="date"
                                th:name="'productos[' + ${iterStat.index} + '].fecha'"
                                class="form-control mb-1"
-                               style="max-width: 200px;" disabled />
+                               style="max-width: 200px;"/>
 
                         <input type="number"
                                th:name="'productos[' + ${iterStat.index} + '].descuento'"
                                placeholder="% desc"
                                class="form-control mb-3"
-                               style="max-width: 100px;" min="0" max="100" disabled />
+                               style="max-width: 100px;" min="0" max="100"/>
                     </div>
+
+                    <div class="form-group mt-4">
+                        <label>
+                            <strong>Precio estimado total:</strong>
+                            <span id="precioTotal">0 €</span>
+                        </label>
+                        <!-- 🔁 NUEVO ELEMENTO para mostrar el desglose -->
+                        <div id="desglosePrecio" style="font-size: 0.9em; color: #555;"></div>
+                    </div>
+
                 </div>
+
+
 
                 <!-- Botón enviar -->
                 <button type="submit" class="btn btn-grupo5 w-100 mt-3">Reservar Ahora</button>
@@ -120,43 +241,6 @@
         </div>
     </div>
 </main>
-
-<!-- JS para sincronizar hotel según habitación y habilitar inputs productos -->
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    document.addEventListener("DOMContentLoaded", function () {
-        const habitacionSelect = document.getElementById('idHabitacion');
-        const hotelInput = document.getElementById('hotel');
-
-        const actualizarHotel = () => {
-            const selectedOption = habitacionSelect.options[habitacionSelect.selectedIndex];
-            const hotelId = selectedOption ? selectedOption.getAttribute('data-hotel-id') : '';
-            hotelInput.value = hotelId || '';
-        };
-
-        habitacionSelect.addEventListener('change', actualizarHotel);
-        actualizarHotel();
-
-        // Control para activar/desactivar inputs relacionados con productos opcionales
-        document.querySelectorAll('.checkbox-group').forEach(function (group, index) {
-            const checkbox = group.querySelector('input[type="checkbox"]');
-            const inputs = group.querySelectorAll('input[type="number"], input[type="date"]');
-
-            const toggleInputs = () => {
-                const checked = checkbox.checked;
-                console.log(`Producto #${index} checkbox está ${checked ? 'marcado' : 'desmarcado'}`);
-                inputs.forEach(i => i.disabled = !checked);
-            };
-
-            // Escuchar cambios en el checkbox
-            checkbox.addEventListener('change', toggleInputs);
-
-            // Ejecutar una vez al cargar para establecer el estado correcto
-            toggleInputs();
-        });
-    });
-    /*]]>*/
-</script>
 
 </body>
 </html>

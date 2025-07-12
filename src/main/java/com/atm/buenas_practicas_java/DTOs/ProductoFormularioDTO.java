@@ -14,4 +14,5 @@ public class ProductoFormularioDTO {
     private LocalDate fecha;
     private Integer descuento;
     private CategoriaProducto categoria;
+    private double precioBase;
 }

@@ -179,6 +179,7 @@ public class LocalDataLoader {
     Habitacion habitacion;
     Habitacion habitacion2;
     Habitacion habitacion3;
+    Habitacion habitacion4;
 
     private void saveAllHabitaciones()
     {
@@ -187,9 +188,11 @@ public class LocalDataLoader {
         habitacion = habitacion1();
         habitacion2 = habitacion2();
         habitacion3 = habitacion3();
+        habitacion4 = habitacion4();
         habitaciones.add(habitacion);
         habitaciones.add(habitacion2);
         habitaciones.add(habitacion3);
+        habitaciones.add(habitacion4);
 
         habitacionRepo.saveAll(habitaciones);
     }
@@ -221,6 +224,19 @@ public class LocalDataLoader {
     }
 
     private Habitacion habitacion3() {
+        Habitacion habitacion3 = new Habitacion();
+        habitacion3.setHotel(hotel3);
+        habitacion3.setProducto(producto2);
+        habitacion3.setNumeroHabitacion(203);
+        habitacion3.setPiso(2);
+        habitacion3.setTipo("Suite");
+        habitacion3.setCapacidad(4);
+        habitacion3.setOcupada(true);
+        habitacion3.setImagenUrl("no image");
+        return habitacion3;
+    }
+
+    private Habitacion habitacion4() {
         Habitacion habitacion3 = new Habitacion();
         habitacion3.setHotel(hotel3);
         habitacion3.setProducto(producto3);
@@ -268,7 +284,7 @@ public class LocalDataLoader {
         Producto producto = new Producto();
         producto.setIdHotel(hotel3.getId());
         producto.setIdCategoria(categoriaProducto2);
-        producto.setNombre("Restaurante");
+        producto.setNombre("Servicio de Restaurante");
         producto.setDescripcion("Restaurante bien guapa");
         producto.setPrecioBase(10.0);
         producto.setActivo(true);

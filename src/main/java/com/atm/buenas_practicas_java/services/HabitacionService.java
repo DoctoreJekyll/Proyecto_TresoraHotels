@@ -23,4 +23,11 @@ public class HabitacionService extends AbstractTemplateServicesEntities<Habitaci
         return getRepo().findAllWithHotel();
     }
 
+    public List<Habitacion> findByHotelId(Integer hotelId) {
+        return getRepo().findByHotelId(hotelId);
+    }
+    public List<Habitacion> findByHotelIdAndOcupada(Integer hotelId) {
+        return getRepo().findByHotelIdAndOcupadaFalse(hotelId);
+    }
+
 }
