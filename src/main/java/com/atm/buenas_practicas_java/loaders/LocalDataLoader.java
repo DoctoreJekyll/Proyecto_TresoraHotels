@@ -141,7 +141,7 @@ public class LocalDataLoader {
 
     private Hotel getHotel3() {
         Hotel hotel3 = new Hotel();
-        hotel3.setNombre("Costa Azul Resort");
+        hotel3.setNombre("Playa");
         hotel3.setDescripcion("Relájate frente al mar Mediterráneo");
         hotel3.setCiudad("Alicante");
         hotel3.setDireccion("Avenida del Mar, 55, 03001 Alicante");
@@ -153,7 +153,7 @@ public class LocalDataLoader {
     }
     private Hotel getHotel2() {
         Hotel hotel2 = new Hotel();
-        hotel2.setNombre("Monteverde Palace");
+        hotel2.setNombre("Montaña");
         hotel2.setDescripcion("Lujo entre montañas y aire puro");
         hotel2.setCiudad("Granada");
         hotel2.setDireccion("Camino de la Sierra, s/n, 18010, Granada");
@@ -165,7 +165,7 @@ public class LocalDataLoader {
     }
     private Hotel getHotel() {
         Hotel hotel1 = new Hotel();
-        hotel1.setNombre("Tresora Beach");
+        hotel1.setNombre("Ciudad");
         hotel1.setDescripcion("Un paraíso costero para que te lo goces");
         hotel1.setCiudad("Málaga");
         hotel1.setDireccion("Playa de Pedregalejo, Málaga-Este, 29017, Málaga");

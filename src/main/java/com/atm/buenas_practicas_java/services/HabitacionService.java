@@ -4,6 +4,7 @@ import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.repositories.HabitacionRepo;
 import com.atm.buenas_practicas_java.services.templateMethod.AbstractTemplateServicesEntities;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class HabitacionService extends AbstractTemplateServicesEntities<Habitaci
         return getRepo().findAllWithHotel();
     }
 
+    @Transactional
     public List<Habitacion> findByHotelId(Integer hotelId) {
         return getRepo().findByHotelId(hotelId);
     }
