@@ -3,6 +3,8 @@ package com.atm.buenas_practicas_java.services;
 import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.repositories.HabitacionRepo;
 import com.atm.buenas_practicas_java.services.templateMethod.AbstractTemplateServicesEntities;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,10 @@ public class HabitacionService extends AbstractTemplateServicesEntities<Habitaci
     }
     public List<Habitacion> findByHotelIdAndOcupada(Integer hotelId) {
         return getRepo().findByHotelIdAndOcupadaFalse(hotelId);
+    }
+
+    public Page<Habitacion> findByHotelId(Integer hotelId, Pageable pageable) {
+        return getRepo().findByHotelId(hotelId, pageable);
     }
 
 }

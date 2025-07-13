@@ -2,6 +2,8 @@ package com.atm.buenas_practicas_java.repositories;
 
 import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.entities.Hotel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,6 +32,9 @@ public interface HabitacionRepo extends JpaRepository<Habitacion, Integer> {
     List<Habitacion> findByHotelId(@Param("hotelId") Integer hotelId);
 
     List<Habitacion> findByHotelIdAndOcupadaFalse(Integer hotelId);
+
+    Page<Habitacion> findByHotelId(Integer hotelId, Pageable pageable);
+
 }
 
 

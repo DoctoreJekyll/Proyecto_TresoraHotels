@@ -1,4 +1,4 @@
-<!-- hotel_detalle.html -->
+<!-- hotel_detalle.html mejorado con precio dinámico y paginación -->
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/plantilla}" lang="es">
@@ -9,6 +9,58 @@
 
 <body class="bg-gradient-primary text-light">
 <main layout:fragment="contenido">
+
+    <!-- Script para calcular precio dinámico por habitación -->
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            // Para cada tarjeta de habitación
+            document.querySelectorAll('.card[data-index]').forEach(card => {
+                const index = card.getAttribute("data-index");
+                const precioBase = parseFloat(card.dataset.precioBase);
+
+                // Selecciona los elementos del modal correspondientes a este index
+                const entrada = document.getElementById('entrada__' + index);
+                const salida = document.getElementById('salida__' + index);
+                const totalEl = document.getElementById('precioTotal__' + index);
+                const desgloseEl = document.getElementById('desglosePrecio__' + index);
+
+                // Función para calcular el precio dinámico
+                function calcular() {
+                    if (!entrada.value || !salida.value) {
+                        totalEl.innerText = '0 €';
+                        desgloseEl.innerText = '';
+                        return;
+                    }
+                    const f1 = new Date(entrada.value);
+                    const f2 = new Date(salida.value);
+                    const noches = Math.max(1, Math.round((f2 - f1) / (1000 * 60 * 60 * 24)));
+                    const total = noches * precioBase;
+
+                    if (!isNaN(total) && noches > 0) {
+                        totalEl.innerText = total.toFixed(2) + ' €';
+                        desgloseEl.innerText = `(${precioBase.toFixed(2)} € x ${noches} noche${noches > 1 ? 's' : ''})`;
+                    } else {
+                        totalEl.innerText = '0 €';
+                        desgloseEl.innerText = '';
+                    }
+                }
+
+                // Añade los listeners de cambio solo una vez
+                if (entrada && salida) {
+                    entrada.addEventListener("change", calcular);
+                    salida.addEventListener("change", calcular);
+                }
+
+                // Opcional: recalcular cuando se abre el modal
+                const boton = card.querySelector('button[data-bs-toggle="modal"]');
+                if (boton) {
+                    boton.addEventListener("click", function () {
+                        calcular();
+                    });
+                }
+            });
+        });
+    </script>
 
     <!-- Header dinámico del hotel -->
     <section class="py-5 text-center">
@@ -28,55 +80,109 @@
         <div class="container-xl px-4">
             <h2 class="text-center display-5 mb-5" style="font-weight: 600;">Habitaciones Disponibles</h2>
 
-            <div th:each="habitacion : ${habitaciones}" class="card mb-4 shadow-lg border-0 rounded-4">
+            <div th:each="habitacion, iterStat : ${habitaciones}" class="card mb-4 shadow-lg border-0 rounded-4"
+                 th:attr="data-index=${iterStat.index}, data-precio-base=${habitacion.producto.precioBase}">
                 <div class="row g-0">
                     <!-- Imagen -->
                     <div class="col-md-5">
                         <img th:src="${habitacion.imagenUrl}" class="img-fluid rounded-start h-100" style="object-fit: cover;" alt="Imagen habitación">
                     </div>
 
-                    <!-- Detalles + Formulario -->
+                    <!-- Detalles + botón -->
                     <div class="col-md-7 d-flex flex-column justify-content-center p-4 bg-white text-dark">
                         <h5 class="mb-2" th:text="${habitacion.tipo}">Tipo de habitación</h5>
                         <p class="mb-1"><strong>Capacidad:</strong> <span th:text="${habitacion.capacidad}">2</span> pax</p>
-                        <p class="mb-3"><strong>Desde:</strong> <span th:text="${habitacion.producto.precioBase} + '€ / noche'">50€ / noche</span></p>
+                        <p class="mb-1"><strong>Precio desde:</strong> <span th:text="${habitacion.producto.precioBase} + ' €/noche'">50€ / noche</span></p>
+                        <p class="mb-3" th:text="${habitacion.tipo}">Descripción de la habitación</p>
 
-                        <!-- Formulario de reserva (simulado, no funcional aún) -->
-                        <form th:action="@{/reserva/rapida}" method="post">
-                            <input type="hidden" name="hotel" th:value="${hotel.id}" />
-                            <input type="hidden" name="idHabitacion" th:value="${habitacion.id}" />
-
-                            <div class="mb-2">
-                                <label class="form-label">Nombre</label>
-                                <input type="text" class="form-control" name="nombre" placeholder="Tu nombre">
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email" placeholder="tucorreo@email.com">
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label">Fecha Entrada</label>
-                                <input type="date" class="form-control" name="fechaEntrada">
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label">Fecha Salida</label>
-                                <input type="date" class="form-control" name="fechaSalida">
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label">Nº Personas</label>
-                                <input type="number" class="form-control" name="pax" min="1" max="10">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Comentarios</label>
-                                <textarea class="form-control" name="comentarios" rows="2"></textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100">Reservar esta habitación</button>
-                        </form>
+                        <!-- Botón para abrir modal -->
+                        <button type="button"
+                                class="btn btn-primary mt-auto"
+                                data-bs-toggle="modal"
+                                th:data-bs-target="'#modalReserva__' + ${iterStat.index}"
+                                th:attrappend="data-index=${iterStat.index}">
+                            Reservar ahora
+                        </button>
                     </div>
                 </div>
+
+                <!-- Modal de reserva -->
+                <div class="modal fade" th:id="'modalReserva__' + ${iterStat.index}" tabindex="-1" aria-labelledby="modalLabel__${iterStat.index}" aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" th:id="'modalLabel__' + ${iterStat.index}" th:text="'Reserva: ' + ${habitacion.tipo}">Reserva</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form th:action="@{/hotel/reservaCompleta}" method="post">
+                                    <input type="hidden" name="hotel" th:value="${hotel.id}" />
+                                    <input type="hidden" name="idHabitacion" th:value="${habitacion.id}" />
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label th:for="'nombre__' + ${iterStat.index}" class="form-label">Nombre completo</label>
+                                            <input type="text" class="form-control" th:id="'nombre__' + ${iterStat.index}" name="nombre" placeholder="Tu nombre">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label th:for="'email__' + ${iterStat.index}" class="form-label">Correo electrónico</label>
+                                            <input type="email" class="form-control" th:id="'email__' + ${iterStat.index}" name="email" placeholder="tucorreo@email.com">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label th:for="'entrada__' + ${iterStat.index}" class="form-label">Fecha de entrada</label>
+                                            <input type="date" class="form-control" th:id="'entrada__' + ${iterStat.index}" name="fechaEntrada">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label th:for="'salida__' + ${iterStat.index}" class="form-label">Fecha de salida</label>
+                                            <input type="date" class="form-control" th:id="'salida__' + ${iterStat.index}" name="fechaSalida">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label th:for="'pax__' + ${iterStat.index}" class="form-label">Nº de personas</label>
+                                            <input type="number" class="form-control" th:id="'pax__' + ${iterStat.index}" name="pax" min="1" max="10">
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label th:for="'comentarios__' + ${iterStat.index}" class="form-label">Comentarios adicionales</label>
+                                            <textarea class="form-control" th:id="'comentarios__' + ${iterStat.index}" name="comentarios" rows="3"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Precio dinámico -->
+                                    <div class="mt-3">
+                                        <label><strong>Precio estimado:</strong>
+                                            <span th:id="'precioTotal__' + ${iterStat.index}">0 €</span>
+                                        </label>
+                                        <div th:id="'desglosePrecio__' + ${iterStat.index}" style="font-size: 0.9em; color: #555;"></div>
+                                    </div>
+
+                                    <div class="mt-4 text-end">
+                                        <button type="submit" class="btn btn-success">Confirmar Reserva</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- /Modal -->
             </div>
 
+            <!-- Paginación -->
+            <nav aria-label="Paginación habitaciones">
+                <ul class="pagination justify-content-center mt-4">
+                    <li class="page-item" th:classappend="${habitaciones.hasPrevious()} ? '' : 'disabled'">
+                        <a class="page-link" th:href="@{|/hotel/${hotel.nombre}?page=${habitaciones.number - 1}|}">Anterior</a>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">Página <span th:text="${habitaciones.number + 1}">1</span> de <span th:text="${habitaciones.totalPages}">1</span></span>
+                    </li>
+                    <li class="page-item" th:classappend="${habitaciones.hasNext()} ? '' : 'disabled'">
+                        <a class="page-link" th:href="@{|/hotel/${hotel.nombre}?page=${habitaciones.number + 1}|}">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </section>
 
