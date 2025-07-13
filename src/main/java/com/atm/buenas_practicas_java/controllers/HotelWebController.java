@@ -39,8 +39,10 @@ public class HotelWebController {
         List<Habitacion> habitaciones = habitacionService.findByHotelId(hotel.getId());
         for (Habitacion h : habitaciones) {
             h.getProducto();
-            h.getProducto().getPrecioBase(); // fuerza inicialización
+            h.getProducto().getPrecioBase();// fuerza inicialización
         }
+
+
 
 
         model.addAttribute("hotel", hotel);

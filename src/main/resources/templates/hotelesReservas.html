@@ -27,51 +27,56 @@
     <section class="py-5">
         <div class="container-xl px-4">
             <h2 class="text-center display-5 mb-5" style="font-weight: 600;">Habitaciones Disponibles</h2>
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col" th:each="habitacion : ${habitaciones}">
-                    <div class="card shadow-lg h-100 border-0 rounded-4 bg-gray text-dark">
-                        <img th:src="${habitacion.imagenUrl}" class="card-img-top" style="height: 250px; object-fit: cover;" alt="Imagen habitación">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title" th:text="${habitacion.tipo}">Tipo</h5>
-                            <p class="card-text" th:text="'Capacidad: ' + ${habitacion.capacidad} + ' pax'">Capacidad</p>
-                            <p class="card-text"><strong th:text="'Desde ' + ${habitacion.producto.precioBase} + '€ / noche'">Precio</strong></p>
 
-                            <!-- Formulario de reserva simplificado -->
-                            <form>
-                                <input type="hidden" name="idHabitacion" th:value="${habitacion.id}" />
-                                <input type="hidden" name="hotel" th:value="${hotel.id}" />
+            <div th:each="habitacion : ${habitaciones}" class="card mb-4 shadow-lg border-0 rounded-4">
+                <div class="row g-0">
+                    <!-- Imagen -->
+                    <div class="col-md-5">
+                        <img th:src="${habitacion.imagenUrl}" class="img-fluid rounded-start h-100" style="object-fit: cover;" alt="Imagen habitación">
+                    </div>
 
-                                <div class="mb-2">
-                                    <label class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" name="nombre" placeholder="Tu nombre">
-                                </div>
-                                <div class="mb-2">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" name="email" placeholder="ejemplo@email.com">
-                                </div>
-                                <div class="mb-2">
-                                    <label class="form-label">Fecha Entrada</label>
-                                    <input type="date" class="form-control" name="fechaEntrada">
-                                </div>
-                                <div class="mb-2">
-                                    <label class="form-label">Fecha Salida</label>
-                                    <input type="date" class="form-control" name="fechaSalida">
-                                </div>
-                                <div class="mb-2">
-                                    <label class="form-label">Personas</label>
-                                    <input type="number" min="1" class="form-control" name="pax" placeholder="Nº de personas">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Comentarios</label>
-                                    <textarea class="form-control" name="comentarios" rows="2" placeholder="¿Algo más que debamos saber?"></textarea>
-                                </div>
+                    <!-- Detalles + Formulario -->
+                    <div class="col-md-7 d-flex flex-column justify-content-center p-4 bg-white text-dark">
+                        <h5 class="mb-2" th:text="${habitacion.tipo}">Tipo de habitación</h5>
+                        <p class="mb-1"><strong>Capacidad:</strong> <span th:text="${habitacion.capacidad}">2</span> pax</p>
+                        <p class="mb-3"><strong>Desde:</strong> <span th:text="${habitacion.producto.precioBase} + '€ / noche'">50€ / noche</span></p>
 
-                                <button type="submit" class="btn btn-success w-100">Reservar esta habitación</button>
-                            </form>
-                        </div>
+                        <!-- Formulario de reserva (simulado, no funcional aún) -->
+                        <form th:action="@{/reserva/rapida}" method="post">
+                            <input type="hidden" name="hotel" th:value="${hotel.id}" />
+                            <input type="hidden" name="idHabitacion" th:value="${habitacion.id}" />
+
+                            <div class="mb-2">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" name="nombre" placeholder="Tu nombre">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" placeholder="tucorreo@email.com">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Fecha Entrada</label>
+                                <input type="date" class="form-control" name="fechaEntrada">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Fecha Salida</label>
+                                <input type="date" class="form-control" name="fechaSalida">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Nº Personas</label>
+                                <input type="number" class="form-control" name="pax" min="1" max="10">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Comentarios</label>
+                                <textarea class="form-control" name="comentarios" rows="2"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">Reservar esta habitación</button>
+                        </form>
                     </div>
                 </div>
             </div>
+
         </div>
     </section>
 
