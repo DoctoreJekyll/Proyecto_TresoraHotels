@@ -35,7 +35,39 @@
                             <h5 class="card-title" th:text="${habitacion.tipo}">Tipo</h5>
                             <p class="card-text" th:text="'Capacidad: ' + ${habitacion.capacidad} + ' pax'">Capacidad</p>
                             <p class="card-text"><strong th:text="'Desde ' + ${habitacion.producto.precioBase} + '€ / noche'">Precio</strong></p>
-                            <a class="btn btn-primary w-100 mt-auto" th:href="@{'/reserva/form?idHabitacion=' + ${habitacion.id}}">Reservar</a>
+
+                            <!-- Formulario de reserva simplificado -->
+                            <form>
+                                <input type="hidden" name="idHabitacion" th:value="${habitacion.id}" />
+                                <input type="hidden" name="hotel" th:value="${hotel.id}" />
+
+                                <div class="mb-2">
+                                    <label class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" name="nombre" placeholder="Tu nombre">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" placeholder="ejemplo@email.com">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label">Fecha Entrada</label>
+                                    <input type="date" class="form-control" name="fechaEntrada">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label">Fecha Salida</label>
+                                    <input type="date" class="form-control" name="fechaSalida">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label">Personas</label>
+                                    <input type="number" min="1" class="form-control" name="pax" placeholder="Nº de personas">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Comentarios</label>
+                                    <textarea class="form-control" name="comentarios" rows="2" placeholder="¿Algo más que debamos saber?"></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-success w-100">Reservar esta habitación</button>
+                            </form>
                         </div>
                     </div>
                 </div>
