@@ -95,6 +95,22 @@ public class HotelesController {
         return templateName; // Retorna la plantilla específica del hotel
     }
 
+    @GetMapping("/reservahome")
+    public String mostrarPaginaReserva(@RequestParam("id") Integer hotelId, Model model) {
+        // Busca el hotel y desempaqueta el Optional
+        Hotel hotel = hotelService.findById(hotelId)
+                .orElseThrow(() -> new IllegalArgumentException("Hotel no encontrado para el ID: " + hotelId));
+
+        model.addAttribute("hotel", hotel); // Pasa el objeto Hotel, no Optional
+        model.addAttribute("datosreserva", new DatosReserva());
+        return "reserva"; // Nombre de la plantilla
+    }
+
+
+
+
+
+
 
 
 

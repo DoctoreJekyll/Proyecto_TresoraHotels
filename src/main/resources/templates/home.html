@@ -30,7 +30,7 @@
             <div class="carousel-item"
                  th:each="hotel, iterStat : ${hotels}"
                  th:classappend="${iterStat.index == 0} ? 'active'">
-                <img th:src="${hotel.direccionURL}" class="d-block w-100" th:alt="'Imagen del hotel ' + ${hotel.nombre}" />
+                <img th:src="${hotel.imageURL}" class="d-block w-100" th:alt="'Imagen del hotel ' + ${hotel.nombre}" />
                 <div class="carousel-center-caption">
                     <h2 th:text="${hotel.nombre}">Nombre del hotel</h2>
                     <p th:text="${hotel.descripcion}">Descripción del hotel</p>
@@ -116,7 +116,7 @@
                             </div>
                             <p class="card-text flex-grow-1" th:text="${hotel.descripcion}">Descripción</p>
                             <p class="card-text"><strong th:text="'Desde ' + ${hotel.id} + '€ noche'">Precio</strong></p>
-                            <a class="btn btn-primary w-100 mt-auto" th:href="@{/hotel_reserva(id=${1})}" target="_blank">Reservar ahora</a>
+                            <a class="btn btn-primary w-100 mt-auto" th:href="@{/reservahome(id=${hotel.id})}" target="_blank">Reservar ahora</a>
                         </div>
                     </div>
                 </div>
