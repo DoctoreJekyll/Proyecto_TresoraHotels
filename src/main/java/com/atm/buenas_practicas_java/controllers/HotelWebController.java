@@ -1,37 +1,39 @@
 package com.atm.buenas_practicas_java.controllers;
 
+import com.atm.buenas_practicas_java.DTOs.ConfirmacionReservaDTO;
+import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
 import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.entities.Hotel;
-import com.atm.buenas_practicas_java.entities.Producto;
-import com.atm.buenas_practicas_java.repositories.HabitacionRepo;
-import com.atm.buenas_practicas_java.repositories.HotelesRepo;
+import com.atm.buenas_practicas_java.entities.Reserva;
+import com.atm.buenas_practicas_java.mappers.ReservaConfirmacionMapper;
 import com.atm.buenas_practicas_java.services.HabitacionService;
 import com.atm.buenas_practicas_java.services.HotelService;
+import com.atm.buenas_practicas_java.services.ProductoService;
+import com.atm.buenas_practicas_java.services.ReservaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Controller
 @RequestMapping("/hotel")
+@RequiredArgsConstructor
 public class HotelWebController {
 
     private final HotelService hotelService;
     private final HabitacionService habitacionService;
+    private final ProductoService productoService;
+    private final ReservaService reservaService;
+    private final ReservaConfirmacionMapper confirmacionReservaDTO;
 
-    public HotelWebController(HotelService hotelService, HabitacionService habitacionService) {
-        this.hotelService = hotelService;
-        this.habitacionService = habitacionService;
-    }
 
     @GetMapping("/{nombre}")
     @Transactional(readOnly = true)
@@ -45,6 +47,8 @@ public class HotelWebController {
             h.getProducto().getPrecioBase();// fuerza inicialización
         }
 
+
+        model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
         model.addAttribute("hotel", hotel);
         model.addAttribute("habitaciones", habitaciones);
 
@@ -52,8 +56,16 @@ public class HotelWebController {
     }
 
     @PostMapping("/reservaCompleta")
-    public String guardarReservaPorHotel()
-    {
+    @Transactional
+    public String procesarReservaRapida(
+            @ModelAttribute("reservaDTO") ReservaRapidaDTO dto,
+            Model model
+    ) {
+        Reserva reservaGuardada = reservaService.crearReservaConProductos(dto);
+        ConfirmacionReservaDTO confirmacion = confirmacionReservaDTO.toDto(reservaGuardada, dto);
+        long diasEstancia = ChronoUnit.DAYS.between(confirmacion.getFechaEntrada(), confirmacion.getFechaSalida());
+        model.addAttribute("diasEstancia", diasEstancia);
+        model.addAttribute("reservaConfirmada", confirmacion);
         return "confirmacionReservaRapida";
     }
 }
