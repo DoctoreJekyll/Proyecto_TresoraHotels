@@ -1,7 +1,10 @@
 package com.atm.buenas_practicas_java.controllers;
 
 import com.atm.buenas_practicas_java.dtosOld.*;
+import com.atm.buenas_practicas_java.entities.DatosReserva;
+import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.services.EmailService;
+import com.atm.buenas_practicas_java.services.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,15 +12,97 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class HotelesController {
-    @GetMapping("/")
-    public String vistaHome( ModelMap interfazConPantalla){
+
+    @Autowired
+    private HotelService hotelService;
+
+    @GetMapping("/hoteles")
+    public String mostrarHoteles(Model model) {
+        List<Hotel> hotels = hotelService.findAll();
+        System.out.println("Hoteles obtenidos: " + hotels); // Para depuración
+        for (Hotel hotel : hotels) {
+            System.out.println("ID: " + hotel.getId() +
+                    ", Nombre: " + hotel.getNombre() +
+                    ", Descripción: " + hotel.getDescripcion() +
+                    ", Imagen: " + hotel.getImageURL() +
+                    ", DireccionURL: " + hotel.getDireccionURL());
+        }
+        model.addAttribute("hotels", hotels);
         return "home";
     }
+    @GetMapping("/reservaFlotante")
+    public String mostrarFormularioReserva(
+            @RequestParam(value = "hotelId", required = false) Integer hotelId,
+            @RequestParam(value = "fechaEntrada", required = false) String fechaEntrada,
+            @RequestParam(value = "fechaSalida", required = false) String fechaSalida,
+            @RequestParam(value = "habitacionesAdultos", required = false) String habitacionesAdultos,
+            Model model) {
+        // Obtener todos los hoteles para el formulario
+        List<Hotel> hotels = hotelService.findAll();
+        model.addAttribute("hotels", hotels);
+
+        // Crear un objeto para los datos de la reserva
+        DatosReserva datosReserva = new DatosReserva();
+        datosReserva.setFechaEntrada(fechaEntrada);
+        datosReserva.setFechaSalida(fechaSalida);
+        datosReserva.setHabitacionesAdultos(habitacionesAdultos);
+
+        // Si se proporcionó un hotelId, obtener el hotel seleccionado
+        String templateName = "reservaHotelDefault"; // Plantilla por defecto si no se selecciona hotel
+        if (hotelId != null) {
+            Optional<Hotel> hotelOptional = hotelService.findById(hotelId);
+            if (hotelOptional.isPresent()) {
+                Hotel hotel = hotelOptional.get();
+                model.addAttribute("hotelSeleccionado", hotel);
+                model.addAttribute("hotelNombre", hotel.getNombre());
+                datosReserva.setHotelId(hotelId);
+
+                // Determinar la plantilla según el hotel seleccionado
+                switch (hotelId) {
+                    case 1:
+                        templateName = "reservaHotelPlaya";
+                        break;
+                    case 2:
+                        templateName = "reservaHotelMontaña";
+                        break;
+                    case 3:
+                        templateName = "reservaHotelCiudad";
+                        break;
+                    default:
+                        templateName = "reservaHotelDefault";
+                        break;
+                }
+            } else {
+                model.addAttribute("hotelNombre", "No se seleccionó un hotel válido");
+            }
+        } else {
+            model.addAttribute("hotelNombre", "No se seleccionó un hotel");
+        }
+
+        // Agregar datos al modelo
+        model.addAttribute("datosReserva", datosReserva);
+        model.addAttribute("fechaEntrada", fechaEntrada != null ? fechaEntrada : "No especificada");
+        model.addAttribute("fechaSalida", fechaSalida != null ? fechaSalida : "No especificada");
+        model.addAttribute("habitacionesAdultos", habitacionesAdultos != null ? habitacionesAdultos : "No especificado");
+
+        return templateName; // Retorna la plantilla específica del hotel
+    }
+
+
+
+
+
+//    @GetMapping("/")
+//    public String vistaHome( ModelMap interfazConPantalla){
+//        return "home";
+//    }
 
     @GetMapping("/servicios")
     public String vistaservicios( ){
