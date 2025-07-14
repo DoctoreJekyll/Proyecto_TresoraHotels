@@ -52,7 +52,7 @@ public class Reserva {
     @OneToMany(mappedBy = "idReserva")
     private Set<DetallesReserva> detallesReservas = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "idReserva")
+    @OneToMany(mappedBy = "idReserva", cascade = CascadeType.ALL)
     private Set<ProductosUsuario> productosUsuarios = new LinkedHashSet<>();
 
 }

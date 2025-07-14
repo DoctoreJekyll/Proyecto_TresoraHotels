@@ -33,7 +33,7 @@ public class Hotel {
     @Column(name = "direccion", nullable = false, length = 70)
     private String direccion;
 
-    @Column(name = "direccionURL", nullable = false, length = 30000)
+    @Column(name = "direccionURL", nullable = false, length = 300)
     private String direccionURL;
 
     @Column(name = "imagen", length = 300)
@@ -48,7 +48,7 @@ public class Hotel {
     @OneToMany(mappedBy = "idHotel")
     private Set<Factura> facturas = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "idHotel")
+    @OneToMany(mappedBy = "hotel")
     private Set<Habitacion> habitaciones = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idHotel")

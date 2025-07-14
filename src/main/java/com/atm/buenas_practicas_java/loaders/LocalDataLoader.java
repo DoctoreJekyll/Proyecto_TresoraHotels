@@ -175,7 +175,7 @@ public class LocalDataLoader {
 
     private Hotel getHotel3() {
         Hotel hotel3 = new Hotel();
-        hotel3.setNombre("Costa Azul Resort");
+        hotel3.setNombre("Playa");
         hotel3.setDescripcion("Relájate frente al mar Mediterráneo");
         hotel3.setCiudad("Alicante");
         hotel3.setDireccion("Avenida del Mar, 55, 03001 Alicante");
@@ -187,7 +187,7 @@ public class LocalDataLoader {
     }
     private Hotel getHotel2() {
         Hotel hotel2 = new Hotel();
-        hotel2.setNombre("Monteverde Palace");
+        hotel2.setNombre("Montaña");
         hotel2.setDescripcion("Lujo entre montañas y aire puro");
         hotel2.setCiudad("Granada");
         hotel2.setDireccion("Camino de la Sierra, s/n, 18010, Granada");
@@ -199,7 +199,7 @@ public class LocalDataLoader {
     }
     private Hotel getHotel() {
         Hotel hotel1 = new Hotel();
-        hotel1.setNombre("Tresora Beach");
+        hotel1.setNombre("Ciudad");
         hotel1.setDescripcion("Un paraíso costero para que te lo goces");
         hotel1.setCiudad("Málaga");
         hotel1.setDireccion("Playa de Pedregalejo, Málaga-Este, 29017, Málaga");
@@ -213,6 +213,7 @@ public class LocalDataLoader {
     Habitacion habitacion;
     Habitacion habitacion2;
     Habitacion habitacion3;
+    Habitacion habitacion4;
 
     private void saveAllHabitaciones()
     {
@@ -221,9 +222,11 @@ public class LocalDataLoader {
         habitacion = habitacion1();
         habitacion2 = habitacion2();
         habitacion3 = habitacion3();
+        habitacion4 = habitacion4();
         habitaciones.add(habitacion);
         habitaciones.add(habitacion2);
         habitaciones.add(habitacion3);
+        habitaciones.add(habitacion4);
 
         habitacionRepo.saveAll(habitaciones);
     }
@@ -231,38 +234,51 @@ public class LocalDataLoader {
     private Habitacion habitacion1()
     {
         Habitacion habitacion1 = new Habitacion();
-        habitacion1.setIdHotel(hotel1);
-        habitacion1.setIdProducto(producto);
+        habitacion1.setHotel(hotel1);
+        habitacion1.setProducto(producto);
         habitacion1.setNumeroHabitacion(0);
         habitacion1.setPiso(0);
         habitacion1.setTipo("Individual");
         habitacion1.setCapacidad(1);
-        habitacion1.setEstadoOcupacion("Libre");
+        habitacion1.setOcupada(false);
         habitacion1.setImagenUrl("no image");
         return habitacion1;
     }
     private Habitacion habitacion2() {
         Habitacion habitacion2 = new Habitacion();
-        habitacion2.setIdHotel(hotel2);
-        habitacion2.setIdProducto(producto2);
+        habitacion2.setHotel(hotel2);
+        habitacion2.setProducto(producto2);
         habitacion2.setNumeroHabitacion(101);
         habitacion2.setPiso(1);
         habitacion2.setTipo("Doble");
         habitacion2.setCapacidad(2);
-        habitacion2.setEstadoOcupacion("Ocupado");
+        habitacion2.setOcupada(false);
         habitacion2.setImagenUrl("no image");
         return habitacion2;
     }
 
     private Habitacion habitacion3() {
         Habitacion habitacion3 = new Habitacion();
-        habitacion3.setIdHotel(hotel3);
-        habitacion3.setIdProducto(producto3);
+        habitacion3.setHotel(hotel3);
+        habitacion3.setProducto(producto2);
+        habitacion3.setNumeroHabitacion(203);
+        habitacion3.setPiso(2);
+        habitacion3.setTipo("Suite");
+        habitacion3.setCapacidad(4);
+        habitacion3.setOcupada(true);
+        habitacion3.setImagenUrl("no image");
+        return habitacion3;
+    }
+
+    private Habitacion habitacion4() {
+        Habitacion habitacion3 = new Habitacion();
+        habitacion3.setHotel(hotel3);
+        habitacion3.setProducto(producto3);
         habitacion3.setNumeroHabitacion(202);
         habitacion3.setPiso(2);
         habitacion3.setTipo("Suite");
         habitacion3.setCapacidad(4);
-        habitacion3.setEstadoOcupacion("Libre");
+        habitacion3.setOcupada(false);
         habitacion3.setImagenUrl("no image");
         return habitacion3;
     }
@@ -288,7 +304,7 @@ public class LocalDataLoader {
     private Producto getProducto2() {
         Producto producto = new Producto();
         producto.setIdHotel(hotel2.getId());
-        producto.setIdCategoria(categoriaProducto2);
+        producto.setIdCategoria(categoriaProducto);
         producto.setNombre("Suite de lujo");
         producto.setDescripcion("Habitación con cama king size, jacuzzi y vistas al mar");
         producto.setPrecioBase(323.0);
@@ -301,10 +317,10 @@ public class LocalDataLoader {
     private Producto getProducto3() {
         Producto producto = new Producto();
         producto.setIdHotel(hotel3.getId());
-        producto.setIdCategoria(categoriaProducto3);
-        producto.setNombre("Habitación doble");
-        producto.setDescripcion("Habitación con dos camas individuales y baño privado");
-        producto.setPrecioBase(30.0);
+        producto.setIdCategoria(categoriaProducto2);
+        producto.setNombre("Servicio de Restaurante");
+        producto.setDescripcion("Restaurante bien guapa");
+        producto.setPrecioBase(10.0);
         producto.setActivo(true);
         producto.setFechaDesde(LocalDate.of(2025, 6, 1));
         producto.setFechaHasta(LocalDate.of(2025, 12, 31));
@@ -330,22 +346,22 @@ public class LocalDataLoader {
     private CategoriaProducto getCategoriaProducto()
     {
         CategoriaProducto categoriaProducto = new CategoriaProducto();
-        categoriaProducto.setNombre("Habitacion categoria 1");
-        categoriaProducto.setDescripcion("Habitacion categoria 1 descripcion");
+        categoriaProducto.setNombre("Habitacion");
+        categoriaProducto.setDescripcion("Categoria para las distintas habitaciones");
         return categoriaProducto;
     }
 
     private CategoriaProducto getCategoriaProducto2() {
         CategoriaProducto categoriaProducto = new CategoriaProducto();
-        categoriaProducto.setNombre("Habitación categoría 2");
-        categoriaProducto.setDescripcion("Habitación categoría 2 con más comodidades");
+        categoriaProducto.setNombre("Servicios");
+        categoriaProducto.setDescripcion("Categorias para los distintos servicios");
         return categoriaProducto;
     }
 
     private CategoriaProducto getCategoriaProducto3() {
         CategoriaProducto categoriaProducto = new CategoriaProducto();
-        categoriaProducto.setNombre("Habitación categoría lujo");
-        categoriaProducto.setDescripcion("Habitación de lujo con servicios exclusivos");
+        categoriaProducto.setNombre("Otros");
+        categoriaProducto.setDescripcion("Categorias para productos del hotel");
         return categoriaProducto;
     }
 

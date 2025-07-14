@@ -17,6 +17,7 @@ public abstract class AbstractTemplateServicesEntities<ENTITIES, ID, REPOSITORY 
         this.repo = repo;
     }
 
+    //Encontrar una entidad
     public Optional<ENTITIES> findById(ID id) {
         if (repo.findById(id).isPresent()) {
             return Optional.of(repo.findById(id).get());
@@ -24,6 +25,8 @@ public abstract class AbstractTemplateServicesEntities<ENTITIES, ID, REPOSITORY 
         return Optional.empty();
     }
 
+
+    //Encontrar distintos tipos de listas
     public List<ENTITIES> findAll() {
         return repo.findAll();
     }
@@ -33,14 +36,13 @@ public abstract class AbstractTemplateServicesEntities<ENTITIES, ID, REPOSITORY 
         Set<ENTITIES> set = new HashSet<>(this.repo.findAll());
         return set;
     }
-    public boolean existsById(ID id) {
-        return repo.existsById(id);
-    }
 
     public Page<ENTITIES> findAllPages(Pageable pageable) {
         return repo.findAll(pageable);
     }
 
+
+    //Guardar
     public ENTITIES save(ENTITIES entity){
         return repo.save(entity);
     }
@@ -53,6 +55,7 @@ public abstract class AbstractTemplateServicesEntities<ENTITIES, ID, REPOSITORY 
         repo.saveAll(list);
     }
 
+    //Borrar por id
     public void deleteById(ID id) {
         this.repo.deleteById(id);
     }

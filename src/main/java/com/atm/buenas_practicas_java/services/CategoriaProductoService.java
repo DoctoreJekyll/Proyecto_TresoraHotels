@@ -14,5 +14,4 @@ public class CategoriaProductoService extends AbstractTemplateServicesEntities<C
     public CategoriaProductoService(CategoriaProductoRepo productoCatRepo) {
         super(productoCatRepo);
     }
-
 }

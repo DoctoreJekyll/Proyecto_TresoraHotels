@@ -32,9 +32,9 @@
 
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3 mb-md-0">
-                                <label for="idHotel" class="form-label">Hotel *</label>
-                                <select class="form-select" id="idHotel" th:field="*{idHotel}" required>
-                                    <option value="" disabled th:selected="*{idHotel == null}">Seleccione un hotel</option>
+                                <label for="Hotel" class="form-label">Hotel *</label>
+                                <select class="form-select" id="Hotel" th:field="*{hotel}" required>
+                                    <option value="" disabled th:selected="*{hotel == null}">Seleccione un hotel</option>
                                     <option th:each="hotel : ${hoteles}"
                                             th:value="${hotel.id}"
                                             th:text="${hotel.nombre}">Hotel</option>
@@ -42,9 +42,9 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="idProducto" class="form-label">Producto *</label>
-                                <select class="form-select" id="idProducto" th:field="*{idProducto}" required>
-                                    <option value="" disabled th:selected="*{idProducto == null}">Seleccione un producto</option>
+                                <label for="Producto" class="form-label">Producto *</label>
+                                <select class="form-select" id="Producto" th:field="*{producto}" required>
+                                    <option value="" disabled th:selected="*{producto == null}">Seleccione un producto</option>
                                     <option th:each="producto : ${productos}"
                                             th:value="${producto.id}"
                                             th:text="${producto.nombre}">Producto</option>
@@ -77,7 +77,7 @@
 
                             <div class="col-md-6">
                                 <label for="estadoOcupacion" class="form-label">Estado de Ocupación *</label>
-                                <input type="text" class="form-control" id="estadoOcupacion" th:field="*{estadoOcupacion}" maxlength="30" required />
+                                <input type="text" class="form-control" id="estadoOcupacion" th:field="*{ocupada}" maxlength="30" required />
                             </div>
                         </div>
 

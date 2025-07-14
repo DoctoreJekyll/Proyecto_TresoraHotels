@@ -23,6 +23,8 @@ public class InformesController {
     private final UsuarioService usuarioService;
     private final HabitacionService habitacionService;
 
+    //private final informeFacade;
+
     public InformesController(InformesService informesService, UsuarioService usuarioService, HabitacionService habitacionService) {
         this.informesService = informesService;
         this.usuarioService = usuarioService;

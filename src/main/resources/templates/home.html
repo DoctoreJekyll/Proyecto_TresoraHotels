@@ -133,7 +133,7 @@
                             </div>
                             <p class="card-text flex-grow-1" th:text="${hotel.descripcion}">Descripción</p>
                             <p class="card-text"><strong th:text="'Desde ' + ${hotel.id} + '€ noche'">Precio</strong></p>
-                            <a class="btn btn-primary w-100 mt-auto" th:href="@{/reservahome(id=${hotel.id})}" target="_blank">Reservar ahora</a>
+                            <a class="btn btn-primary w-100 mt-auto" th:href="@{/hotel(id=${hotel.nombre})}" target="_blank">Reservar ahora</a>
                         </div>
                     </div>
                 </div>
