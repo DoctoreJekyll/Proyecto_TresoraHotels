@@ -3,6 +3,8 @@ package com.atm.buenas_practicas_java.controllers;
 import com.atm.buenas_practicas_java.dtosOld.*;
 import com.atm.buenas_practicas_java.entities.DatosReserva;
 import com.atm.buenas_practicas_java.entities.Hotel;
+import com.atm.buenas_practicas_java.entities.MiembroEquipo;
+import com.atm.buenas_practicas_java.services.EquipoService;
 import com.atm.buenas_practicas_java.services.EmailService;
 import com.atm.buenas_practicas_java.services.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +25,8 @@ public class HotelesController {
 
     @Autowired
     private HotelService hotelService;
+    @Autowired
+    private EquipoService equipoService;
 
     @GetMapping("/hoteles")
     public String mostrarHoteles(Model model) {
@@ -35,8 +40,43 @@ public class HotelesController {
                     ", DireccionURL: " + hotel.getDireccionURL());
         }
         model.addAttribute("hotels", hotels);
+
+        List<MiembroEquipo> equipo = equipoService.findAll();
+        System.out.println("Equipo obtenido: " + equipo);
+        model.addAttribute("equipo", equipo);
+
+//        // Cargar datos del equipo (estático para este ejemplo)
+//        List<MiembroEquipo> equipo = Arrays.asList(
+//                new MiembroEquipo(
+//                        "Carlos Gómez",
+//                        "https://randomuser.me/api/portraits/men/45.jpg",
+//                        "CEO y fundador. Apasionado por la innovación hotelera.",
+//                        Arrays.asList(
+//                                new RedSocial("LinkedIn", "https://linkedin.com/in/carlos-gomez"),
+//                                new RedSocial("Twitter", "https://twitter.com/carlosgomez")
+//                        )
+//                ),
+//                new MiembroEquipo(
+//                        "Laura Pérez",
+//                        "https://randomuser.me/api/portraits/women/32.jpg",
+//                        "Directora de marketing. Creativa, empática y visionaria.",
+//                        null // Sin redes sociales
+//                ),
+//                new MiembroEquipo(
+//                        "Andrés Rivera",
+//                        "https://randomuser.me/api/portraits/men/76.jpg",
+//                        "CTO. Arquitecto de soluciones modernas y escalables.",
+//                        null // Sin redes sociales
+//                )
+//        );
+//        model.addAttribute("equipo", equipo);
+
+
         return "home";
+
     }
+
+
     @GetMapping("/reservaFlotante")
     public String mostrarFormularioReserva(
             @RequestParam(value = "hotelId", required = false) Integer hotelId,
@@ -76,14 +116,16 @@ public class HotelesController {
                         templateName = "reservaHotelCiudad";
                         break;
                     default:
-                        templateName = "reservaHotelDefault";
+                        templateName = "home";
                         break;
                 }
             } else {
-                model.addAttribute("hotelNombre", "No se seleccionó un hotel válido");
+                templateName = "home";
+               // model.addAttribute("hotelNombre", "No se seleccionó un hotel válido");
             }
         } else {
-            model.addAttribute("hotelNombre", "No se seleccionó un hotel");
+            templateName = "home";
+           // model.addAttribute("hotelNombre", "No se seleccionó un hotel");
         }
 
         // Agregar datos al modelo
@@ -105,12 +147,6 @@ public class HotelesController {
         model.addAttribute("datosreserva", new DatosReserva());
         return "reserva"; // Nombre de la plantilla
     }
-
-
-
-
-
-
 
 
 
