@@ -50,6 +50,7 @@ public class LocalDataLoader {
     private final ContactoRepo contactoRepo;
     private final FacturaRepo facturaRepo;
     private final MetodoPagoRepo metodoPagoRepo;
+    private final MiembroEquipoRepo miembroEquipoRepo;
 
     /**
      * Constructor de la clase {@code LocalDataLoader}.
@@ -106,6 +107,39 @@ public class LocalDataLoader {
         loadContactos();
         loadMetodoPago();
         loadFacturas();
+        loadMiembrosEquipo();
+    }
+    public void loadMiembrosEquipo() {
+        // Cargar datos del equipo
+        MiembroEquipo carlos = new MiembroEquipo(
+                "Carlos Gómez",
+                "https://randomuser.me/api/portraits/men/45.jpg",
+                "CEO y fundador. Apasionado por la innovación hotelera.",
+                Arrays.asList(
+                        new RedSocial("LinkedIn", "https://linkedin.com/in/carlos-gomez"),
+                        new RedSocial("Twitter", "https://twitter.com/carlosgomez")
+                )
+        );
+
+        // Asociar las redes sociales con el miembro
+        carlos.getRedesSociales().forEach(redSocial -> redSocial.setMiembro(carlos));
+
+        MiembroEquipo laura = new MiembroEquipo(
+                "Laura Pérez",
+                "https://randomuser.me/api/portraits/women/32.jpg",
+                "Directora de marketing. Creativa, empática y visionaria.",
+                null
+        );
+
+        MiembroEquipo andres = new MiembroEquipo(
+                "Andrés Rivera",
+                "https://randomuser.me/api/portraits/men/76.jpg",
+                "CTO. Arquitecto de soluciones modernas y escalables.",
+                null
+        );
+
+        miembroEquipoRepo.saveAll(Arrays.asList(carlos, laura, andres));
+        System.out.println("Datos del equipo cargados en la base de datos.");
     }
 
     public void loadHoteles() {
@@ -157,7 +191,7 @@ public class LocalDataLoader {
         hotel2.setDescripcion("Lujo entre montañas y aire puro");
         hotel2.setCiudad("Granada");
         hotel2.setDireccion("Camino de la Sierra, s/n, 18010, Granada");
-        hotel2.setDireccionURL("https://maps.google.com/?q=Camino+de+la+Sierra+Granada");
+        hotel2.setDireccionURL("//umap.openstreetmap.fr/es/map/mapa-sin-titulo_1254618?scaleControl=false&miniMap=true&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=false&datalayers=e67e5d33-c34d-4abb-95d0-4a009c4b1ba9&homeControl=false#14/37.0983/-3.3994");
         hotel2.setImageURL("https://picsum.photos/600/400?random=8");
         hotel2.setTelefono("+34 622 333 444");
         hotel2.setEmail("reservas@monteverdepalace.com");
@@ -169,7 +203,7 @@ public class LocalDataLoader {
         hotel1.setDescripcion("Un paraíso costero para que te lo goces");
         hotel1.setCiudad("Málaga");
         hotel1.setDireccion("Playa de Pedregalejo, Málaga-Este, 29017, Málaga");
-        hotel1.setDireccionURL("https://maps.google.com/?q=Playa+de+Pedregalejo");
+        hotel1.setDireccionURL("//umap.openstreetmap.fr/es/map/mapa-sin-titulo_1254618?scaleControl=false&miniMap=true&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true&datalayers=e67e5d33-c34d-4abb-95d0-4a009c4b1ba9");
         hotel1.setImageURL("https://picsum.photos/600/400?random=5");
         hotel1.setTelefono("+34 633 111 222");
         hotel1.setEmail("info@tresorabeach.com");
@@ -207,7 +241,7 @@ public class LocalDataLoader {
         habitacion1.setTipo("Individual");
         habitacion1.setCapacidad(1);
         habitacion1.setOcupada(false);
-        habitacion1.setImagenUrl("no image");
+        habitacion1.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
         return habitacion1;
     }
     private Habitacion habitacion2() {
@@ -219,7 +253,7 @@ public class LocalDataLoader {
         habitacion2.setTipo("Doble");
         habitacion2.setCapacidad(2);
         habitacion2.setOcupada(false);
-        habitacion2.setImagenUrl("no image");
+        habitacion2.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
         return habitacion2;
     }
 
@@ -232,7 +266,7 @@ public class LocalDataLoader {
         habitacion3.setTipo("Suite");
         habitacion3.setCapacidad(4);
         habitacion3.setOcupada(true);
-        habitacion3.setImagenUrl("no image");
+        habitacion3.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
         return habitacion3;
     }
 
@@ -245,7 +279,7 @@ public class LocalDataLoader {
         habitacion3.setTipo("Suite");
         habitacion3.setCapacidad(4);
         habitacion3.setOcupada(false);
-        habitacion3.setImagenUrl("no image");
+        habitacion3.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
         return habitacion3;
     }
 

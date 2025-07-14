@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import jakarta.servlet.http.HttpSession;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -35,24 +36,43 @@ public class HotelWebController {
     private final ReservaConfirmacionMapper confirmacionReservaDTO;
 
 
-    @GetMapping("/{nombre}")
-    @Transactional(readOnly = true)
-    public String mostrarHotelPorNombre(@PathVariable String nombre, Model model, Pageable pageable) {
-        Hotel hotel = hotelService.findByNombreIgnoreCase(nombre)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel no encontrado"));
-
-        Page<Habitacion> habitaciones = habitacionService.findByHotelId(hotel.getId(), pageable);
-        for (Habitacion h : habitaciones) {
-            h.getProducto();
-            h.getProducto().getPrecioBase();// fuerza inicialización
+//    @GetMapping("/{nombre}")
+//    @Transactional(readOnly = true)
+//    public String mostrarHotelPorNombre(@PathVariable String nombre, Model model, Pageable pageable) {
+//        Hotel hotel = hotelService.findByNombreIgnoreCase(nombre)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel no encontrado"));
+//
+//        Page<Habitacion> habitaciones = habitacionService.findByHotelId(hotel.getId(), pageable);
+//        for (Habitacion h : habitaciones) {
+//            h.getProducto();
+//            h.getProducto().getPrecioBase();// fuerza inicialización
+//        }
+//
+//
+//        model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
+//        model.addAttribute("hotel", hotel);
+//        model.addAttribute("habitaciones", habitaciones);
+//
+//        return "hotelesReservas";
+@GetMapping("/{nombre}")
+@Transactional(readOnly = true)
+public String mostrarHotelPorNombre(@PathVariable String nombre, Model model, Pageable pageable, HttpSession session) {
+    session.getAttribute("dummy"); // Forzar creación de sesión
+    Hotel hotel = hotelService.findByNombreIgnoreCase(nombre)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel no encontrado"));
+    System.out.println(hotel.getNombre());
+    Page<Habitacion> habitaciones = habitacionService.findByHotelId(hotel.getId(), pageable);
+    for (Habitacion h : habitaciones) {
+        if (h.getProducto() != null) {
+            h.getProducto().getPrecioBase(); // fuerza inicialización
         }
+    }
 
+    model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
+    model.addAttribute("hotel", hotel);
+    model.addAttribute("habitaciones", habitaciones);
 
-        model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
-        model.addAttribute("hotel", hotel);
-        model.addAttribute("habitaciones", habitaciones);
-
-        return "hotelesReservas";
+    return "hotelesReservas";
     }
 
     @PostMapping("/reservaCompleta")

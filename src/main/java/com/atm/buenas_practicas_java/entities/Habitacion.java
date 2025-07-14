@@ -40,7 +40,7 @@ public class Habitacion {
     @Column(name = "ocupada", nullable = false, length = 30)
     private Boolean ocupada;
 
-    @Column(name = "imagenUrl", nullable = false, length = 300)
+    @Column(name = "imagenUrl",nullable = false, length = 30000)
     private String imagenUrl;
 
     @OneToMany(mappedBy = "idHabitacion")
