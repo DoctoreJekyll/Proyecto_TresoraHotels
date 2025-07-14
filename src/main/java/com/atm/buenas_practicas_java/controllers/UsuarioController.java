@@ -7,6 +7,7 @@ import com.atm.buenas_practicas_java.services.RolService;
 import com.atm.buenas_practicas_java.services.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -122,6 +123,43 @@ public class UsuarioController {
         usuarioService.deleteById(usuario.getId());
         return "redirect:/home";
     }
+    //--------------------------------CONTROLLER DE VISTAS DE EMPLEADO----------------------------------------------//
+
+    @GetMapping("/nuevo")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    public String nuevoUsuarioForm(Model model) {
+        model.addAttribute("usuario", new Usuario());
+        model.addAttribute("roles", rolService.findAll()); // para el desplegable de roles
+        return "formUsuario";
+    }
+
+    @GetMapping("/editar/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    public String editarUsuario(@PathVariable("id") Integer id, Model model) {
+        Usuario usuario = usuarioService.findEntity(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("roles", rolService.findAll());
+        return "formUsuario";
+    }
+
+    @PostMapping("/guardar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    public String guardarUsuario(@ModelAttribute("usuario") Usuario usuario,
+                                 @RequestParam("rolId") Integer rolId) {
+        Rol rol = rolService.findById(rolId).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+        usuario.setIdRol(rol);
+        usuarioService.saveEntity(usuario);
+        return "redirect:/lista/usuarios";
+    }
+
+    @PostMapping("/eliminar/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    public String eliminarUsuario(@PathVariable("id") Integer id) {
+        usuarioService.deleteById(id);
+        return "redirect:/lista/usuarios";
+    }
 }
+
 
 
