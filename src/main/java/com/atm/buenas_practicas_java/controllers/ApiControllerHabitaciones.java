@@ -34,8 +34,8 @@ public class ApiControllerHabitaciones {
 
     @GetMapping
     public ResponseEntity<List<Habitacion>> getAllHabitacion() {
-        List<Habitacion> habitacions = habitacionService.findAll();
-        return new ResponseEntity<>(habitacions, HttpStatus.OK);
+        List<Habitacion> habitaciones = habitacionService.findAll();
+        return new ResponseEntity<>(habitaciones, HttpStatus.OK);
     }
 
     @GetMapping("recents/{page}")
