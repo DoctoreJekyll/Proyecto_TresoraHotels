@@ -33,7 +33,7 @@ public class Hotel {
     @Column(name = "direccion", nullable = false, length = 70)
     private String direccion;
 
-    @Column(name = "direccionURL", nullable = false, length = 300)
+    @Column(name = "direccionURL", nullable = false, length = 30000)
     private String direccionURL;
 
     @Column(name = "imagen", length = 300)
