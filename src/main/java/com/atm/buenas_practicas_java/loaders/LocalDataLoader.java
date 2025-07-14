@@ -241,7 +241,7 @@ public class LocalDataLoader {
         habitacion1.setTipo("Individual");
         habitacion1.setCapacidad(1);
         habitacion1.setOcupada(false);
-        habitacion1.setImagenUrl("no image");
+        habitacion1.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
         return habitacion1;
     }
     private Habitacion habitacion2() {
@@ -253,7 +253,7 @@ public class LocalDataLoader {
         habitacion2.setTipo("Doble");
         habitacion2.setCapacidad(2);
         habitacion2.setOcupada(false);
-        habitacion2.setImagenUrl("no image");
+        habitacion2.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
         return habitacion2;
     }
 
@@ -266,7 +266,7 @@ public class LocalDataLoader {
         habitacion3.setTipo("Suite");
         habitacion3.setCapacidad(4);
         habitacion3.setOcupada(true);
-        habitacion3.setImagenUrl("no image");
+        habitacion3.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
         return habitacion3;
     }
 
@@ -279,7 +279,7 @@ public class LocalDataLoader {
         habitacion3.setTipo("Suite");
         habitacion3.setCapacidad(4);
         habitacion3.setOcupada(false);
-        habitacion3.setImagenUrl("no image");
+        habitacion3.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
         return habitacion3;
     }
 

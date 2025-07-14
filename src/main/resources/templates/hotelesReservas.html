@@ -139,6 +139,7 @@
                             </div>
                             <div class="modal-body">
                                 <form th:action="@{/hotel/reservaCompleta}" method="post">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                     <input type="hidden" name="hotel" th:value="${hotel.id}" />
                                     <input type="hidden" name="idHabitacion" th:value="${habitacion.id}" />
 
