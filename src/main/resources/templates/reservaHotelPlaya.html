@@ -65,31 +65,32 @@
                         <form th:action="@{/reserva}" th:object="${datosreserva}" method="POST" class="row g-2">
                             <div class="col-md-3">
                                 <label for="checkin" class="form-label">Fecha de entrada</label>
-                                <input  th:field="${datosreserva.fechaEntrada}" type="date" id="checkin" name="checkin" class="form-control" min="2025-04-28" required>
+                                <input th:field="${datosreserva.fechaEntrada}" type="date" id="checkin" name="checkin" class="form-control"
+                                       th:value="${param.fechaEntrada != null ? param.fechaEntrada : ''}" min="2025-04-28" required>
                             </div>
                             <div class="col-md-3">
                                 <label for="checkout" class="form-label">Fecha de salida</label>
-                                <input th:field="${datosreserva.fechaSalida}" type="date" id="checkout" name="checkout" class="form-control" min="2025-04-29" required>
+                                <input th:field="${datosreserva.fechaSalida}" type="date" id="checkout" name="checkout" class="form-control"
+                                       th:value="${param.fechaSalida != null ? param.fechaSalida : ''}" min="2025-04-29" required>
                             </div>
                             <div class="col-md-3">
-                                <label>Adultos:</label>
-                                <input type="number" th:field="${datosreserva.Adultos}" />
-
-                                <!--label for="adults" class="form-label">Adultos</label>
-                                <select id="adults" name="adults" class="form-select" required>
+                                <label for="adults" class="form-label">Adultos</label>
+                                <select th:field="${datosreserva.adultos}" id="adults" name="adults" class="form-select" required>
                                     <option value="1">1</option>
-                                    <option value="2" selected>2</option>
+                                    <option value="2">2</option>
                                     <option value="3">3</option>
                                     <option value="4">4</option>
-                                </select-->
+                                </select>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
+                                <input type="hidden" name="hotelId" th:value="${param.hotelId != null ? param.hotelId : ''}">
                                 <button type="submit" class="btn btn-grupo5 w-100">Buscar</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </section>
+
 
             <!-- -------------------------------------Sección opciones de habitaciones disponibles:------------------------------------------------------------------  -->
             <section class="py-5 habitaciones-section">

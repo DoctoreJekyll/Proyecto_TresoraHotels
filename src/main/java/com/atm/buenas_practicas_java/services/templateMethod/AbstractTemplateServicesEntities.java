@@ -33,6 +33,9 @@ public abstract class AbstractTemplateServicesEntities<ENTITIES, ID, REPOSITORY 
         Set<ENTITIES> set = new HashSet<>(this.repo.findAll());
         return set;
     }
+    public boolean existsById(ID id) {
+        return repo.existsById(id);
+    }
 
     public Page<ENTITIES> findAllPages(Pageable pageable) {
         return repo.findAll(pageable);

@@ -254,17 +254,25 @@
 <!--    </nav>-->
 
     <nav id="bookingBar">
-        <form th:action="@{/reservaFlotante}" method="get">
-            <select name="hotelId" aria-label="Selecciona Hotel">
+        <form th:action="@{/reservahome}" method="get">
+            <select name="hotelId" aria-label="Selecciona Hotel" required>
                 <option selected disabled>Seleccione Hotel</option>
                 <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.nombre}">Hotel</option>
             </select>
-            <input type="date" name="fechaEntrada" aria-label="Fecha Entrada" placeholder="Entrada">
-            <input type="date" name="fechaSalida" aria-label="Fecha Salida" placeholder="Salida">
-            <input type="text" name="habitacionesAdultos" placeholder="1 Hab / 2 Adultos" aria-label="Habitaciones y Adultos">
+            <input type="date" name="fechaEntrada" aria-label="Fecha Entrada" placeholder="Entrada" required>
+            <input type="date" name="fechaSalida" aria-label="Fecha Salida" placeholder="Salida" required>
+            <select name="adultos" aria-label="Adultos" required>
+                <option value="1">1 Adulto</option>
+                <option value="2">2 Adultos</option>
+                <option value="3">3 Adultos</option>
+                <option value="4">4 Adultos</option>
+            </select>
             <button type="submit" aria-label="Buscar">Buscar</button>
         </form>
     </nav>
+
+
+
 
 
     <!-- Botón para abrir/cerrar la barra -->
