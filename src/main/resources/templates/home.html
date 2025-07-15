@@ -88,33 +88,6 @@
         <div class="swiper-button-next"></div>
     </section>
 
-<!--    <section class="swiper mySwiper py-5">-->
-<!--        <div class="swiper-wrapper">-->
-<!--            <div class="swiper-slide">-->
-<!--                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Carlos Gómez">-->
-<!--                <h5>Carlos Gómez</h5>-->
-<!--                <p>CEO y fundador. Apasionado por la innovación hotelera.</p>-->
-<!--                <ul class="social-links">-->
-<!--                    <li><a href="https://linkedin.com/in/usuario" target="_blank">LinkedIn</a></li>-->
-<!--                    <li><a href="https://twitter.com/usuario" target="_blank">Twitter</a></li>-->
-<!--                </ul>-->
-<!--            </div>-->
-<!--            <div class="swiper-slide">-->
-<!--                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Laura Pérez">-->
-<!--                <h5>Laura Pérez</h5>-->
-<!--                <p>Directora de marketing. Creativa, empática y visionaria.</p>-->
-<!--            </div>-->
-<!--            <div class="swiper-slide">-->
-<!--                <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Andrés Rivera">-->
-<!--                <h5>Andrés Rivera</h5>-->
-<!--                <p>CTO. Arquitecto de soluciones modernas y escalables.</p>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="swiper-pagination"></div>-->
-<!--        <div class="swiper-button-prev"></div>-->
-<!--        <div class="swiper-button-next"></div>-->
-<!--    </section>-->
-
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script th:src="@{/js/swiper.js}"></script>
 
@@ -142,26 +115,6 @@
         </div>
     </section>
 
-    <!-- Sección Servicios -->
-
-
-<!--    <section class="py-5" style="padding-top: 6rem !important; padding-bottom: 6rem !important;">-->
-<!--        <div class="container text-center px-4">-->
-<!--            <h2 class="display-5 mb-5" style="font-weight: 600;" th:text="${serviciosTitulo}">Servicios Destacados</h2>-->
-<!--            <div class="swiper servicesSwiper" style="padding: 0 2rem;">-->
-<!--                <div class="swiper-wrapper">-->
-<!--                    <div class="swiper-slide p-4 bg-gray rounded-4 shadow text-dark" th:each="servicio : ${servicios}">-->
-<!--                        <img th:src="${servicio.imagenURL}" class="mb-3" style="width:100%; height:200px; object-fit:cover;" th:alt="'Imagen de ' + ${servicio.nombre}">-->
-<!--                        <h5 th:text="${servicio.nombre}">Servicio</h5>-->
-<!--                        <p th:text="${servicio.descripcion}">Descripción</p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="swiper-button-prev"></div>-->
-<!--                <div class="swiper-button-next"></div>-->
-<!--                <div class="swiper-pagination"></div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
 
 
     <section class="py-5" style="padding-top: 6rem !important; padding-bottom: 6rem !important;">
@@ -229,59 +182,60 @@
         </div>
     </section>
 
-
-<!--                    <div class="carousel-inner">-->
-<!--                        <div class="carousel-item" th:each="hotel, iter : ${hotels}" th:classappend="${iter.index == 0} ? ' active'">-->
-<!--                            <img th:src="${hotel.direccionURL}" th:alt="'Ubicación de ' + ${hotel.nombre}" width="100%" height="500">-->
-<!--                            <div class="carousel-caption d-none d-md-block">-->
-<!--                                <h5 th:text="${hotel.nombre}">Nombre Hotel</h5>-->
-<!--                                <p th:text="${hotel.direccion}">Ubicación</p>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-
-
-
-    <!-- Barra de reservas flotante -->
-<!--    <nav id="bookingBar">-->
-<!--        <select name="hotel" aria-label="Selecciona Hotel">-->
-<!--            <option selected disabled>Seleccione Hotel</option>-->
-<!--            <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.nombre}">Hotel</option>-->
-<!--        </select>-->
-<!--        <input type="date" name="fechaEntrada" aria-label="Fecha Entrada" placeholder="Entrada">-->
-<!--        <input type="date" name="fechaSalida" aria-label="Fecha Salida" placeholder="Salida">-->
-<!--        <input type="text" name="habitacionesAdultos" placeholder="1 Hab / 2 Adultos" aria-label="Habitaciones y Adultos">-->
-<!--        <button type="submit" aria-label="Buscar">Buscar</button>-->
-<!--    </nav>-->
-
     <nav id="bookingBar">
-        <form th:action="@{/reservahome}" method="get">
-            <select name="hotelId" aria-label="Selecciona Hotel" required>
-                <option selected disabled>Seleccione Hotel</option>
-                <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.nombre}">Hotel</option>
-            </select>
-            <input type="date" name="fechaEntrada" aria-label="Fecha Entrada" placeholder="Entrada" required>
-            <input type="date" name="fechaSalida" aria-label="Fecha Salida" placeholder="Salida" required>
-            <select name="adultos" aria-label="Adultos" required>
+        <form id="bookingForm">
+            <select name="hotelId" id="hotelSelect" required aria-label="Selecciona Hotel">
+                <!-- opciones aquí -->
+                    <option selected disabled>Seleccione Hotel</option>
+                    <option th:each="hotel : ${hotels}"
+                            th:value="${hotel.id}"
+                            th:text="${hotel.nombre}"
+                            th:attr="data-nombre=${hotel.nombre}">
+                        Hotel
+                    </option>
+                </select>
+            <input type="date" name="fechaEntrada" id="fechaEntrada" required>
+            <input type="date" name="fechaSalida" id="fechaSalida" required>
+            <select name="adultos" id="adultos" required>
                 <option value="1">1 Adulto</option>
                 <option value="2">2 Adultos</option>
                 <option value="3">3 Adultos</option>
                 <option value="4">4 Adultos</option>
             </select>
-            <button type="submit" aria-label="Buscar">Buscar</button>
+            <button type="submit">Buscar</button>
         </form>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const form = document.getElementById("bookingForm");
+                const hotelSelect = document.getElementById("hotelSelect");
+
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    const selectedOption = hotelSelect.options[hotelSelect.selectedIndex];
+                    const nombreHotel = selectedOption.getAttribute("data-nombre");
+                    const fechaEntrada = document.getElementById("fechaEntrada").value;
+                    const fechaSalida = document.getElementById("fechaSalida").value;
+                    const adultos = document.getElementById("adultos").value;
+
+                    if (!nombreHotel || !fechaEntrada || !fechaSalida || !adultos) {
+                        alert("Por favor completa todos los campos.");
+                        return;
+                    }
+
+                    // Construir URL destino
+                    const url = `/hotel/${encodeURIComponent(nombreHotel)}?fechaEntrada=${fechaEntrada}&fechaSalida=${fechaSalida}&adultos=${adultos}`;
+                    window.location.href = url;
+                });
+            });
+        </script>
+
     </nav>
-
-
-
-
-
     <!-- Botón para abrir/cerrar la barra -->
     <button id="toggleBookingBtn" aria-expanded="true" aria-controls="bookingBar" title="Abrir/Cerrar barra reservas">
         &#9776;
     </button>
 
 </main>
-
 </body>
 </html>

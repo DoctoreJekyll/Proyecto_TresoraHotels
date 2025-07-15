@@ -20,11 +20,11 @@
         <div class="container d-flex flex-wrap gap-3 align-items-center justify-content-center">
             <div>
                 <label for="globalEntrada" class="form-label">Fecha de entrada:</label>
-                <input type="date" class="form-control" id="globalEntrada" />
+                <input type="date" class="form-control" id="globalEntrada" th:value="${fechaEntrada}" />
             </div>
             <div>
                 <label for="globalSalida" class="form-label">Fecha de salida:</label>
-                <input type="date" class="form-control" id="globalSalida" />
+                <input type="date" class="form-control" id="globalSalida" th:value="${fechaSalida}" />
             </div>
             <button class="btn btn-warning mt-4" id="filtrarBtn">Filtrar habitaciones</button>
         </div>
@@ -36,17 +36,18 @@
             const entradaInput = document.getElementById("globalEntrada");
             const salidaInput = document.getElementById("globalSalida");
             const filtrarBtn = document.getElementById("filtrarBtn");
-            const hotelId = document.body.dataset.hotelId; // ← aquí recoges el ID
+            const hotelId = document.body.dataset.hotelId;
 
             // Ocultar todas las habitaciones al cargar
             document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
                 card.classList.add("oculta");
             });
 
-            filtrarBtn.addEventListener("click", async () => {
-                console.log("✅ Botón clicado");
+            // Función para ejecutar el filtrado
+            async function filtrarHabitaciones() {
                 const entrada = entradaInput.value;
                 const salida = salidaInput.value;
+
                 if (!entrada || !salida) {
                     alert("Selecciona ambas fechas para filtrar.");
                     return;
@@ -56,7 +57,6 @@
                     const res = await fetch(`/hotel/api/habitacionesDisponibles?hotelId=${hotelId}&fechaEntrada=${entrada}&fechaSalida=${salida}`);
                     if (!res.ok) throw new Error("Error al consultar disponibilidad");
                     const disponibles = await res.json();
-                    console.log("✅ Habitaciones disponibles:", disponibles);
 
                     if (!Array.isArray(disponibles) || disponibles.length === 0) {
                         alert("No hay habitaciones disponibles para esas fechas.");
@@ -66,7 +66,6 @@
                         return;
                     }
 
-                    // Asegurar comparación por id numérico
                     document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
                         const id = parseInt(card.getAttribute("data-id-habitacion"), 10);
                         if (disponibles.some(h => h.id === id)) {
@@ -80,7 +79,15 @@
                     console.error(err);
                     alert("No se pudo obtener disponibilidad. Revisa la conexión o el servidor.");
                 }
-            });
+            }
+
+            // Llamar la función al hacer clic manual
+            filtrarBtn.addEventListener("click", filtrarHabitaciones);
+
+            // Llamar automáticamente si hay fechas ya cargadas
+            if (entradaInput.value && salidaInput.value) {
+                filtrarHabitaciones();
+            }
         });
     </script>
 

@@ -55,7 +55,12 @@ public class HotelWebController {
 
     @GetMapping("/{nombre}")
     @Transactional(readOnly = true)
-    public String mostrarHotelPorNombre(@PathVariable String nombre, Model model, Pageable pageable, HttpSession session) {
+    public String mostrarHotelPorNombre(
+            @PathVariable String nombre,
+            @RequestParam(required = false) String fechaEntrada,
+            @RequestParam(required = false) String fechaSalida,
+            Model model, Pageable pageable, HttpSession session) {
+
         session.getAttribute("dummy"); // Forzar creación de sesión
         Hotel hotel = hotelService.findByNombreIgnoreCase(nombre)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel no encontrado"));
@@ -72,8 +77,13 @@ public class HotelWebController {
         model.addAttribute("hotel", hotel);
         model.addAttribute("habitaciones", habitaciones);
 
+        // Añadir fechas al modelo si vienen en la URL
+        model.addAttribute("fechaEntrada", fechaEntrada);
+        model.addAttribute("fechaSalida", fechaSalida);
+
         return "hotelesReservas";
     }
+
 
 
     @PostMapping("/reservaCompleta")

@@ -111,7 +111,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Recursos públicos
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/", "/home", "/login", "/login-error", "/logout-exito", "/usuarios/crear-cuenta").permitAll()
+                        .requestMatchers("/", "/home", "/login", "/login-error", "/logout-exito", "/usuarios/crear-cuenta","/hotel/**").permitAll()
 
                         // Rutas específicas por rol
                         .requestMatchers("/panel").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")
