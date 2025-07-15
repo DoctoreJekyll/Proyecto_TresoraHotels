@@ -2,10 +2,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/plantilla}">
 <head>
-
-  <title>>Contacto - Hotel Gominola</title>
+  <title>Contacto - Hotel Gominola</title>
   <link th:href="@{/css/contact.css}" rel="stylesheet" />
-
 </head>
 
 <body class="bg-gradient-primary">
@@ -22,36 +20,36 @@
       <div id="formulario-contacto" class="row justify-content-center">
         <div class="col-lg-10">
           <h2 class="mb-4 text-center">Envíanos un mensaje</h2>
-          <!--con role y aria-describedby-->
+
           <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
-                th:action="@{/contact}" th:object="${contactInfo}" method="post" enctype="multipart/form-data">
+                th:action="@{/contactos/guardar}" th:object="${contacto}" method="post" enctype="multipart/form-data">
             <p id="instrucciones-formulario" class="text-muted text-center">
               Todos los campos marcados con * son obligatorios.
             </p>
+
             <div class="row mb-4">
               <div class="col-md-6 mb-3 mb-md-0">
                 <label for="nombre" class="form-label">Nombre *</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" th:field="${contactInfo.name}" placeholder="Tu nombre completo" required>
+                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Tu nombre completo" required>
               </div>
 
               <div class="col-md-6">
                 <label for="correo" class="form-label">Correo electrónico *</label>
-                <input type="email" class="form-control" id="correo" name="correo" th:field="${contactInfo.email}" placeholder="nombre@ejemplo.com" required>
+                <input type="email" class="form-control" id="correo" th:field="*{correo}" placeholder="nombre@ejemplo.com" required>
               </div>
             </div>
 
             <div class="mb-4">
               <label for="telefono" class="form-label">Teléfono</label>
-              <input type="tel" class="form-control" id="telefono" name="telefono" th:field="${contactInfo.phoneNumber}"
+              <input type="tel" class="form-control" id="telefono" th:field="*{telefono}"
                      placeholder="Ej. 654321987" pattern="[0-9]{7,15}" inputmode="numeric"
                      aria-label="Número de teléfono. Ejemplo: 654321987">
-
             </div>
 
             <div class="mb-4">
               <label for="departamento" class="form-label">Departamento *</label>
-              <select class="form-select" id="departamento" name="departamento" th:field="${contactInfo.department}" aria-required="true">
-                <option value="" disabled selected>Seleccione una opción</option>
+              <select class="form-select" id="departamento" th:field="*{departamento}" aria-required="true">
+                <option value="" disabled>Seleccione una opción</option>
                 <option value="habitacion">Habitación</option>
                 <option value="reserva">Reserva</option>
                 <option value="servicios">Servicios</option>
@@ -60,17 +58,27 @@
             </div>
 
             <div class="mb-4">
-              <label for="adjuntar" class="form-label">Adjuntar fotos (opcional)</label>
-              <input class="form-control" type="file" id="adjuntar" name="adjuntar[]"
-                     accept="image/*" multiple aria-describedby="ayuda-adjuntar">
-              <div id="ayuda-adjuntar" class="form-text">
-                Puedes subir una o varias imágenes en formato JPG, PNG o similar.
+              <label for="file1" class="form-label">Adjuntar foto 1 (opcional)</label>
+              <input class="form-control" type="file" id="file1" name="file1" accept=".jpg,.jpeg,.png"
+                     aria-describedby="ayuda-file1">
+              <div id="ayuda-file1" class="form-text">
+                Puedes subir una imagen en formato JPG, PNG o similar.
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="file2" class="form-label">Adjuntar foto 2 (opcional)</label>
+              <input class="form-control" type="file" id="file2" name="file2"  accept=".jpg,.jpeg,.png"
+                     aria-describedby="ayuda-file2">
+              <div id="ayuda-file2" class="form-text">
+                Puedes subir otra imagen si lo necesitas.
               </div>
             </div>
 
             <div class="mb-4">
               <label for="mensaje" class="form-label">Mensaje *</label>
-              <textarea class="form-control" id="mensaje" name="mensaje" th:field="${contactInfo.message}" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
+              <textarea class="form-control" id="mensaje" th:field="*{mensaje}" rows="5"
+                        placeholder="Escribe tu mensaje aquí..." required></textarea>
             </div>
 
             <div class="text-center">
@@ -99,6 +107,5 @@
     </div>
   </section>
 </main>
-
 </body>
 </html>
