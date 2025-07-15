@@ -16,9 +16,9 @@ public class Contacto {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "idUsuario")
-//    private Usuario idUsuario;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario")
+    private Usuario idUsuario;
 
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
@@ -35,7 +35,7 @@ public class Contacto {
     @Column(name = "mensaje", nullable = false, length = Integer.MAX_VALUE)
     private String mensaje;
 
-    @Column(name = "fechaEnvio")
+    @Column(name = "fecha_envio")
     private Instant fechaEnvio;
 
     @Column(name = "foto1", length = 25)

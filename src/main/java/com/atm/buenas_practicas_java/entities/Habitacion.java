@@ -19,11 +19,11 @@ public class Habitacion {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_hotel", nullable = false)
-    private Hotel idHotel;
+    private Hotel hotel;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_producto", nullable = false)
-    private Producto idProducto;
+    private Producto producto;
 
     @Column(name = "numero_habitacion", nullable = false)
     private Integer numeroHabitacion;
@@ -37,10 +37,10 @@ public class Habitacion {
     @Column(name = "capacidad", nullable = false)
     private Integer capacidad;
 
-    @Column(name = "estado_ocupacion", nullable = false, length = 30)
-    private String estadoOcupacion;
+    @Column(name = "ocupada", nullable = false, length = 30)
+    private Boolean ocupada;
 
-    @Column(name = "imagenUrl", nullable = false, length = 300)
+    @Column(name = "imagenUrl",nullable = false, length = 30000)
     private String imagenUrl;
 
     @OneToMany(mappedBy = "idHabitacion")
