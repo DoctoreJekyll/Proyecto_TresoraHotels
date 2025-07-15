@@ -1,5 +1,7 @@
 package com.atm.buenas_practicas_java.controllers;
 
+
+
 import com.atm.buenas_practicas_java.DTOs.ConfirmacionReservaDTO;
 import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
 import com.atm.buenas_practicas_java.entities.Habitacion;
@@ -22,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 import jakarta.servlet.http.HttpSession;
 
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Controller
 @RequestMapping("/hotel")

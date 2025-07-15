@@ -34,9 +34,9 @@ public class UploadFilesServiceImpl implements IUploadFilesService {
             }
 
             String fileExtensionName = fileOriginalName.substring(fileOriginalName.lastIndexOf("."));
-            String newFileName = fileName + fileExtensionName;
+            String newFileName = fileName;
 
-            File folder = new File("C:/Users/jarma/Desktop/Proyecto_TresoraHotels/opt/imagenes");
+            File folder = new File("C:/Users/Usuario/Documents/CursoJava/Proyecto_TresoraHotels/opt/imagenes");
             if(!folder.exists()){
                 folder.mkdir();
             }
