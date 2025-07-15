@@ -1,4 +1,4 @@
-package com.atm.buenas_practicas_java.dtos;
+package com.atm.buenas_practicas_java.controllers.dtosOld;
 
 import java.util.ArrayList;
 import java.util.List;

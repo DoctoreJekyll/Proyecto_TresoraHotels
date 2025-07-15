@@ -1,9 +1,9 @@
 package com.atm.buenas_practicas_java.controllers;
 
-import com.atm.buenas_practicas_java.dtos.ContactDto;
-import com.atm.buenas_practicas_java.dtos.LoginDto;
-import com.atm.buenas_practicas_java.dtos.ReservaDto;
-import com.atm.buenas_practicas_java.dtos.UserDto;
+import com.atm.buenas_practicas_java.controllers.dtosOld.ContactDto;
+import com.atm.buenas_practicas_java.controllers.dtosOld.LoginDto;
+import com.atm.buenas_practicas_java.controllers.dtosOld.ReservaDto;
+import com.atm.buenas_practicas_java.controllers.dtosOld.UserDto;
 import com.atm.buenas_practicas_java.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,8 +12,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.List;
 
 @Controller
 public class HotelesController {
