@@ -386,16 +386,16 @@ public class LocalDataLoader {
 
     public void loadRoles() {
         rolCliente = new Rol();
-        rolCliente.setNombreRol("cliente");
+        rolCliente.setNombreRol("CLIENTE");
 
         rolEmpleado = new Rol();
-        rolEmpleado.setNombreRol("empleado");
+        rolEmpleado.setNombreRol("EMPLEADO");
 
         rolLimpieza = new Rol();
-        rolLimpieza.setNombreRol("limpieza");
+        rolLimpieza.setNombreRol("LIMPIEZA");
 
         rolAdmin = new Rol();
-        rolAdmin.setNombreRol("admin");
+        rolAdmin.setNombreRol("ADMIN");
 
         rolRepo.saveAll(Arrays.asList(rolCliente, rolEmpleado, rolLimpieza, rolAdmin));
     }

@@ -5,14 +5,15 @@ import com.atm.buenas_practicas_java.entities.Rol;
 import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.services.RolService;
 import com.atm.buenas_practicas_java.services.UsuarioService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 
 
 @Controller
@@ -24,48 +25,24 @@ public class UsuarioController {
     private final RolService rolService;
 
     @GetMapping("/crear-cuenta")
+    @PreAuthorize("permitAll()")
     public String mostrarFormularioRegistro(Model model) {
         model.addAttribute("userData", new UsuarioDTO());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()
+                && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            model.addAttribute("roles", rolService.findAll());
+        }
+
         return "crearCuenta";
     }
 
-    @PostMapping("/crear-cuenta")
-    public String procesarFormularioRegistro(@Valid @ModelAttribute("userData") UsuarioDTO dto,
-                                             BindingResult result, Model model) {
-
-        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-            result.rejectValue("confirmPassword", "error.userData", "Las contraseñas no coinciden");
-        }
-
-        // Email ya registrado
-        if (usuarioService.findAllEntities().stream().anyMatch(u -> u.getEmail().equals(dto.getEmail()))) {
-            result.rejectValue("email", "error.userData", "El email ya está registrado");
-        }
-
-        if (result.hasErrors()) {
-            return "crearCuenta";
-        }
-
-        Usuario usuario = new Usuario();
-        usuario.setNombre(dto.getNombre());
-        usuario.setApellidos(dto.getApellidos());
-        usuario.setEmail(dto.getEmail());
-        usuario.setPassword(dto.getPassword()); // 🔐 Recuerda cifrar en producción
-        usuario.setFechaAlta(LocalDate.now());
-        usuario.setActivo(true);
-
-        Rol rol = rolService.findByNombre("cliente")
-                .orElseThrow(() -> new RuntimeException("Rol cliente no encontrado"));
-        usuario.setIdRol(rol);
-
-        usuarioService.saveEntity(usuario);
-
-        return "redirect:/login";
-    }
-
-    @GetMapping("/miPerfil/{id}")
-    public String mostrarPerfil(@PathVariable("id") Integer id, Model model) {
-        Usuario usuario = usuarioService.findEntity(id)
+    @GetMapping("/miPerfil")
+    @PreAuthorize("isAuthenticated()")
+    public String mostrarPerfilAutenticado(Model model, Authentication auth) {
+        String email = auth.getName();
+        Usuario usuario = usuarioService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         model.addAttribute("usuario", usuario);
@@ -73,13 +50,21 @@ public class UsuarioController {
     }
 
     @PostMapping("/actualizar")
-    public String actualizarPerfil(@ModelAttribute("usuario") Usuario formUsuario, BindingResult result, Model model) {
+    @PreAuthorize("isAuthenticated()")
+    public String actualizarPerfil(@ModelAttribute("usuario") Usuario formUsuario,
+                                   BindingResult result, Model model,
+                                   Authentication auth) {
         if (result.hasErrors()) {
             return "miPerfil";
         }
 
         Usuario usuarioExistente = usuarioService.findEntity(formUsuario.getId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!auth.getName().equals(usuarioExistente.getEmail())
+                && !auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            throw new AccessDeniedException("No tienes permiso para editar este perfil");
+        }
 
         usuarioExistente.setNombre(formUsuario.getNombre());
         usuarioExistente.setApellidos(formUsuario.getApellidos());
@@ -98,10 +83,57 @@ public class UsuarioController {
     }
 
     @PostMapping("/eliminar")
-    public String eliminarCuenta(@ModelAttribute("usuario") Usuario usuario) {
+    @PreAuthorize("isAuthenticated()")
+    public String eliminarCuenta(@ModelAttribute("usuario") Usuario usuario, Authentication auth) {
+        Usuario usuarioExistente = usuarioService.findEntity(usuario.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!auth.getName().equals(usuarioExistente.getEmail())
+                && !auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            throw new AccessDeniedException("No tienes permiso para eliminar esta cuenta");
+        }
+
         usuarioService.deleteById(usuario.getId());
         return "redirect:/home";
     }
+
+    //--------------------------------CONTROLLER DE VISTAS DE EMPLEADO----------------------------------------------//
+
+    @GetMapping("/nuevo")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    public String nuevoUsuarioForm(Model model) {
+        model.addAttribute("usuario", new Usuario());
+        model.addAttribute("roles", rolService.findAll()); // para el desplegable de roles
+        return "formUsuario";
+    }
+
+    @GetMapping("/editar/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    public String editarUsuario(@PathVariable("id") Integer id, Model model) {
+        Usuario usuario = usuarioService.findEntity(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("roles", rolService.findAll());
+        return "formUsuario";
+    }
+
+    @PostMapping("/guardar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    public String guardarUsuario(@ModelAttribute("usuario") Usuario usuario,
+                                 @RequestParam("rolId") Integer rolId) {
+        Rol rol = rolService.findById(rolId).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+        usuario.setIdRol(rol);
+        usuarioService.saveEntity(usuario);
+        return "redirect:/lista/usuarios";
+    }
+
+    @PostMapping("/eliminar/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
+    public String eliminarUsuario(@PathVariable("id") Integer id) {
+        usuarioService.deleteById(id);
+        return "redirect:/lista/usuarios";
+    }
 }
+
 
 
