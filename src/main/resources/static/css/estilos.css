@@ -10,6 +10,46 @@ header {
   z-index: 1; /* Asegura que el contenido del header esté encima */
 }
 
+/* Estilos para el botón de accesibilidad y el selector de voces */
+#accessibilityBtn {
+  position: fixed;
+  top: 100px;
+  left: 30px;
+  z-index: 10;
+  background-color: #00BFFF;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+}
+#accessibilityBtn:hover {
+  background-color: #009ACD;
+}
+
+#voiceSelect {
+  position: fixed;
+  top: 55px;
+  left: 0;
+  z-index: 10;
+  padding: 5px;
+  font-size: 12px;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+}
+#voiceSelect:focus {
+  outline: 2px solid #00BFFF;
+}
+
+
 /* Offcanvas personalizado */
 
 body, .offcanvas {
@@ -149,7 +189,7 @@ body {
   transform: translate(-50%, -50%);
   text-align: center;
   color: white;
-  z-index: 10; /*para que quede por debajo del navbar que está a 10*/
+  z-index: 10; /*para que quede por debajo del navbar que está a 100*/
   width: 50%;
   background: rgba(0, 0, 0, 0.5); /* Optional: semi-transparent background for readability */
 }
@@ -352,4 +392,7 @@ footer i:hover,
     height: 30vh; /* Hace que la imagen ocupe toda la altura de la pantalla */
     z-index: -1; /* Hace que la imagen quede detrás del contenido */
   }
+
+
+
 }
