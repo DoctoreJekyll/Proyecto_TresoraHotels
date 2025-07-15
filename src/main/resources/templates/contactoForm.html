@@ -22,7 +22,9 @@
           <h2 class="mb-4 text-center">Envíanos un mensaje</h2>
 
           <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
-                th:action="@{/contactos/guardar}" th:object="${contacto}" method="post" enctype="multipart/form-data">
+                th:action="@{/contactos/guardar}" method="post"
+                th:object="${contacto}" enctype="multipart/form-data">
+
             <p id="instrucciones-formulario" class="text-muted text-center">
               Todos los campos marcados con * son obligatorios.
             </p>
@@ -66,6 +68,13 @@
               </div>
             </div>
 
+            <!-- ✅ Previsualización si ya existe imagen -->
+            <div class="col-md-6" th:if="${contacto.foto1 != null}">
+              <label class="form-label">Imagen actual:</label><br />
+              <img th:src="@{${contacto.foto1}}" alt="Imagen formulario"
+                   class="img-thumbnail" style="max-height: 200px;" onerror="this.style.display='none'" />
+            </div>
+
             <div class="mb-4">
               <label for="file2" class="form-label">Adjuntar foto 2 (opcional)</label>
               <input class="form-control" type="file" id="file2" name="file2"  accept=".jpg,.jpeg,.png"
@@ -73,6 +82,13 @@
               <div id="ayuda-file2" class="form-text">
                 Puedes subir otra imagen si lo necesitas.
               </div>
+
+              <div class="col-md-6" th:if="${contacto.foto2 != null}">
+                <label class="form-label">Imagen actual:</label><br />
+                <img th:src="@{${contacto.foto2}}" alt="Imagen formulario 2"
+                     class="img-thumbnail" style="max-height: 200px;" onerror="this.style.display='none'" />
+              </div>
+
             </div>
 
             <div class="mb-4">
