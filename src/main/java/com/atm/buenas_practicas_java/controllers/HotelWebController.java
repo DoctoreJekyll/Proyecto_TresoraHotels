@@ -42,12 +42,14 @@ public class HotelWebController {
 
     @GetMapping("/api/habitacionesDisponibles")
     @ResponseBody
-    public List<Habitacion> obtenerHabitacionesDisponibles(
+    public List<HabitacionesDisponiblesDTO> obtenerHabitacionesDisponibles(
             @RequestParam Integer hotelId,
             @RequestParam String fechaEntrada,
             @RequestParam String fechaSalida
     ) {
-        return habitacionService.obtenerDisponiblesPorHotelYFechas(hotelId, fechaEntrada, fechaSalida);
+        List<Habitacion> disponibles = habitacionService.obtenerDisponiblesPorHotelYFechas(hotelId, fechaEntrada, fechaSalida);
+
+        return habitacionMapper.toDtoList(disponibles);
     }
 
 
