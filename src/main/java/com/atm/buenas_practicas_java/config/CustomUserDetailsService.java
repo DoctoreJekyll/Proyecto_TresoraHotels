@@ -1,4 +1,4 @@
-package com.atm.buenas_practicas_java.services;
+package com.atm.buenas_practicas_java.config;
 
 import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.repositories.UsuarioRepo;

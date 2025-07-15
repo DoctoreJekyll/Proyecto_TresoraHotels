@@ -27,7 +27,6 @@ public class HotelesController {
     @GetMapping("/login")
     public String mostrarLogin(Model model){
         LoginDto loginDto = new LoginDto();
-        loginDto.setEmail("test@ejemplo.com");
         model.addAttribute("datoslogin", loginDto);
         return "login";
     }
