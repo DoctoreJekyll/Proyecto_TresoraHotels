@@ -39,7 +39,8 @@ public interface HabitacionRepo extends JpaRepository<Habitacion, Integer> {
     @Query("""
     SELECT h FROM Habitacion h
     JOIN FETCH h.hotel
-    JOIN FETCH h.producto
+    JOIN FETCH h.producto p
+    JOIN FETCH p.idCategoria
     WHERE h.hotel.id = :hotelId
     AND NOT EXISTS (
         SELECT 1 FROM Reserva r
@@ -53,7 +54,6 @@ public interface HabitacionRepo extends JpaRepository<Habitacion, Integer> {
             @Param("fechaEntrada") LocalDate fechaEntrada,
             @Param("fechaSalida") LocalDate fechaSalida
     );
-
 
 }
 

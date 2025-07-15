@@ -6,11 +6,11 @@
     <title th:text="'Hotel ' + ${hotel.nombre}">Detalle del Hotel</title>
     <link th:href="@{/css/reserva.css}" rel="stylesheet" />
     <style>
-        /* Oculta habitaciones inicialmente */
-        .card[data-index] {
-            display: none;
+        .oculta {
+            display: none !important;
         }
     </style>
+
 </head>
 <body class="bg-gradient-primary" th:attr="data-hotel-id=${hotel.id}">
 <main layout:fragment="contenido">
@@ -40,10 +40,11 @@
 
             // Ocultar todas las habitaciones al cargar
             document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
-                card.style.display = "none";
+                card.classList.add("oculta");
             });
 
             filtrarBtn.addEventListener("click", async () => {
+                console.log("✅ Botón clicado");
                 const entrada = entradaInput.value;
                 const salida = salidaInput.value;
                 if (!entrada || !salida) {
@@ -55,18 +56,24 @@
                     const res = await fetch(`/hotel/api/habitacionesDisponibles?hotelId=${hotelId}&fechaEntrada=${entrada}&fechaSalida=${salida}`);
                     if (!res.ok) throw new Error("Error al consultar disponibilidad");
                     const disponibles = await res.json();
+                    console.log("✅ Habitaciones disponibles:", disponibles);
 
                     if (!Array.isArray(disponibles) || disponibles.length === 0) {
                         alert("No hay habitaciones disponibles para esas fechas.");
                         document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
-                            card.style.display = "none";
+                            card.classList.add("oculta");
                         });
                         return;
                     }
 
+                    // Asegurar comparación por id numérico
                     document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
-                        const id = parseInt(card.getAttribute("data-id-habitacion"));
-                        card.style.display = disponibles.includes(id) ? "block" : "none";
+                        const id = parseInt(card.getAttribute("data-id-habitacion"), 10);
+                        if (disponibles.some(h => h.id === id)) {
+                            card.classList.remove("oculta");
+                        } else {
+                            card.classList.add("oculta");
+                        }
                     });
 
                 } catch (err) {
@@ -175,7 +182,8 @@
         <div class="container-xl px-4">
             <h2 class="text-center display-5 mb-5" style="font-weight: 600;">Habitaciones Disponibles</h2>
 
-            <div th:each="habitacion, iterStat : ${habitaciones}" class="card mb-4 shadow-lg border-0 rounded-4"
+            <div th:each="habitacion, iterStat : ${habitaciones}"
+                 class="card mb-4 shadow-lg border-0 rounded-4 oculta"
                  th:attr="data-index=${iterStat.index}, data-precio-base=${habitacion.producto.precioBase}, data-id-habitacion=${habitacion.id}">
             <div class="row g-0">
                     <div class="col-md-5">

@@ -1,10 +1,12 @@
 package com.atm.buenas_practicas_java.controllers;
 
 import com.atm.buenas_practicas_java.DTOs.ConfirmacionReservaDTO;
+import com.atm.buenas_practicas_java.DTOs.HabitacionesDisponiblesDTO;
 import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
 import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.entities.Reserva;
+import com.atm.buenas_practicas_java.mappers.HabitacionMapper;
 import com.atm.buenas_practicas_java.mappers.ReservaConfirmacionMapper;
 import com.atm.buenas_practicas_java.services.HabitacionService;
 import com.atm.buenas_practicas_java.services.HotelService;
@@ -34,6 +36,8 @@ public class HotelWebController {
     private final ProductoService productoService;
     private final ReservaService reservaService;
     private final ReservaConfirmacionMapper confirmacionReservaDTO;
+    private final HabitacionMapper habitacionMapper;
+
 
 
     @GetMapping("/api/habitacionesDisponibles")
@@ -45,7 +49,6 @@ public class HotelWebController {
     ) {
         return habitacionService.obtenerDisponiblesPorHotelYFechas(hotelId, fechaEntrada, fechaSalida);
     }
-
 
 
     @GetMapping("/{nombre}")
