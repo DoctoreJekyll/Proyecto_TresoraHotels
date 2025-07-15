@@ -114,11 +114,16 @@ public class SecurityConfig {
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout").permitAll())
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.sendRedirect("/logout-exito");
+                        })
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll())
                 .authorizeHttpRequests(auth -> auth
                         // Recursos públicos
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/login", "/login-error", "/usuarios/crear-cuenta").permitAll()
+                        .requestMatchers("/", "/home", "/login", "/login-error", "/logout-exito", "/usuarios/crear-cuenta").permitAll()
 
                         // Rutas específicas por rol
                         .requestMatchers("/panel").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")
