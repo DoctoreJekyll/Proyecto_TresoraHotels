@@ -30,10 +30,10 @@
             <div class="carousel-item"
                  th:each="hotel, iterStat : ${hotels}"
                  th:classappend="${iterStat.index == 0} ? 'active'">
-                <img th:src="${hotel.hotel.direccionURL}" class="d-block w-100" th:alt="'Imagen del hotel ' + ${hotel.nombre}" />
+                <img th:src="${hotel.imageURL}" class="d-block w-100" th:alt="'Imagen del hotel ' + ${hotel.nombre}" />
                 <div class="carousel-center-caption">
-                    <h2 th:text="${hotel.hotel.nombre}">Nombre del hotel</h2>
-                    <p th:text="${hotel.hotel.descripcion}">Descripción del hotel</p>
+                    <h2 th:text="${hotel.nombre}">Nombre del hotel</h2>
+                    <p th:text="${hotel.descripcion}">Descripción del hotel</p>
                 </div>
             </div>
         </div>
@@ -50,15 +50,15 @@
     <!-- Sección Introducción -->
     <section class="py-5 text-center">
         <div class="container">
-            <h1 class="display-4">Hoteles placeholder</h1>
-            <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis egestas rhoncus.</p>
+            <h1 class="display-4">Hoteles Tresora</h1>
+            <p class="lead">Tres destinos, una misma alma</p>
         </div>
     </section>
 
     <!-- Sección Descripción -->
     <section class="py-5">
         <div class="container">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...</p>
+            <h3>En Tresora, cada viaje es una búsqueda única, y cada destino, un hallazgo valioso. Nuestra cadena de hoteles nace de la unión de tres experiencias que atesoran lo mejor del descanso.</h3>
         </div>
     </section>
 
@@ -72,30 +72,48 @@
 
     <section class="swiper mySwiper py-5">
         <div class="swiper-wrapper">
-            <div class="swiper-slide">
-                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Carlos Gómez">
-                <h5>Carlos Gómez</h5>
-                <p>CEO y fundador. Apasionado por la innovación hotelera.</p>
-                <ul class="social-links">
-                    <li><a href="https://linkedin.com/in/usuario" target="_blank">LinkedIn</a></li>
-                    <li><a href="https://twitter.com/usuario" target="_blank">Twitter</a></li>
+            <div class="swiper-slide" th:each="miembro: ${equipo}">
+                <img th:src="${miembro.imagenURL}" th:alt="'Imagen de ' + ${miembro.nombre}" />
+                <h5 th:text="${miembro.nombre}">Nombre Miembro</h5>
+                <p th:text="${miembro.descripcion}">Descripción del miembro</p>
+                <ul class="social-links" th:if="${miembro.redesSociales} != null and ${#lists.size(miembro.redesSociales)} > 0">
+                    <li th:each="red : ${miembro.redesSociales}">
+                        <a th:href="${red.url}" th:text="${red.nombre}" target="_blank">Red Social</a>
+                    </li>
                 </ul>
-            </div>
-            <div class="swiper-slide">
-                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Laura Pérez">
-                <h5>Laura Pérez</h5>
-                <p>Directora de marketing. Creativa, empática y visionaria.</p>
-            </div>
-            <div class="swiper-slide">
-                <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Andrés Rivera">
-                <h5>Andrés Rivera</h5>
-                <p>CTO. Arquitecto de soluciones modernas y escalables.</p>
             </div>
         </div>
         <div class="swiper-pagination"></div>
         <div class="swiper-button-prev"></div>
         <div class="swiper-button-next"></div>
     </section>
+
+<!--    <section class="swiper mySwiper py-5">-->
+<!--        <div class="swiper-wrapper">-->
+<!--            <div class="swiper-slide">-->
+<!--                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Carlos Gómez">-->
+<!--                <h5>Carlos Gómez</h5>-->
+<!--                <p>CEO y fundador. Apasionado por la innovación hotelera.</p>-->
+<!--                <ul class="social-links">-->
+<!--                    <li><a href="https://linkedin.com/in/usuario" target="_blank">LinkedIn</a></li>-->
+<!--                    <li><a href="https://twitter.com/usuario" target="_blank">Twitter</a></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--            <div class="swiper-slide">-->
+<!--                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Laura Pérez">-->
+<!--                <h5>Laura Pérez</h5>-->
+<!--                <p>Directora de marketing. Creativa, empática y visionaria.</p>-->
+<!--            </div>-->
+<!--            <div class="swiper-slide">-->
+<!--                <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Andrés Rivera">-->
+<!--                <h5>Andrés Rivera</h5>-->
+<!--                <p>CTO. Arquitecto de soluciones modernas y escalables.</p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="swiper-pagination"></div>-->
+<!--        <div class="swiper-button-prev"></div>-->
+<!--        <div class="swiper-button-next"></div>-->
+<!--    </section>-->
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script th:src="@{/js/swiper.js}"></script>
@@ -115,7 +133,8 @@
                             </div>
                             <p class="card-text flex-grow-1" th:text="${hotel.descripcion}">Descripción</p>
                             <p class="card-text"><strong th:text="'Desde ' + ${hotel.id} + '€ noche'">Precio</strong></p>
-                            <a class="btn btn-primary w-100 mt-auto" th:href="@{/hotel_reserva(id=${1})}" target="_blank">Reservar ahora</a>
+                            <a class="btn btn-primary w-100 mt-auto" th:href="@{'/hotel/' + ${hotel.nombre}}"  target="_blank">Reservar ahora</a>
+<!--                            <a class="btn btn-primary w-100 mt-auto" th:href="@{/hotel(id=${hotel.nombre})}" target="_blank">Reservar ahora</a>-->
                         </div>
                     </div>
                 </div>
@@ -124,23 +143,44 @@
     </section>
 
     <!-- Sección Servicios -->
+
+
+<!--    <section class="py-5" style="padding-top: 6rem !important; padding-bottom: 6rem !important;">-->
+<!--        <div class="container text-center px-4">-->
+<!--            <h2 class="display-5 mb-5" style="font-weight: 600;" th:text="${serviciosTitulo}">Servicios Destacados</h2>-->
+<!--            <div class="swiper servicesSwiper" style="padding: 0 2rem;">-->
+<!--                <div class="swiper-wrapper">-->
+<!--                    <div class="swiper-slide p-4 bg-gray rounded-4 shadow text-dark" th:each="servicio : ${servicios}">-->
+<!--                        <img th:src="${servicio.imagenURL}" class="mb-3" style="width:100%; height:200px; object-fit:cover;" th:alt="'Imagen de ' + ${servicio.nombre}">-->
+<!--                        <h5 th:text="${servicio.nombre}">Servicio</h5>-->
+<!--                        <p th:text="${servicio.descripcion}">Descripción</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="swiper-button-prev"></div>-->
+<!--                <div class="swiper-button-next"></div>-->
+<!--                <div class="swiper-pagination"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+
+
     <section class="py-5" style="padding-top: 6rem !important; padding-bottom: 6rem !important;">
         <div class="container text-center px-4">
             <h2 class="display-5 mb-5" style="font-weight: 600;">Servicios Destacados</h2>
             <div class="swiper servicesSwiper" style="padding: 0 2rem;">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide p-4 bg-gray rounded-4 shadow text-dark">
-                        <img src="/images/spa.jpg" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Spa">
+                        <img th:src="@{/images/spa.jpg}" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Spa">
                         <h5>Spa & Wellness</h5>
                         <p>Relájate en nuestro completo spa con tratamientos exclusivos.</p>
                     </div>
                     <div class="swiper-slide p-4 bg-gray rounded-4 shadow text-dark">
-                        <img src="/images/restaurante.jpg" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Restaurante">
+                        <img th:src="@{/images/restaurante.jpg}" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Restaurante">
                         <h5>Restaurante Gourmet</h5>
                         <p>Cocina local e internacional en un entorno elegante.</p>
                     </div>
                     <div class="swiper-slide p-4 bg-gray rounded-4 shadow text-dark">
-                        <img src="/images/gimnasio.jpg" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Gimnasio">
+                        <img th:src="@{/images/gimnasio.jpg}" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Gimnasio">
                         <h5>Gimnasio</h5>
                         <p>Gimnasio con todas sus instalaciones.</p>
                     </div>
@@ -153,6 +193,7 @@
     </section>
 
     <!-- Carrusel Ubicaciones -->
+
     <section class="py-5">
         <div class="d-flex justify-content-center">
             <div style="width: 70%;" class="rounded-4 shadow-lg overflow-hidden">
@@ -164,18 +205,24 @@
                     </div>
                     <div class="carousel-inner">
                         <div class="carousel-item" th:each="hotel, iter : ${hotels}" th:classappend="${iter.index == 0} ? ' active'">
-                            <img th:src="${hotel.direccionURL}" th:alt="'Ubicación de ' + ${hotel.nombre}" width="100%" height="500">
+                            <!-- Solo usando la URL -->
+                            <iframe th:src="${hotel.direccionURL}" width="100%" height="500" style="border:0;" allowfullscreen loading="lazy"></iframe>
                             <div class="carousel-caption d-none d-md-block">
                                 <h5 th:text="${hotel.nombre}">Nombre Hotel</h5>
                                 <p th:text="${hotel.direccion}">Ubicación</p>
                             </div>
                         </div>
                     </div>
+
+
+                    <!-- Botones de control fuera de carousel-inner -->
                     <button class="carousel-control-prev" type="button" data-bs-target="#locationCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon"></span>
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#locationCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon"></span>
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
                     </button>
                 </div>
             </div>
@@ -183,23 +230,51 @@
     </section>
 
 
+<!--                    <div class="carousel-inner">-->
+<!--                        <div class="carousel-item" th:each="hotel, iter : ${hotels}" th:classappend="${iter.index == 0} ? ' active'">-->
+<!--                            <img th:src="${hotel.direccionURL}" th:alt="'Ubicación de ' + ${hotel.nombre}" width="100%" height="500">-->
+<!--                            <div class="carousel-caption d-none d-md-block">-->
+<!--                                <h5 th:text="${hotel.nombre}">Nombre Hotel</h5>-->
+<!--                                <p th:text="${hotel.direccion}">Ubicación</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+
+
     <!-- Barra de reservas flotante -->
+<!--    <nav id="bookingBar">-->
+<!--        <select name="hotel" aria-label="Selecciona Hotel">-->
+<!--            <option selected disabled>Seleccione Hotel</option>-->
+<!--            <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.nombre}">Hotel</option>-->
+<!--        </select>-->
+<!--        <input type="date" name="fechaEntrada" aria-label="Fecha Entrada" placeholder="Entrada">-->
+<!--        <input type="date" name="fechaSalida" aria-label="Fecha Salida" placeholder="Salida">-->
+<!--        <input type="text" name="habitacionesAdultos" placeholder="1 Hab / 2 Adultos" aria-label="Habitaciones y Adultos">-->
+<!--        <button type="submit" aria-label="Buscar">Buscar</button>-->
+<!--    </nav>-->
+
     <nav id="bookingBar">
-        <select name="hotel" aria-label="Selecciona Hotel">
-            <option selected disabled>Seleccione Hotel</option>
-            <option>Hotel Playa</option>
-            <option>Hotel Centro</option>
-            <option>Hotel Montaña</option>
-        </select>
-
-        <input type="date" name="fechaEntrada" aria-label="Fecha Entrada" placeholder="Entrada">
-
-        <input type="date" name="fechaSalida" aria-label="Fecha Salida" placeholder="Salida">
-
-        <input type="text" name="habitacionesAdultos" placeholder="1 Hab / 2 Adultos" aria-label="Habitaciones y Adultos">
-
-        <button type="submit" aria-label="Buscar">Buscar</button>
+        <form th:action="@{/reservahome}" method="get">
+            <select name="hotelId" aria-label="Selecciona Hotel" required>
+                <option selected disabled>Seleccione Hotel</option>
+                <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.nombre}">Hotel</option>
+            </select>
+            <input type="date" name="fechaEntrada" aria-label="Fecha Entrada" placeholder="Entrada" required>
+            <input type="date" name="fechaSalida" aria-label="Fecha Salida" placeholder="Salida" required>
+            <select name="adultos" aria-label="Adultos" required>
+                <option value="1">1 Adulto</option>
+                <option value="2">2 Adultos</option>
+                <option value="3">3 Adultos</option>
+                <option value="4">4 Adultos</option>
+            </select>
+            <button type="submit" aria-label="Buscar">Buscar</button>
+        </form>
     </nav>
+
+
+
+
 
     <!-- Botón para abrir/cerrar la barra -->
     <button id="toggleBookingBtn" aria-expanded="true" aria-controls="bookingBar" title="Abrir/Cerrar barra reservas">
