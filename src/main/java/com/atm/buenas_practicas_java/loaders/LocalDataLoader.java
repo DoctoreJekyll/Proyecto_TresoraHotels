@@ -50,6 +50,7 @@ public class LocalDataLoader {
     private final ContactoRepo contactoRepo;
     private final FacturaRepo facturaRepo;
     private final MetodoPagoRepo metodoPagoRepo;
+    private final MiembroEquipoRepo miembroEquipoRepo;
 
     /**
      * Constructor de la clase {@code LocalDataLoader}.
@@ -57,9 +58,10 @@ public class LocalDataLoader {
      * Inicializa un objeto {@code LocalDataLoader} configurado con los repositorios de las entidades,
      * proporcionando la capacidad de interactuar con estas entidades en la base de datos.
      */
+
     /**
-     * Metodo anotado con {@code @PostConstruct} que inicializa datos de prueba en
-     * los repositorios para entornos locales. Este metodo se ejecuta automáticamente
+     * Método anotado con {@code @PostConstruct} que inicializa datos de prueba en
+     * los repositorios para entornos locales. Este método se ejecuta automáticamente
      * después de la inicialización del bean y antes de que esté disponible para uso,
      * permitiendo cargar datos iniciales necesarios para el perfil local.
      *
@@ -87,7 +89,7 @@ public class LocalDataLoader {
      * - `entidadHijaRepository`: {@code EntidadHijaRepository}, usado para guardar las entidades hijas.
      *
      * Importante:
-     * - Este metodo está diseñado específicamente para ser utilizado en entornos con
+     * - Este método está diseñado específicamente para ser utilizado en entornos con
      *   el perfil local activo.
      * - No debe usarse en entornos de producción, ya que sobrescribirá datos existentes.
      *
@@ -95,7 +97,6 @@ public class LocalDataLoader {
      * - Mensaje al inicio del proceso: "Iniciando la carga de datos para el perfil local".
      * - Mensaje exitoso al finalizar: "Datos de entidades cargados correctamente."
      */
-
     @PostConstruct
     public void loadDataDesarrollo() {
         loadHoteles();
@@ -106,6 +107,39 @@ public class LocalDataLoader {
         loadContactos();
         loadMetodoPago();
         loadFacturas();
+        loadMiembrosEquipo();
+    }
+    public void loadMiembrosEquipo() {
+        // Cargar datos del equipo
+        MiembroEquipo carlos = new MiembroEquipo(
+                "Carlos Gómez",
+                "https://randomuser.me/api/portraits/men/45.jpg",
+                "CEO y fundador. Apasionado por la innovación hotelera.",
+                Arrays.asList(
+                        new RedSocial("LinkedIn", "https://linkedin.com/in/carlos-gomez"),
+                        new RedSocial("Twitter", "https://twitter.com/carlosgomez")
+                )
+        );
+
+        // Asociar las redes sociales con el miembro
+        carlos.getRedesSociales().forEach(redSocial -> redSocial.setMiembro(carlos));
+
+        MiembroEquipo laura = new MiembroEquipo(
+                "Laura Pérez",
+                "https://randomuser.me/api/portraits/women/32.jpg",
+                "Directora de marketing. Creativa, empática y visionaria.",
+                null
+        );
+
+        MiembroEquipo andres = new MiembroEquipo(
+                "Andrés Rivera",
+                "https://randomuser.me/api/portraits/men/76.jpg",
+                "CTO. Arquitecto de soluciones modernas y escalables.",
+                null
+        );
+
+        miembroEquipoRepo.saveAll(Arrays.asList(carlos, laura, andres));
+        System.out.println("Datos del equipo cargados en la base de datos.");
     }
 
     public void loadHoteles() {
@@ -141,7 +175,7 @@ public class LocalDataLoader {
 
     private Hotel getHotel3() {
         Hotel hotel3 = new Hotel();
-        hotel3.setNombre("Costa Azul Resort");
+        hotel3.setNombre("Playa");
         hotel3.setDescripcion("Relájate frente al mar Mediterráneo");
         hotel3.setCiudad("Alicante");
         hotel3.setDireccion("Avenida del Mar, 55, 03001 Alicante");
@@ -153,11 +187,11 @@ public class LocalDataLoader {
     }
     private Hotel getHotel2() {
         Hotel hotel2 = new Hotel();
-        hotel2.setNombre("Monteverde Palace");
+        hotel2.setNombre("Montaña");
         hotel2.setDescripcion("Lujo entre montañas y aire puro");
         hotel2.setCiudad("Granada");
         hotel2.setDireccion("Camino de la Sierra, s/n, 18010, Granada");
-        hotel2.setDireccionURL("https://maps.google.com/?q=Camino+de+la+Sierra+Granada");
+        hotel2.setDireccionURL("//umap.openstreetmap.fr/es/map/mapa-sin-titulo_1254618?scaleControl=false&miniMap=true&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=false&datalayers=e67e5d33-c34d-4abb-95d0-4a009c4b1ba9&homeControl=false#14/37.0983/-3.3994");
         hotel2.setImageURL("https://picsum.photos/600/400?random=8");
         hotel2.setTelefono("+34 622 333 444");
         hotel2.setEmail("reservas@monteverdepalace.com");
@@ -165,11 +199,11 @@ public class LocalDataLoader {
     }
     private Hotel getHotel() {
         Hotel hotel1 = new Hotel();
-        hotel1.setNombre("Tresora Beach");
+        hotel1.setNombre("Ciudad");
         hotel1.setDescripcion("Un paraíso costero para que te lo goces");
         hotel1.setCiudad("Málaga");
         hotel1.setDireccion("Playa de Pedregalejo, Málaga-Este, 29017, Málaga");
-        hotel1.setDireccionURL("https://maps.google.com/?q=Playa+de+Pedregalejo");
+        hotel1.setDireccionURL("//umap.openstreetmap.fr/es/map/mapa-sin-titulo_1254618?scaleControl=false&miniMap=true&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true&datalayers=e67e5d33-c34d-4abb-95d0-4a009c4b1ba9");
         hotel1.setImageURL("https://picsum.photos/600/400?random=5");
         hotel1.setTelefono("+34 633 111 222");
         hotel1.setEmail("info@tresorabeach.com");
@@ -179,6 +213,7 @@ public class LocalDataLoader {
     Habitacion habitacion;
     Habitacion habitacion2;
     Habitacion habitacion3;
+    Habitacion habitacion4;
 
     private void saveAllHabitaciones()
     {
@@ -187,9 +222,11 @@ public class LocalDataLoader {
         habitacion = habitacion1();
         habitacion2 = habitacion2();
         habitacion3 = habitacion3();
+        habitacion4 = habitacion4();
         habitaciones.add(habitacion);
         habitaciones.add(habitacion2);
         habitaciones.add(habitacion3);
+        habitaciones.add(habitacion4);
 
         habitacionRepo.saveAll(habitaciones);
     }
@@ -197,36 +234,52 @@ public class LocalDataLoader {
     private Habitacion habitacion1()
     {
         Habitacion habitacion1 = new Habitacion();
-        habitacion1.setIdHotel(hotel1);
-        habitacion1.setIdProducto(producto);
+        habitacion1.setHotel(hotel1);
+        habitacion1.setProducto(producto);
         habitacion1.setNumeroHabitacion(0);
         habitacion1.setPiso(0);
         habitacion1.setTipo("Individual");
         habitacion1.setCapacidad(1);
-        habitacion1.setEstadoOcupacion("Libre");
+        habitacion1.setOcupada(false);
+        habitacion1.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
         return habitacion1;
     }
     private Habitacion habitacion2() {
         Habitacion habitacion2 = new Habitacion();
-        habitacion2.setIdHotel(hotel2);
-        habitacion2.setIdProducto(producto2);
+        habitacion2.setHotel(hotel2);
+        habitacion2.setProducto(producto2);
         habitacion2.setNumeroHabitacion(101);
         habitacion2.setPiso(1);
         habitacion2.setTipo("Doble");
         habitacion2.setCapacidad(2);
-        habitacion2.setEstadoOcupacion("Ocupado");
+        habitacion2.setOcupada(false);
+        habitacion2.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
         return habitacion2;
     }
 
     private Habitacion habitacion3() {
         Habitacion habitacion3 = new Habitacion();
-        habitacion3.setIdHotel(hotel3);
-        habitacion3.setIdProducto(producto3);
+        habitacion3.setHotel(hotel3);
+        habitacion3.setProducto(producto2);
+        habitacion3.setNumeroHabitacion(203);
+        habitacion3.setPiso(2);
+        habitacion3.setTipo("Suite");
+        habitacion3.setCapacidad(4);
+        habitacion3.setOcupada(true);
+        habitacion3.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
+        return habitacion3;
+    }
+
+    private Habitacion habitacion4() {
+        Habitacion habitacion3 = new Habitacion();
+        habitacion3.setHotel(hotel3);
+        habitacion3.setProducto(producto3);
         habitacion3.setNumeroHabitacion(202);
         habitacion3.setPiso(2);
         habitacion3.setTipo("Suite");
         habitacion3.setCapacidad(4);
-        habitacion3.setEstadoOcupacion("Libre");
+        habitacion3.setOcupada(false);
+        habitacion3.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
         return habitacion3;
     }
 
@@ -251,7 +304,7 @@ public class LocalDataLoader {
     private Producto getProducto2() {
         Producto producto = new Producto();
         producto.setIdHotel(hotel2.getId());
-        producto.setIdCategoria(categoriaProducto2);
+        producto.setIdCategoria(categoriaProducto);
         producto.setNombre("Suite de lujo");
         producto.setDescripcion("Habitación con cama king size, jacuzzi y vistas al mar");
         producto.setPrecioBase(323.0);
@@ -264,10 +317,10 @@ public class LocalDataLoader {
     private Producto getProducto3() {
         Producto producto = new Producto();
         producto.setIdHotel(hotel3.getId());
-        producto.setIdCategoria(categoriaProducto3);
-        producto.setNombre("Habitación doble");
-        producto.setDescripcion("Habitación con dos camas individuales y baño privado");
-        producto.setPrecioBase(30.0);
+        producto.setIdCategoria(categoriaProducto2);
+        producto.setNombre("Servicio de Restaurante");
+        producto.setDescripcion("Restaurante bien guapa");
+        producto.setPrecioBase(10.0);
         producto.setActivo(true);
         producto.setFechaDesde(LocalDate.of(2025, 6, 1));
         producto.setFechaHasta(LocalDate.of(2025, 12, 31));
@@ -293,22 +346,22 @@ public class LocalDataLoader {
     private CategoriaProducto getCategoriaProducto()
     {
         CategoriaProducto categoriaProducto = new CategoriaProducto();
-        categoriaProducto.setNombre("Habitacion categoria 1");
-        categoriaProducto.setDescripcion("Habitacion categoria 1 descripcion");
+        categoriaProducto.setNombre("Habitacion");
+        categoriaProducto.setDescripcion("Categoria para las distintas habitaciones");
         return categoriaProducto;
     }
 
     private CategoriaProducto getCategoriaProducto2() {
         CategoriaProducto categoriaProducto = new CategoriaProducto();
-        categoriaProducto.setNombre("Habitación categoría 2");
-        categoriaProducto.setDescripcion("Habitación categoría 2 con más comodidades");
+        categoriaProducto.setNombre("Servicios");
+        categoriaProducto.setDescripcion("Categorias para los distintos servicios");
         return categoriaProducto;
     }
 
     private CategoriaProducto getCategoriaProducto3() {
         CategoriaProducto categoriaProducto = new CategoriaProducto();
-        categoriaProducto.setNombre("Habitación categoría lujo");
-        categoriaProducto.setDescripcion("Habitación de lujo con servicios exclusivos");
+        categoriaProducto.setNombre("Otros");
+        categoriaProducto.setDescripcion("Categorias para productos del hotel");
         return categoriaProducto;
     }
 
@@ -449,6 +502,7 @@ public void loadReservas() {
         limpiezaHabitacion2 = getLimpiezaHabitacion2();
         limpiezas.add(limpiezaHabitacion1);
         limpiezas.add(limpiezaHabitacion2);
+
         limpiezaHabitacionesRepo.saveAll(limpiezas);
 
     }
@@ -502,7 +556,7 @@ public void loadReservas() {
         contacto1.setNombre("Ana Gómez");
         contacto1.setCorreo("ana.gomez@example.com");
         contacto1.setTelefono("123456789");
-//        contacto1.setIdUsuario(null); // No está asociado a ningún usuario
+        contacto1.setIdUsuario(null); // No está asociado a ningún usuario
         contacto1.setDepartamento("Habitaciones");
         contacto1.setMensaje("¿Habría posibilidad de llevar a mi mascota?");
         return contacto1;
@@ -513,7 +567,7 @@ public void loadReservas() {
         contacto2.setNombre("Carlos Ruiz");
         contacto2.setCorreo("carlos.ruiz@example.com");
         contacto2.setTelefono("987654321");
-//        contacto2.setIdUsuario(null);
+        contacto2.setIdUsuario(null);
         contacto2.setDepartamento("Habitaciones");
         contacto2.setMensaje("Me gustaría hablar con el departamento de reservas");
         return contacto2;

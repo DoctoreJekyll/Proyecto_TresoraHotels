@@ -24,7 +24,9 @@ public abstract class AbstractTemplateServicesEntities<ENTITIES, ID, REPOSITORY 
         }
         return Optional.empty();
     }
-
+    public boolean existsById(ID id) {
+        return repo.existsById(id);
+    }
 
     //Encontrar distintos tipos de listas
     public List<ENTITIES> findAll() {
