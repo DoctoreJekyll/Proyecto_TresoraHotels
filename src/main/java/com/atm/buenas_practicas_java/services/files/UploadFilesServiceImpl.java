@@ -33,8 +33,10 @@ public class UploadFilesServiceImpl implements IUploadFilesService {
                 return "Only jpg, jpeg or png files are supported";
             }
 
-            String fileExtensionName = fileOriginalName.substring(fileOriginalName.lastIndexOf("."));
-            String newFileName = fileName;
+            String originalFilename = file.getOriginalFilename();
+            assert originalFilename != null;
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String newFileName = UUID.randomUUID().toString() + extension;
 
             File folder = new File("C:/Users/Usuario/Documents/CursoJava/Proyecto_TresoraHotels/opt/imagenes");
             if(!folder.exists()){

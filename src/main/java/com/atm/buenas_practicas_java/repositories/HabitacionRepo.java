@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,25 @@ public interface HabitacionRepo extends JpaRepository<Habitacion, Integer> {
     List<Habitacion> findByHotelIdAndOcupadaFalse(Integer hotelId);
 
     Page<Habitacion> findByHotelId(Integer hotelId, Pageable pageable);
+
+    @Query("""
+    SELECT h FROM Habitacion h
+    JOIN FETCH h.hotel
+    JOIN FETCH h.producto p
+    JOIN FETCH p.idCategoria
+    WHERE h.hotel.id = :hotelId
+    AND NOT EXISTS (
+        SELECT 1 FROM Reserva r
+        WHERE r.idHabitacion.id = h.id
+        AND r.fechaEntrada < :fechaSalida
+        AND r.fechaSalida > :fechaEntrada
+    )
+    """)
+    List<Habitacion> findDisponiblesPorHotelYFechas(
+            @Param("hotelId") Integer hotelId,
+            @Param("fechaEntrada") LocalDate fechaEntrada,
+            @Param("fechaSalida") LocalDate fechaSalida
+    );
 
 }
 

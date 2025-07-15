@@ -24,17 +24,21 @@
 			<tbody>
 			<tr th:each="fila : ${filas}">
 				<td th:each="c : ${cabeceras}">
-					<div th:if="${#strings.toLowerCase(c).contains('imagen')}">
+					<!-- Si la columna es de imagen -->
+					<div th:if="${#strings.toLowerCase(c).matches('.*(imagen|foto|img).*')}">
 						<img th:if="${fila.get(c)} != null"
 							 th:src="@{${fila.get(c)}}"
 							 alt="Imagen"
-							 style="max-height: 100px;" class="img-thumbnail" onerror="this.style.display='none'" />
+							 style="max-height: 100px;" class="img-thumbnail"
+							 onerror="this.style.display='none'" />
 						<span th:if="${fila.get(c)} == null">Sin imagen</span>
 					</div>
-					<span th:if="${!#strings.toLowerCase(c).contains('imagen')}"
-						  th:text="${fila.get(c)}">Dato</span>
-				</td>
 
+					<!-- Si la columna NO es de imagen -->
+					<div th:if="${!#strings.toLowerCase(c).matches('.*(imagen|foto|img).*')}">
+						<span th:text="${fila.get(c)}">Dato</span>
+					</div>
+				</td>
 				<td>
 					<a th:href="@{'/' + ${rutaEntidad} + '/editar/' + ${fila.get('id')}}"
 					   class="btn btn-sm btn-primary me-1">Editar</a>

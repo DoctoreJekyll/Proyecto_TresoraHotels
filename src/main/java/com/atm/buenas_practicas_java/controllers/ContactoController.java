@@ -29,8 +29,8 @@ public class ContactoController {
 
     @PostMapping("/guardar")
     public String guardarContacto(@ModelAttribute Contacto contacto,
-                                  @RequestParam(name = "file1") MultipartFile file1,
-                                  @RequestParam(name = "file2") MultipartFile file2,
+                                  @RequestParam("file1") MultipartFile file1,
+                                  @RequestParam("file2") MultipartFile file2,
                                   Model model) throws Exception {
 
         Contacto contactoExistente = null;
@@ -67,6 +67,7 @@ public class ContactoController {
         }
 
         contactoService.save(contacto);
+
         return "redirect:/lista/contactos";
     }
 

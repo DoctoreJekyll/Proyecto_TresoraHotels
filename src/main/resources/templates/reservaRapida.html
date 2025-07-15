@@ -22,16 +22,30 @@
                 const hotelSelect = document.getElementById('hotelSelect');
                 const precioTotalEl = document.getElementById('precioTotal');
 
-                hotelSelect.addEventListener('change', function () {
-                    const hotelId = this.value;
-                    hotelInput.value = hotelId;
+                const fechaEntradaEl = document.getElementById('fechaEntrada');
+                const fechaSalidaEl = document.getElementById('fechaSalida');
 
+                hotelSelect.addEventListener('change', cargarHabitaciones);
+                fechaEntradaEl.addEventListener('change', cargarHabitaciones);
+                fechaSalidaEl.addEventListener('change', cargarHabitaciones);
+
+                function cargarHabitaciones() {
+                    const hotelId = hotelSelect.value;
+                    const fechaEntrada = fechaEntradaEl.value;
+                    const fechaSalida = fechaSalidaEl.value;
+
+                    if (!hotelId || !fechaEntrada || !fechaSalida) {
+                        return;
+                    }
+
+                    hotelInput.value = hotelId;
                     habitacionSelect.innerHTML = '<option value="" disabled selected>Seleccione habitación</option>';
 
-                    fetch('/reservas/api/habitaciones?hotelId=' + hotelId)
+                    const url = `/reservas/api/habitaciones?hotelId=${hotelId}&fechaEntrada=${fechaEntrada}&fechaSalida=${fechaSalida}`;
+                    fetch(url)
                         .then(response => response.json())
                         .then(data => {
-                            console.log("🛏 Habitaciones recibidas:", data);
+                            console.log("🛏 Habitaciones disponibles:", data);
                             data.forEach(habitacion => {
                                 const option = document.createElement('option');
                                 option.value = habitacion.id;
@@ -42,9 +56,9 @@
                             calcularPrecioTotal();
                         })
                         .catch(err => {
-                            console.error('Error cargando habitaciones:', err);
+                            console.error('Error cargando habitaciones disponibles:', err);
                         });
-                });
+                }
 
                 function calcularPrecioTotal() {
                     let total = 0;
@@ -54,8 +68,8 @@
                         ? parseFloat(selectedOption.dataset.precio)
                         : 0;
 
-                    const fechaEntrada = new Date(document.getElementById('fechaEntrada').value);
-                    const fechaSalida = new Date(document.getElementById('fechaSalida').value);
+                    const fechaEntrada = new Date(fechaEntradaEl.value);
+                    const fechaSalida = new Date(fechaSalidaEl.value);
 
                     const msPorDia = 1000 * 60 * 60 * 24;
                     const noches = Math.max(1, Math.round((fechaSalida - fechaEntrada) / msPorDia));
@@ -80,16 +94,11 @@
                     }
                 }
 
-                // Recalcular precio al cambiar habitación o productos
                 habitacionSelect.addEventListener('change', calcularPrecioTotal);
                 document.querySelectorAll('input[type="checkbox"][name^="productos"]').forEach(cb => {
                     cb.addEventListener('change', calcularPrecioTotal);
                 });
 
-                document.getElementById('fechaEntrada').addEventListener('change', calcularPrecioTotal);
-                document.getElementById('fechaSalida').addEventListener('change', calcularPrecioTotal);
-
-                // 🔐 Validación de servicios adicionales antes de enviar formulario
                 document.getElementById("booking-form").addEventListener("submit", function (e) {
                     const servicios = document.querySelectorAll('.checkbox-group');
                     let error = false;
@@ -99,7 +108,6 @@
                         if (checkbox && checkbox.checked) {
                             const cantidad = group.querySelector('input[name$=".cantidad"]');
                             const fecha = group.querySelector('input[name$=".fecha"]');
-
                             if (!cantidad.value || !fecha.value) {
                                 error = true;
                             }
@@ -115,6 +123,7 @@
                 calcularPrecioTotal(); // Inicial
             });
         </script>
+
 
 
         <div class="card form-card" style="max-width: 512px; width: 100%; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">

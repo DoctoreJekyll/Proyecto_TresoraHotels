@@ -1,12 +1,12 @@
 package com.atm.buenas_practicas_java.controllers;
 
-
-
 import com.atm.buenas_practicas_java.DTOs.ConfirmacionReservaDTO;
+import com.atm.buenas_practicas_java.DTOs.HabitacionesDisponiblesDTO;
 import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
 import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.entities.Reserva;
+import com.atm.buenas_practicas_java.mappers.HabitacionMapper;
 import com.atm.buenas_practicas_java.mappers.ReservaConfirmacionMapper;
 import com.atm.buenas_practicas_java.services.HabitacionService;
 import com.atm.buenas_practicas_java.services.HotelService;
@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import jakarta.servlet.http.HttpSession;
 
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Controller
 @RequestMapping("/hotel")
@@ -35,46 +36,45 @@ public class HotelWebController {
     private final ProductoService productoService;
     private final ReservaService reservaService;
     private final ReservaConfirmacionMapper confirmacionReservaDTO;
+    private final HabitacionMapper habitacionMapper;
 
 
-//    @GetMapping("/{nombre}")
-//    @Transactional(readOnly = true)
-//    public String mostrarHotelPorNombre(@PathVariable String nombre, Model model, Pageable pageable) {
-//        Hotel hotel = hotelService.findByNombreIgnoreCase(nombre)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel no encontrado"));
-//
-//        Page<Habitacion> habitaciones = habitacionService.findByHotelId(hotel.getId(), pageable);
-//        for (Habitacion h : habitaciones) {
-//            h.getProducto();
-//            h.getProducto().getPrecioBase();// fuerza inicialización
-//        }
-//
-//
-//        model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
-//        model.addAttribute("hotel", hotel);
-//        model.addAttribute("habitaciones", habitaciones);
-//
-//        return "hotelesReservas";
-@GetMapping("/{nombre}")
-@Transactional(readOnly = true)
-public String mostrarHotelPorNombre(@PathVariable String nombre, Model model, Pageable pageable, HttpSession session) {
-    session.getAttribute("dummy"); // Forzar creación de sesión
-    Hotel hotel = hotelService.findByNombreIgnoreCase(nombre)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel no encontrado"));
-    System.out.println(hotel.getNombre());
-    Page<Habitacion> habitaciones = habitacionService.findByHotelId(hotel.getId(), pageable);
-    for (Habitacion h : habitaciones) {
-        if (h.getProducto() != null) {
-            h.getProducto().getPrecioBase(); // fuerza inicialización
+
+    @GetMapping("/api/habitacionesDisponibles")
+    @ResponseBody
+    public List<HabitacionesDisponiblesDTO> obtenerHabitacionesDisponibles(
+            @RequestParam Integer hotelId,
+            @RequestParam String fechaEntrada,
+            @RequestParam String fechaSalida
+    ) {
+        List<Habitacion> disponibles = habitacionService.obtenerDisponiblesPorHotelYFechas(hotelId, fechaEntrada, fechaSalida);
+
+        return habitacionMapper.toDtoList(disponibles);
+    }
+
+
+    @GetMapping("/{nombre}")
+    @Transactional(readOnly = true)
+    public String mostrarHotelPorNombre(@PathVariable String nombre, Model model, Pageable pageable, HttpSession session) {
+        session.getAttribute("dummy"); // Forzar creación de sesión
+        Hotel hotel = hotelService.findByNombreIgnoreCase(nombre)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel no encontrado"));
+
+        Page<Habitacion> habitaciones = habitacionService.findByHotelId(hotel.getId(), pageable);
+
+        for (Habitacion h : habitaciones) {
+            if (h.getProducto() != null) {
+                h.getProducto().getPrecioBase(); // fuerza inicialización
+            }
         }
+
+        model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
+        model.addAttribute("hotel", hotel);
+        model.addAttribute("habitaciones", habitaciones);
+
+        return "hotelesReservas";
     }
 
-    model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
-    model.addAttribute("hotel", hotel);
-    model.addAttribute("habitaciones", habitaciones);
-
-    return "hotelesReservas";
-    }
 
     @PostMapping("/reservaCompleta")
     @Transactional
