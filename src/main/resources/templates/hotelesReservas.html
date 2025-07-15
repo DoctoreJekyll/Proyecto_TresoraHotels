@@ -5,11 +5,80 @@
 <head>
     <title th:text="'Hotel ' + ${hotel.nombre}">Detalle del Hotel</title>
     <link th:href="@{/css/reserva.css}" rel="stylesheet" />
+    <style>
+        /* Oculta habitaciones inicialmente */
+        .card[data-index] {
+            display: none;
+        }
+    </style>
 </head>
-<body class="bg-gradient-primary text-light">
+<body class="bg-gradient-primary" th:attr="data-hotel-id=${hotel.id}">
 <main layout:fragment="contenido">
 
-    <!-- Script para calcular precio dinámico por habitación y servicios -->
+    <!-- Selector de fechas global -->
+    <section class="py-4 bg-dark">
+        <div class="container d-flex flex-wrap gap-3 align-items-center justify-content-center">
+            <div>
+                <label for="globalEntrada" class="form-label">Fecha de entrada:</label>
+                <input type="date" class="form-control" id="globalEntrada" />
+            </div>
+            <div>
+                <label for="globalSalida" class="form-label">Fecha de salida:</label>
+                <input type="date" class="form-control" id="globalSalida" />
+            </div>
+            <button class="btn btn-warning mt-4" id="filtrarBtn">Filtrar habitaciones</button>
+        </div>
+    </section>
+
+    <!-- JS para filtrar y calcular -->
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const entradaInput = document.getElementById("globalEntrada");
+            const salidaInput = document.getElementById("globalSalida");
+            const filtrarBtn = document.getElementById("filtrarBtn");
+            const hotelId = document.body.dataset.hotelId; // ← aquí recoges el ID
+
+            // Ocultar todas las habitaciones al cargar
+            document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
+                card.style.display = "none";
+            });
+
+            filtrarBtn.addEventListener("click", async () => {
+                const entrada = entradaInput.value;
+                const salida = salidaInput.value;
+                if (!entrada || !salida) {
+                    alert("Selecciona ambas fechas para filtrar.");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`/hotel/api/habitacionesDisponibles?hotelId=${hotelId}&fechaEntrada=${entrada}&fechaSalida=${salida}`);
+                    if (!res.ok) throw new Error("Error al consultar disponibilidad");
+                    const disponibles = await res.json();
+
+                    if (!Array.isArray(disponibles) || disponibles.length === 0) {
+                        alert("No hay habitaciones disponibles para esas fechas.");
+                        document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
+                            card.style.display = "none";
+                        });
+                        return;
+                    }
+
+                    document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
+                        const id = parseInt(card.getAttribute("data-id-habitacion"));
+                        card.style.display = disponibles.includes(id) ? "block" : "none";
+                    });
+
+                } catch (err) {
+                    console.error(err);
+                    alert("No se pudo obtener disponibilidad. Revisa la conexión o el servidor.");
+                }
+            });
+        });
+    </script>
+
+
+    <!-- Script para cálculo de precio dinámico -->
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll('.card[data-index]').forEach(card => {
@@ -107,8 +176,8 @@
             <h2 class="text-center display-5 mb-5" style="font-weight: 600;">Habitaciones Disponibles</h2>
 
             <div th:each="habitacion, iterStat : ${habitaciones}" class="card mb-4 shadow-lg border-0 rounded-4"
-                 th:attr="data-index=${iterStat.index}, data-precio-base=${habitacion.producto.precioBase}">
-                <div class="row g-0">
+                 th:attr="data-index=${iterStat.index}, data-precio-base=${habitacion.producto.precioBase}, data-id-habitacion=${habitacion.id}">
+            <div class="row g-0">
                     <div class="col-md-5">
                         <img th:src="${habitacion.imagenUrl}" class="img-fluid rounded-start h-100" style="object-fit: cover;" alt="Imagen habitación">
                     </div>
@@ -150,7 +219,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label th:for="'email__' + ${iterStat.index}" class="form-label">Correo electrónico</label>
-                                            <input type="email" class="form-control" th:id="'email__' + ${iterStat.index}" name="email" placeholder="tucorreo@email.com">
+                                            <input type="email" class="form-control" th:id="'email__' + ${iterStat.index}" name="email" placeholder="correo@email.com">
                                         </div>
                                         <div class="col-md-6">
                                             <label th:for="'entrada__' + ${iterStat.index}" class="form-label">Fecha de entrada</label>
@@ -221,6 +290,7 @@
                     </li>
                 </ul>
             </nav>
+
         </div>
     </section>
 

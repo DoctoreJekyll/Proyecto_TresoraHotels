@@ -1,5 +1,6 @@
 package com.atm.buenas_practicas_java.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,6 +47,7 @@ public class Hotel {
     private String email;
 
     @OneToMany(mappedBy = "idHotel")
+    @JsonIgnore
     private Set<Factura> facturas = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "hotel")
