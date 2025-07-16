@@ -1,8 +1,10 @@
 package com.atm.buenas_practicas_java.controllers;
 
 import com.atm.buenas_practicas_java.dtosOld.*;
+import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -30,13 +32,6 @@ public class HotelesController {
         model.addAttribute("datoslogin", loginDto);
         return "login";
     }
-
-    @PostMapping("/login")
-    public String postLogin(@ModelAttribute(name="datoslogin") LoginDto login){
-        System.out.println(login.getEmail());
-        return "user_home_page";
-    }
-
 
     @GetMapping("/crearCuenta")
     public String mostrarCrearCuenta(Model model ){
@@ -68,11 +63,6 @@ public class HotelesController {
         System.out.println("email sent");
 
         return "home";
-    }
-
-    @GetMapping("/userhome")
-    public String mostrarUserHome( ) {
-        return "user_home_page";
     }
 
     @GetMapping("/contact")

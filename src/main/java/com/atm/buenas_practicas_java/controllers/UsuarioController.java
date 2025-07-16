@@ -38,6 +38,16 @@ public class UsuarioController {
         return "crearCuenta";
     }
 
+    @GetMapping("/userhome")
+    public String userHomePage(Model model, Authentication auth) {
+        String email = auth.getName();
+        Usuario usuario = usuarioService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        model.addAttribute("usuario", usuario);
+        return "user_home_page";
+    }
+
     @GetMapping("/miPerfil")
     @PreAuthorize("isAuthenticated()")
     public String mostrarPerfilAutenticado(Model model, Authentication auth) {

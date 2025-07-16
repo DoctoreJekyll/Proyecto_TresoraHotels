@@ -28,7 +28,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                         a.getAuthority().equals("ROLE_LIMPIEZA"));
 
         if (isCliente) {
-            response.sendRedirect("/userhome");
+            response.sendRedirect("/usuarios/userhome");
         } else if (isAdminEmpLimpieza) {
             response.sendRedirect("/panel");
         } else {
