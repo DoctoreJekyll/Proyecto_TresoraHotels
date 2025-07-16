@@ -10,45 +10,73 @@ header {
   z-index: 1; /* Asegura que el contenido del header esté encima */
 }
 
-/* Estilos para el botón de accesibilidad y el selector de voces */
-#accessibilityBtn {
+/*!* Estilos para el botón de accesibilidad y el selector de voces *!*/
+/*#accessibilityBtn {*/
+/*  position: fixed;*/
+/*  top: 100px;*/
+/*  left: 30px;*/
+/*  z-index: 10;*/
+/*  background-color: #00BFFF;*/
+/*  color: white;*/
+/*  border: none;*/
+/*  border-radius: 50%;*/
+/*  width: 50px;*/
+/*  height: 50px;*/
+/*  font-size: 20px;*/
+/*  cursor: pointer;*/
+/*  box-shadow: 0 2px 5px rgba(0,0,0,0.3);*/
+/*  font-family: 'Atkinson Hyperlegible', sans-serif;*/
+/*}*/
+/*#accessibilityBtn:hover {*/
+/*  background-color: #009ACD;*/
+/*}*/
+
+/*#voiceSelect {*/
+/*  position: fixed;*/
+/*  top: 55px;*/
+/*  left: 0;*/
+/*  z-index: 10;*/
+/*  padding: 5px;*/
+/*  font-size: 12px;*/
+/*  border-radius: 4px;*/
+/*  background-color: #fff;*/
+/*  color: #333;*/
+/*  border: 1px solid #ccc;*/
+/*  box-shadow: 0 2px 5px rgba(0,0,0,0.3);*/
+/*  font-family: 'Atkinson Hyperlegible', sans-serif;*/
+/*}*/
+/*#voiceSelect:focus {*/
+/*  outline: 2px solid #00BFFF;*/
+/*}*/
+#toggleVoiceBtn {
   position: fixed;
-  top: 100px;
-  left: 30px;
-  z-index: 10;
-  background-color: #00BFFF;
-  color: white;
-  border: none;
+  bottom: 80px; /* Colocado encima del botón de scroll */
+  right: 20px;
+  z-index: 9999;
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  font-size: 20px;
+  font-size: 24px;
+  line-height: 1;
+  text-align: center;
+  background-color: #00BFFF;
+  color: white;
+  border: none;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  font-family: 'Atkinson Hyperlegible', sans-serif;
+  transition: background-color 0.3s;
 }
-#accessibilityBtn:hover {
+
+#toggleVoiceBtn:hover {
   background-color: #009ACD;
 }
 
-#voiceSelect {
-  position: fixed;
-  top: 55px;
-  left: 0;
-  z-index: 10;
-  padding: 5px;
-  font-size: 12px;
-  border-radius: 4px;
-  background-color: #fff;
-  color: #333;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  font-family: 'Atkinson Hyperlegible', sans-serif;
-}
-#voiceSelect:focus {
-  outline: 2px solid #00BFFF;
+#toggleVoiceBtn.active {
+  background-color: #28a745; /* Verde para indicar que está activo */
 }
 
+#toggleVoiceBtn .bi {
+  vertical-align: middle;
+}
 
 /* Offcanvas personalizado */
 
