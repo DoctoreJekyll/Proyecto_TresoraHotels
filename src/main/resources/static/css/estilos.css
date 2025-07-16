@@ -15,7 +15,7 @@ html, body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  font-family: 'Atkinson Hyperlegible', sans-serif; /* ya lo tienes */
+  font-family: 'Atkinson Hyperlegible', sans-serif;
 }
 
 /* Offcanvas personalizado */
