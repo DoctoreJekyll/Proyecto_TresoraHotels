@@ -18,16 +18,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import jakarta.servlet.http.HttpSession;
-
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 @Controller
@@ -64,52 +65,70 @@ public class HotelWebController {
             HttpSession session) {
 
         session.getAttribute("dummy"); // Forzar creación de sesión
+
+        // 1. Obtener el hotel
         Hotel hotel = hotelService.findByNombreIgnoreCase(nombre)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel no encontrado"));
 
+        // 2. Configurar la paginación base
         Pageable paginacion = PageRequest.of(pageable.getPageNumber(), 3, Sort.by("id"));
-        Page<Habitacion> habitaciones;
 
-        // Si se han proporcionado fechas, filtrar y paginar por disponibilidad
-        if (fechaEntrada != null && !fechaEntrada.isEmpty() && fechaSalida != null && !fechaSalida.isEmpty()) {
-            try {
-                // Obtener solo los IDs de las habitaciones disponibles para esas fechas
-                List<Habitacion> habitacionesDisponiblesList = habitacionService.obtenerDisponiblesPorHotelYFechas(hotel.getId(), fechaEntrada, fechaSalida);
-                List<Integer> idsHabitacionesDisponibles = habitacionesDisponiblesList.stream()
-                        .map(Habitacion::getId)
-                        .toList();
+        // 3. Obtener habitaciones paginadas y filtradas por disponibilidad
+        Page<Habitacion> habitaciones = getFilteredAndPaginatedRooms(hotel.getId(), fechaEntrada, fechaSalida, paginacion, model);
 
-                // Si no hay habitaciones disponibles, o si la lista de IDs está vacía, devolver una página vacía
-                if (idsHabitacionesDisponibles.isEmpty()) {
-                    habitaciones = Page.empty(paginacion);
-                } else {
-                    // Ahora, paginar solo las habitaciones que están disponibles
-                    habitaciones = habitacionService.findByHotelIdAndIdsIn(hotel.getId(), idsHabitacionesDisponibles, paginacion);
-                }
-
-            } catch (DateTimeParseException e) {
-                model.addAttribute("errorFecha", "Formato de fecha inválido. Utiliza YYYY-MM-DD.");
-                habitaciones = Page.empty(paginacion); // En caso de error de fecha, no mostrar habitaciones
-            }
-        } else {
-            // Si NO hay fechas, devolver una página vacía para que no se muestre nada por defecto
-            habitaciones = Page.empty(paginacion);
-        }
-
-        for (Habitacion h : habitaciones) {
+        // 4. Forzar inicialización de Producto (si es necesario por Lazy Loading)
+        habitaciones.forEach(h -> {
             if (h.getProducto() != null) {
-                h.getProducto().getPrecioBase(); // fuerza inicialización
+                h.getProducto().getPrecioBase();
             }
+        });
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            UserDetails user = (UserDetails) authentication.getPrincipal();
+            model.addAttribute("usuarioLogeadoEmail", user.getUsername());
+            model.addAttribute("usuarioLogeadoName", user.getUsername());
         }
 
+        // 5. Añadir atributos al modelo
         model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
         model.addAttribute("hotel", hotel);
-        model.addAttribute("habitaciones", habitaciones); // Esto contendrá la página vacía si no hay fechas
-
+        model.addAttribute("habitaciones", habitaciones);
         model.addAttribute("fechaEntrada", fechaEntrada);
         model.addAttribute("fechaSalida", fechaSalida);
 
         return "hotelesReservas";
+    }
+
+    /**
+     * Helper method to get filtered and paginated rooms based on dates.
+     * @param hotelId The ID of the hotel.
+     * @param fechaEntrada The check-in date string.
+     * @param fechaSalida The check-out date string.
+     * @param pageable The pagination information.
+     * @param model The Model to add error attributes.
+     * @return A Page of Habitacion entities.
+     */
+    private Page<Habitacion> getFilteredAndPaginatedRooms(Integer hotelId, String fechaEntrada, String fechaSalida, Pageable pageable, Model model) {
+        if (fechaEntrada != null && !fechaEntrada.isEmpty() && fechaSalida != null && !fechaSalida.isEmpty()) {
+            try {
+                List<Habitacion> habitacionesDisponiblesList = habitacionService.obtenerDisponiblesPorHotelYFechas(hotelId, fechaEntrada, fechaSalida);
+                List<Integer> idsHabitacionesDisponibles = habitacionesDisponiblesList.stream()
+                        .map(Habitacion::getId)
+                        .toList();
+
+                if (idsHabitacionesDisponibles.isEmpty()) {
+                    return Page.empty(pageable);
+                } else {
+                    return habitacionService.findByHotelIdAndIdsIn(hotelId, idsHabitacionesDisponibles, pageable);
+                }
+            } catch (DateTimeParseException e) {
+                model.addAttribute("errorFecha", "Formato de fecha inválido. Utiliza YYYY-MM-DD.");
+                return Page.empty(pageable); // Return empty page on date parsing error
+            }
+        } else {
+            return Page.empty(pageable); // Return empty page if no dates are provided
+        }
     }
 
     @PostMapping("/reservaCompleta")
@@ -119,7 +138,9 @@ public class HotelWebController {
             Model model
     ) {
         Reserva reservaGuardada = reservaService.crearReservaConProductos(dto);
+
         ConfirmacionReservaDTO confirmacion = confirmacionReservaDTO.toDto(reservaGuardada, dto);
+
         long diasEstancia = ChronoUnit.DAYS.between(confirmacion.getFechaEntrada(), confirmacion.getFechaSalida());
         model.addAttribute("diasEstancia", diasEstancia);
         model.addAttribute("reservaConfirmada", confirmacion);
