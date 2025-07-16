@@ -27,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return User.builder()
                 .username(usuario.getEmail())
-                .password("{noop}" + usuario.getPassword()) // Usa {noop} solo para pruebas
+                .password(usuario.getPassword()) // Usa {noop} solo para pruebas
                 .roles(rol) // O usa .authorities(prefixedRole) si manejas roles manualmente
                 .build();
     }
