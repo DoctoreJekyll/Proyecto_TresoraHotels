@@ -48,8 +48,8 @@
         </div>
 
         <div class="col-md-6">
-            <label for="password" class="form-label">Contraseña</label>
-            <input type="password" id="password" th:value="*{password}" class="form-control" disabled />
+            <label class="form-label">Contraseña</label>
+            <input type="password" class="form-control" value="" readonly placeholder="••••••••" />
             <small class="form-text text-muted mt-1">
                 <a th:href="@{/usuarios/cambiar-contrasena}" class="btn btn-link p-0">Cambiar contraseña</a>
             </small>
