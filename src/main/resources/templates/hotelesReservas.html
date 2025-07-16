@@ -9,15 +9,21 @@
         .oculta {
             display: none !important;
         }
+        /* Añadimos un estilo para el mensaje de "seleccionar fechas" */
+        .mensaje-filtro {
+            text-align: center;
+            font-size: 1.2em;
+            color: #6c757d;
+            margin-top: 50px;
+        }
     </style>
 
 </head>
 <body class="bg-gradient-primary" th:attr="data-hotel-id=${hotel.id}">
 <main layout:fragment="contenido">
 
-    <!-- Selector de fechas global -->
-    <section class="py-4 bg-dark">
-        <div class="container d-flex flex-wrap gap-3 align-items-center justify-content-center">
+    <form id="filtroHabitacionesForm" th:action="@{/hotel/{nombre}(nombre=${hotel.nombre})}" method="get">
+        <div class="container d-flex flex-wrap gap-3 align-items-center justify-content-center py-4 bg-dark text-light">
             <div>
                 <label for="globalEntrada" class="form-label">Fecha de entrada:</label>
                 <input type="date" class="form-control" id="globalEntrada" name="fechaEntrada" th:value="${fechaEntrada}" />
@@ -26,32 +32,42 @@
                 <label for="globalSalida" class="form-label">Fecha de salida:</label>
                 <input type="date" class="form-control" id="globalSalida" name="fechaSalida" th:value="${fechaSalida}" />
             </div>
-            <button class="btn btn-warning mt-4" id="filtrarBtn">Filtrar habitaciones</button>
+            <button type="submit" class="btn btn-warning mt-4">Filtrar habitaciones</button>
         </div>
-    </section>
+    </form>
 
-    <!-- JS para filtrar y calcular -->
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
             const entradaInput = document.getElementById("globalEntrada");
             const salidaInput = document.getElementById("globalSalida");
-            const filtrarBtn = document.getElementById("filtrarBtn");
             const hotelId = document.body.dataset.hotelId;
+            const habitacionesContainer = document.getElementById("habitacionesContainer"); // Nuevo contenedor para habitaciones
+            const mensajeFiltro = document.getElementById("mensajeFiltro"); // Nuevo mensaje
 
-            // Ocultar todas las habitaciones al cargar
+            // Función para ocultar todas las habitaciones
             function ocultarTodas() {
                 document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
                     card.classList.add("oculta");
                 });
+                if (habitacionesContainer) habitacionesContainer.classList.add("oculta");
+                if (mensajeFiltro) mensajeFiltro.classList.remove("oculta");
             }
 
-            // Función para ejecutar el filtrado
-            async function filtrarHabitaciones() {
+            // Función para mostrar el contenedor de habitaciones y ocultar el mensaje
+            function mostrarContenedorHabitaciones() {
+                if (habitacionesContainer) habitacionesContainer.classList.remove("oculta");
+                if (mensajeFiltro) mensajeFiltro.classList.add("oculta");
+            }
+
+
+            // Función para ejecutar el filtrado (AJAX)
+            async function filtrarHabitacionesVisualmente() {
                 const entrada = entradaInput.value;
                 const salida = salidaInput.value;
 
                 if (!entrada || !salida) {
-                    alert("Selecciona ambas fechas para filtrar.");
+                    // Si no hay fechas, simplemente ocultamos visualmente
+                    ocultarTodas();
                     return;
                 }
 
@@ -61,11 +77,13 @@
                     const disponibles = await res.json();
 
                     if (!Array.isArray(disponibles) || disponibles.length === 0) {
-                        alert("No hay habitaciones disponibles para esas fechas.");
-                        ocultarTodas();
+                        ocultarTodas(); // No hay disponibles, ocultar todo
+                        //alert("No hay habitaciones disponibles para esas fechas."); // Considera si quieres este alert.
                         return;
                     }
 
+                    // Mostrar el contenedor y luego las habitaciones específicas
+                    mostrarContenedorHabitaciones();
                     document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
                         const id = parseInt(card.getAttribute("data-id-habitacion"), 10);
                         if (disponibles.some(h => h.id === id)) {
@@ -77,29 +95,58 @@
 
                 } catch (err) {
                     console.error(err);
-                    alert("No se pudo obtener disponibilidad. Revisa la conexión o el servidor.");
+                    ocultarTodas(); // En caso de error, ocultar
+                    //alert("No se pudo obtener disponibilidad. Revisa la conexión o el servidor."); // Considera si quieres este alert.
                 }
             }
 
-            // Llamar al hacer clic manual
-            filtrarBtn.addEventListener("click", filtrarHabitaciones);
+            // Lógica al cargar la página
+            const fechaEntradaInicial = /*[[${fechaEntrada}]]*/ null; // Captura el valor inicial de Thymeleaf
+            const fechaSalidaInicial = /*[[${fechaSalida}]]*/ null; // Captura el valor inicial de Thymeleaf
 
-            // Llamar automáticamente al cargar (por si ya hay fechas)
-            if (entradaInput.value && salidaInput.value) {
-                setTimeout(() => filtrarHabitaciones(), 100); // asegura ejecución en carga
+            if (fechaEntradaInicial && fechaSalidaInicial) {
+                // Si las fechas vienen de la URL (desde el home o una paginación previa con filtro)
+                // Se disparará un submit de formulario al final del DOMContentLoaded, lo que recargará la página con el filtro aplicado
+                // El JS de AJAX hará un filtrado visual si ya hay habitaciones cargadas por el servidor.
+                setTimeout(() => filtrarHabitacionesVisualmente(), 100);
+                mostrarContenedorHabitaciones(); // Asegura que el contenedor esté visible si hay filtro inicial
+            } else {
+                // Si NO hay fechas en la URL al cargar la página
+                ocultarTodas(); // Oculta todas las habitaciones y muestra el mensaje inicial
             }
 
-            // Volver a filtrar al volver a la página desde el historial
-            window.addEventListener("pageshow", function () {
-                if (entradaInput.value && salidaInput.value) {
-                    filtrarHabitaciones(); // asegura ejecución desde caché
-                }
-            });
+
+            // Actualizar los enlaces de paginación cuando las fechas cambian
+            function actualizarEnlacesPaginacion() {
+                const entrada = entradaInput.value;
+                const salida = salidaInput.value;
+
+                document.querySelectorAll(".pagination .page-link").forEach(link => {
+                    let url = new URL(link.href);
+                    // Eliminar parámetros de fecha existentes para evitar duplicados si los hubiera
+                    url.searchParams.delete("fechaEntrada");
+                    url.searchParams.delete("fechaSalida");
+
+                    if (entrada) {
+                        url.searchParams.set("fechaEntrada", entrada);
+                    }
+                    if (salida) {
+                        url.searchParams.set("fechaSalida", salida);
+                    }
+                    link.href = url.toString();
+                });
+            }
+
+            // Escuchar cambios en los inputs de fecha para actualizar los enlaces de paginación
+            entradaInput.addEventListener("change", actualizarEnlacesPaginacion);
+            salidaInput.addEventListener("change", actualizarEnlacesPaginacion);
+
+            // También actualizamos al cargar la página por si se viene de un filtro previo
+            actualizarEnlacesPaginacion();
         });
     </script>
 
 
-    <!-- Script para cálculo de precio dinámico -->
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll('.card[data-index]').forEach(card => {
@@ -147,6 +194,12 @@
                 const boton = card.querySelector('button[data-bs-toggle="modal"]');
                 if (boton) {
                     boton.addEventListener("click", function () {
+                        // Al abrir el modal, pre-rellenar las fechas del filtro global en los inputs del modal
+                        const globalEntrada = document.getElementById("globalEntrada").value;
+                        const globalSalida = document.getElementById("globalSalida").value;
+                        if(globalEntrada) entrada.value = globalEntrada;
+                        if(globalSalida) salida.value = globalSalida;
+
                         calcular();
                         document.querySelectorAll(`[data-index="${index}"]`).forEach(el => {
                             el.addEventListener("change", () => calcular());
@@ -178,7 +231,6 @@
         });
     </script>
 
-    <!-- Header dinámico del hotel -->
     <section class="py-5 text-center">
         <div class="container">
             <h1 class="display-4" th:text="${hotel.nombre}">Nombre Hotel</h1>
@@ -186,21 +238,22 @@
         </div>
     </section>
 
-    <!-- Imagen principal -->
     <div class="container mb-5 text-center">
         <img th:src="${hotel.direccionURL}" class="img-fluid rounded-4 shadow" alt="Imagen del hotel" style="max-height: 400px; object-fit: cover;">
     </div>
 
+    <div id="mensajeFiltro" class="mensaje-filtro oculta">
+        <p>Por favor, selecciona las fechas de entrada y salida para ver las habitaciones disponibles.</p>
+    </div>
 
-    <!-- Habitaciones disponibles -->
-    <section class="py-5">
+    <section class="py-5" id="habitacionesContainer">
         <div class="container-xl px-4">
             <h2 class="text-center display-5 mb-5" style="font-weight: 600;">Habitaciones Disponibles</h2>
 
             <div th:each="habitacion, iterStat : ${habitaciones}"
                  class="card mb-4 shadow-lg border-0 rounded-4 oculta"
                  th:attr="data-index=${iterStat.index}, data-precio-base=${habitacion.producto.precioBase}, data-id-habitacion=${habitacion.id}">
-            <div class="row g-0">
+                <div class="row g-0">
                     <div class="col-md-5">
                         <img th:src="${habitacion.imagenUrl}" class="img-fluid rounded-start h-100" style="object-fit: cover;" alt="Imagen habitación">
                     </div>
@@ -221,7 +274,6 @@
                     </div>
                 </div>
 
-                <!-- Modal de reserva -->
                 <div class="modal fade" th:id="'modalReserva__' + ${iterStat.index}" tabindex="-1" aria-labelledby="modalLabel__${iterStat.index}" aria-hidden="true">
                     <div class="modal-dialog modal-xl modal-dialog-centered">
                         <div class="modal-content">
@@ -262,7 +314,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Servicios adicionales -->
                                     <div class="form-group mb-4 mt-4">
                                         <p class="services-label mb-2">Servicios adicionales:</p>
                                         <div th:each="producto, pStat : ${productos}" class="checkbox-group mb-3">
@@ -281,7 +332,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Precio -->
                                     <div class="mt-3">
                                         <label><strong>Precio estimado:</strong>
                                             <span th:id="'precioTotal__' + ${iterStat.index}">0 €</span>
@@ -299,43 +349,34 @@
                 </div>
             </div>
 
-            <!-- Paginación -->
             <th:block th:with="
-            baseUrl='/hotel/' + ${hotel.nombre},
-            params='&fechaEntrada=' + (${fechaEntrada} != null ? ${fechaEntrada} : '')
-            + '&fechaSalida=' + (${fechaSalida} != null ? ${fechaSalida} : '')">
-
+    urlBase=${'/hotel/' + hotel.nombre},
+    pageAnterior=${habitaciones.number - 1},
+    pageSiguiente=${habitaciones.number + 1}
+">
                 <nav aria-label="Paginación habitaciones">
                     <ul class="pagination justify-content-center mt-4">
-
-                        <!-- Anterior -->
                         <li class="page-item" th:classappend="${habitaciones.hasPrevious()} ? '' : 'disabled'">
                             <a class="page-link"
-                               th:href="@{${baseUrl}(page=${habitaciones.number - 1}, ${params})}">
+                               th:href="@{${urlBase}(page=${pageAnterior}, fechaEntrada=${fechaEntrada}, fechaSalida=${fechaSalida})}">
                                 Anterior
                             </a>
                         </li>
-
-                        <!-- Info -->
                         <li class="page-item disabled">
-                <span class="page-link">
-                    Página <span th:text="${habitaciones.number + 1}">1</span> de
-                    <span th:text="${habitaciones.totalPages}">1</span>
-                </span>
+        <span class="page-link">
+          Página <span th:text="${habitaciones.number + 1}">1</span> de
+          <span th:text="${habitaciones.totalPages}">1</span>
+        </span>
                         </li>
-
-                        <!-- Siguiente -->
                         <li class="page-item" th:classappend="${habitaciones.hasNext()} ? '' : 'disabled'">
                             <a class="page-link"
-                               th:href="@{${baseUrl}(page=${habitaciones.number + 1}, ${params})}">
+                               th:href="@{${urlBase}(page=${pageSiguiente}, fechaEntrada=${fechaEntrada}, fechaSalida=${fechaSalida})}">
                                 Siguiente
                             </a>
                         </li>
-
                     </ul>
                 </nav>
             </th:block>
-
 
 
         </div>

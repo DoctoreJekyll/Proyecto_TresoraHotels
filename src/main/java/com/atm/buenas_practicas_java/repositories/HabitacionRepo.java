@@ -55,6 +55,9 @@ public interface HabitacionRepo extends JpaRepository<Habitacion, Integer> {
             @Param("fechaSalida") LocalDate fechaSalida
     );
 
+    // NUEVO MÉTODO: encontrar habitaciones por hotel y una lista de IDs con paginación
+    Page<Habitacion> findByHotelIdAndIdIn(Integer hotelId, List<Integer> ids, Pageable pageable);
+
 }
 
 

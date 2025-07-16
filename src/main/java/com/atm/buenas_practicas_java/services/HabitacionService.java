@@ -49,6 +49,11 @@ public class HabitacionService extends AbstractTemplateServicesEntities<Habitaci
         return getRepo().findDisponiblesPorHotelYFechas(hotelId, entrada, salida);
     }
 
+    // NUEVO MÉTODO para paginar habitaciones por hotel e IDs específicos
+    @Transactional(readOnly = true)
+    public Page<Habitacion> findByHotelIdAndIdsIn(Integer hotelId, List<Integer> habitacionIds, Pageable pageable) {
+        return getRepo().findByHotelIdAndIdIn(hotelId, habitacionIds, pageable);
+    }
 
 
 }

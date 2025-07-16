@@ -27,6 +27,8 @@ import jakarta.servlet.http.HttpSession;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 @Controller
 @RequestMapping("/hotel")
@@ -40,8 +42,6 @@ public class HotelWebController {
     private final ReservaConfirmacionMapper confirmacionReservaDTO;
     private final HabitacionMapper habitacionMapper;
 
-
-
     @GetMapping("/api/habitacionesDisponibles")
     @ResponseBody
     public List<HabitacionesDisponiblesDTO> obtenerHabitacionesDisponibles(
@@ -50,10 +50,8 @@ public class HotelWebController {
             @RequestParam String fechaSalida
     ) {
         List<Habitacion> disponibles = habitacionService.obtenerDisponiblesPorHotelYFechas(hotelId, fechaEntrada, fechaSalida);
-
         return habitacionMapper.toDtoList(disponibles);
     }
-
 
     @GetMapping("/{nombre}")
     @Transactional(readOnly = true)
@@ -61,16 +59,42 @@ public class HotelWebController {
             @PathVariable String nombre,
             @RequestParam(required = false) String fechaEntrada,
             @RequestParam(required = false) String fechaSalida,
-            Model model, Pageable pageable, HttpSession session) {
+            Model model,
+            Pageable pageable,
+            HttpSession session) {
 
         session.getAttribute("dummy"); // Forzar creación de sesión
         Hotel hotel = hotelService.findByNombreIgnoreCase(nombre)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel no encontrado"));
 
         Pageable paginacion = PageRequest.of(pageable.getPageNumber(), 3, Sort.by("id"));
-        Page<Habitacion> habitaciones = habitacionService.findByHotelId(hotel.getId(), paginacion);
+        Page<Habitacion> habitaciones;
 
+        // Si se han proporcionado fechas, filtrar y paginar por disponibilidad
+        if (fechaEntrada != null && !fechaEntrada.isEmpty() && fechaSalida != null && !fechaSalida.isEmpty()) {
+            try {
+                // Obtener solo los IDs de las habitaciones disponibles para esas fechas
+                List<Habitacion> habitacionesDisponiblesList = habitacionService.obtenerDisponiblesPorHotelYFechas(hotel.getId(), fechaEntrada, fechaSalida);
+                List<Integer> idsHabitacionesDisponibles = habitacionesDisponiblesList.stream()
+                        .map(Habitacion::getId)
+                        .toList();
 
+                // Si no hay habitaciones disponibles, o si la lista de IDs está vacía, devolver una página vacía
+                if (idsHabitacionesDisponibles.isEmpty()) {
+                    habitaciones = Page.empty(paginacion);
+                } else {
+                    // Ahora, paginar solo las habitaciones que están disponibles
+                    habitaciones = habitacionService.findByHotelIdAndIdsIn(hotel.getId(), idsHabitacionesDisponibles, paginacion);
+                }
+
+            } catch (DateTimeParseException e) {
+                model.addAttribute("errorFecha", "Formato de fecha inválido. Utiliza YYYY-MM-DD.");
+                habitaciones = Page.empty(paginacion); // En caso de error de fecha, no mostrar habitaciones
+            }
+        } else {
+            // Si NO hay fechas, devolver una página vacía para que no se muestre nada por defecto
+            habitaciones = Page.empty(paginacion);
+        }
 
         for (Habitacion h : habitaciones) {
             if (h.getProducto() != null) {
@@ -80,16 +104,13 @@ public class HotelWebController {
 
         model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
         model.addAttribute("hotel", hotel);
-        model.addAttribute("habitaciones", habitaciones);
+        model.addAttribute("habitaciones", habitaciones); // Esto contendrá la página vacía si no hay fechas
 
-        // Añadir fechas al modelo si vienen en la URL
         model.addAttribute("fechaEntrada", fechaEntrada);
         model.addAttribute("fechaSalida", fechaSalida);
 
         return "hotelesReservas";
     }
-
-
 
     @PostMapping("/reservaCompleta")
     @Transactional
