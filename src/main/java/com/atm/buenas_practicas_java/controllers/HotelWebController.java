@@ -14,7 +14,9 @@ import com.atm.buenas_practicas_java.services.ProductoService;
 import com.atm.buenas_practicas_java.services.ReservaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,12 +61,14 @@ public class HotelWebController {
             @PathVariable String nombre,
             @RequestParam(required = false) String fechaEntrada,
             @RequestParam(required = false) String fechaSalida,
+            @RequestParam(defaultValue = "0") int page,
             Model model, Pageable pageable, HttpSession session) {
 
         session.getAttribute("dummy"); // Forzar creación de sesión
         Hotel hotel = hotelService.findByNombreIgnoreCase(nombre)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel no encontrado"));
 
+        pageable = PageRequest.of(page, 3, Sort.by("id"));
         Page<Habitacion> habitaciones = habitacionService.findByHotelId(hotel.getId(), pageable);
 
         for (Habitacion h : habitaciones) {

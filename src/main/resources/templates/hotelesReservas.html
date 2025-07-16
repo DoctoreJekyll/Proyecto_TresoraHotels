@@ -86,7 +86,7 @@
 
             // Llamar automáticamente si hay fechas ya cargadas
             if (entradaInput.value && salidaInput.value) {
-                filtrarHabitaciones();
+                filtrarHabitaciones(); // ← ya no clic, sino ejecutar la función directamente
             }
         });
     </script>
@@ -292,19 +292,40 @@
             </div>
 
             <!-- Paginación -->
-            <nav aria-label="Paginación habitaciones">
-                <ul class="pagination justify-content-center mt-4">
-                    <li class="page-item" th:classappend="${habitaciones.hasPrevious()} ? '' : 'disabled'">
-                        <a class="page-link" th:href="@{|/hotel/${hotel.nombre}?page=${habitaciones.number - 1}|}">Anterior</a>
-                    </li>
-                    <li class="page-item disabled">
-                        <span class="page-link">Página <span th:text="${habitaciones.number + 1}">1</span> de <span th:text="${habitaciones.totalPages}">1</span></span>
-                    </li>
-                    <li class="page-item" th:classappend="${habitaciones.hasNext()} ? '' : 'disabled'">
-                        <a class="page-link" th:href="@{|/hotel/${hotel.nombre}?page=${habitaciones.number + 1}|}">Siguiente</a>
-                    </li>
-                </ul>
-            </nav>
+            <th:block th:with="
+    query='?page=' + ${habitaciones.number - 1}
+           + (${fechaEntrada} != null ? '&fechaEntrada=' + ${fechaEntrada} : '')
+           + (${fechaSalida} != null ? '&fechaSalida=' + ${fechaSalida} : '')">
+
+                <nav aria-label="Paginación habitaciones">
+                    <ul class="pagination justify-content-center mt-4">
+
+                        <li class="page-item" th:classappend="${habitaciones.hasPrevious()} ? '' : 'disabled'">
+                            <a class="page-link" th:href="@{'/hotel/' + ${hotel.nombre} + ${query}}">Anterior</a>
+                        </li>
+
+                        <li class="page-item disabled">
+                <span class="page-link">
+                    Página <span th:text="${habitaciones.number + 1}">1</span> de
+                    <span th:text="${habitaciones.totalPages}">1</span>
+                </span>
+                        </li>
+
+                        <li class="page-item" th:classappend="${habitaciones.hasNext()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:with="
+                     nextQuery='?page=' + ${habitaciones.number + 1}
+                                + (${fechaEntrada} != null ? '&fechaEntrada=' + ${fechaEntrada} : '')
+                                + (${fechaSalida} != null ? '&fechaSalida=' + ${fechaSalida} : '')"
+                               th:href="@{'/hotel/' + ${hotel.nombre} + ${nextQuery}}">
+                                Siguiente
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </th:block>
+
 
         </div>
     </section>
