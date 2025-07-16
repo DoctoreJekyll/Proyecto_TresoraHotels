@@ -43,8 +43,17 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
 
     @Transactional // Aseguramos que toda la operación sea transaccional
     public Reserva crearReservaConProductos(ReservaRapidaDTO dto) {
-        // 1. Buscar o crear el usuario
-        Usuario usuario = findOrCreateUser(dto.getNombre(), dto.getEmail());
+        Usuario usuario;
+
+        if (dto.getIdUsuario() != null)
+        {
+            usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow();
+        }
+        else
+        {
+            usuario = findOrCreateUser(dto.getNombre(), dto.getEmail());
+        }
+
 
         // 2. Obtener y validar la habitación
         Habitacion habitacion = getAndValidateRoom(dto.getIdHabitacion());

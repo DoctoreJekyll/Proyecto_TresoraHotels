@@ -290,12 +290,14 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label th:for="'nombre__' + ${iterStat.index}" class="form-label">Nombre completo</label>
-                                            <input type="text" class="form-control" th:id="'nombre__' + ${iterStat.index}" name="nombre" placeholder="Tu nombre">
+                                            <input type="text" class="form-control" th:id="'nombre__' + ${iterStat.index}" name="nombre" placeholder="Tu nombre"
+                                                   th:value="${usuarioLogeadoName ?: ''}" th:readonly="${usuarioLogeadoName != null}">
                                         </div>
                                         <div class="col-md-6">
-                                            <label th:for="'email__' + ${iterStat.index}" class="form-label">Correo electrónico</label>
-                                            <input type="email" class="form-control" th:id="'email__' + ${iterStat.index}" name="email" placeholder="correo@email.com">
-                                        </div>
+                                        <label th:for="'email__' + ${iterStat.index}" class="form-label">Correo electrónico</label>
+                                        <input type="email" class="form-control" th:id="'email__' + ${iterStat.index}" name="email" placeholder="correo@email.com"
+                                               th:value="${usuarioLogeadoEmail ?: ''}" th:readonly="${usuarioLogeadoEmail != null}">
+                                         </div>
                                         <div class="col-md-6">
                                             <label th:for="'entrada__' + ${iterStat.index}" class="form-label">Fecha de entrada</label>
                                             <input type="date" class="form-control" th:id="'entrada__' + ${iterStat.index}" name="fechaEntrada">

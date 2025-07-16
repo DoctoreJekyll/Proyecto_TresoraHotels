@@ -6,12 +6,10 @@ import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
 import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.entities.Reserva;
+import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.mappers.HabitacionMapper;
 import com.atm.buenas_practicas_java.mappers.ReservaConfirmacionMapper;
-import com.atm.buenas_practicas_java.services.HabitacionService;
-import com.atm.buenas_practicas_java.services.HotelService;
-import com.atm.buenas_practicas_java.services.ProductoService;
-import com.atm.buenas_practicas_java.services.ReservaService;
+import com.atm.buenas_practicas_java.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +40,7 @@ public class HotelWebController {
     private final ReservaService reservaService;
     private final ReservaConfirmacionMapper confirmacionReservaDTO;
     private final HabitacionMapper habitacionMapper;
+    private final UsuarioService usuarioService;
 
     @GetMapping("/api/habitacionesDisponibles")
     @ResponseBody
@@ -86,8 +85,13 @@ public class HotelWebController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             UserDetails user = (UserDetails) authentication.getPrincipal();
-            model.addAttribute("usuarioLogeadoEmail", user.getUsername());
-            model.addAttribute("usuarioLogeadoName", user.getUsername());
+            String userEmail = user.getUsername();
+
+            Usuario usuario = usuarioService.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+            String userName = usuario.getNombre();
+
+            model.addAttribute("usuarioLogeadoEmail", userEmail);
+            model.addAttribute("usuarioLogeadoName", userName);
         }
 
         // 5. Añadir atributos al modelo
