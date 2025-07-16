@@ -61,15 +61,16 @@ public class HotelWebController {
             @PathVariable String nombre,
             @RequestParam(required = false) String fechaEntrada,
             @RequestParam(required = false) String fechaSalida,
-            @RequestParam(defaultValue = "0") int page,
             Model model, Pageable pageable, HttpSession session) {
 
         session.getAttribute("dummy"); // Forzar creación de sesión
         Hotel hotel = hotelService.findByNombreIgnoreCase(nombre)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel no encontrado"));
 
-        pageable = PageRequest.of(page, 3, Sort.by("id"));
-        Page<Habitacion> habitaciones = habitacionService.findByHotelId(hotel.getId(), pageable);
+        Pageable paginacion = PageRequest.of(pageable.getPageNumber(), 3, Sort.by("id"));
+        Page<Habitacion> habitaciones = habitacionService.findByHotelId(hotel.getId(), paginacion);
+
+
 
         for (Habitacion h : habitaciones) {
             if (h.getProducto() != null) {

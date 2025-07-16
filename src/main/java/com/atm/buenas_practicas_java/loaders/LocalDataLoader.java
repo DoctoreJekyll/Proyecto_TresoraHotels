@@ -210,42 +210,108 @@ public class LocalDataLoader {
         return hotel1;
     }
 
+    // Campos declarados fuera
     Habitacion habitacion;
     Habitacion habitacion2;
     Habitacion habitacion3;
     Habitacion habitacion4;
+    Habitacion habitacion5;
+    Habitacion habitacion6;
+    Habitacion habitacion7;
+    Habitacion habitacion8;
+    Habitacion habitacion9;
+    Habitacion habitacion10;
+    Habitacion habitacion11;
+    Habitacion habitacion12;
 
-    private void saveAllHabitaciones()
-    {
+    private void saveAllHabitaciones() {
         List<Habitacion> habitaciones = new ArrayList<>();
 
         habitacion = habitacion1();
         habitacion2 = habitacion2();
         habitacion3 = habitacion3();
         habitacion4 = habitacion4();
+        habitacion5 = habitacion5();
+        habitacion6 = habitacion6();
+        habitacion7 = habitacion7();
+        habitacion8 = habitacion8();
+        habitacion9 = habitacion9();
+        habitacion10 = habitacion10();
+        habitacion11 = habitacion11();
+        habitacion12 = habitacion12();
+
         habitaciones.add(habitacion);
         habitaciones.add(habitacion2);
         habitaciones.add(habitacion3);
         habitaciones.add(habitacion4);
+        habitaciones.add(habitacion5);
+        habitaciones.add(habitacion6);
+        habitaciones.add(habitacion7);
+        habitaciones.add(habitacion8);
+        habitaciones.add(habitacion9);
+        habitaciones.add(habitacion10);
+        habitaciones.add(habitacion11);
+        habitaciones.add(habitacion12);
 
         habitacionRepo.saveAll(habitaciones);
     }
 
-    private Habitacion habitacion1()
-    {
-        Habitacion habitacion1 = new Habitacion();
-        habitacion1.setHotel(hotel1);
-        habitacion1.setProducto(producto);
-        habitacion1.setNumeroHabitacion(0);
-        habitacion1.setPiso(0);
-        habitacion1.setTipo("Individual");
-        habitacion1.setCapacidad(1);
-        habitacion1.setOcupada(false);
-        habitacion1.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
-        return habitacion1;
+    // HOTEL 1
+    private Habitacion habitacion1() {
+        habitacion = new Habitacion();
+        habitacion.setHotel(hotel1);
+        habitacion.setProducto(producto);
+        habitacion.setNumeroHabitacion(1);
+        habitacion.setPiso(0);
+        habitacion.setTipo("Individual");
+        habitacion.setCapacidad(1);
+        habitacion.setOcupada(false);
+        habitacion.setImagenUrl(defaultImage());
+        return habitacion;
     }
+
+    private Habitacion habitacion5() {
+        habitacion5 = new Habitacion();
+        habitacion5.setHotel(hotel1);
+        habitacion5.setProducto(producto2);
+        habitacion5.setNumeroHabitacion(2);
+        habitacion5.setPiso(0);
+        habitacion5.setTipo("Doble");
+        habitacion5.setCapacidad(2);
+        habitacion5.setOcupada(false);
+        habitacion5.setImagenUrl(defaultImage());
+        return habitacion5;
+    }
+
+    private Habitacion habitacion6() {
+        habitacion6 = new Habitacion();
+        habitacion6.setHotel(hotel1);
+        habitacion6.setProducto(producto3);
+        habitacion6.setNumeroHabitacion(3);
+        habitacion6.setPiso(1);
+        habitacion6.setTipo("Triple");
+        habitacion6.setCapacidad(3);
+        habitacion6.setOcupada(true);
+        habitacion6.setImagenUrl(defaultImage());
+        return habitacion6;
+    }
+
+    private Habitacion habitacion7() {
+        habitacion7 = new Habitacion();
+        habitacion7.setHotel(hotel1);
+        habitacion7.setProducto(producto);
+        habitacion7.setNumeroHabitacion(4);
+        habitacion7.setPiso(1);
+        habitacion7.setTipo("Suite");
+        habitacion7.setCapacidad(4);
+        habitacion7.setOcupada(false);
+        habitacion7.setImagenUrl(defaultImage());
+        return habitacion7;
+    }
+
+    // HOTEL 2
     private Habitacion habitacion2() {
-        Habitacion habitacion2 = new Habitacion();
+        habitacion2 = new Habitacion();
         habitacion2.setHotel(hotel2);
         habitacion2.setProducto(producto2);
         habitacion2.setNumeroHabitacion(101);
@@ -253,35 +319,107 @@ public class LocalDataLoader {
         habitacion2.setTipo("Doble");
         habitacion2.setCapacidad(2);
         habitacion2.setOcupada(false);
-        habitacion2.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
+        habitacion2.setImagenUrl(defaultImage());
         return habitacion2;
     }
 
+    private Habitacion habitacion8() {
+        habitacion8 = new Habitacion();
+        habitacion8.setHotel(hotel2);
+        habitacion8.setProducto(producto3);
+        habitacion8.setNumeroHabitacion(102);
+        habitacion8.setPiso(1);
+        habitacion8.setTipo("Triple");
+        habitacion8.setCapacidad(3);
+        habitacion8.setOcupada(true);
+        habitacion8.setImagenUrl(defaultImage());
+        return habitacion8;
+    }
+
+    private Habitacion habitacion9() {
+        habitacion9 = new Habitacion();
+        habitacion9.setHotel(hotel2);
+        habitacion9.setProducto(producto);
+        habitacion9.setNumeroHabitacion(103);
+        habitacion9.setPiso(2);
+        habitacion9.setTipo("Suite");
+        habitacion9.setCapacidad(4);
+        habitacion9.setOcupada(false);
+        habitacion9.setImagenUrl(defaultImage());
+        return habitacion9;
+    }
+
+    private Habitacion habitacion10() {
+        habitacion10 = new Habitacion();
+        habitacion10.setHotel(hotel2);
+        habitacion10.setProducto(producto2);
+        habitacion10.setNumeroHabitacion(104);
+        habitacion10.setPiso(2);
+        habitacion10.setTipo("Individual");
+        habitacion10.setCapacidad(1);
+        habitacion10.setOcupada(false);
+        habitacion10.setImagenUrl(defaultImage());
+        return habitacion10;
+    }
+
+    // HOTEL 3
     private Habitacion habitacion3() {
-        Habitacion habitacion3 = new Habitacion();
+        habitacion3 = new Habitacion();
         habitacion3.setHotel(hotel3);
         habitacion3.setProducto(producto2);
-        habitacion3.setNumeroHabitacion(203);
+        habitacion3.setNumeroHabitacion(201);
         habitacion3.setPiso(2);
         habitacion3.setTipo("Suite");
         habitacion3.setCapacidad(4);
         habitacion3.setOcupada(true);
-        habitacion3.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
+        habitacion3.setImagenUrl(defaultImage());
         return habitacion3;
     }
 
     private Habitacion habitacion4() {
-        Habitacion habitacion3 = new Habitacion();
-        habitacion3.setHotel(hotel3);
-        habitacion3.setProducto(producto3);
-        habitacion3.setNumeroHabitacion(202);
-        habitacion3.setPiso(2);
-        habitacion3.setTipo("Suite");
-        habitacion3.setCapacidad(4);
-        habitacion3.setOcupada(false);
-        habitacion3.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
-        return habitacion3;
+        habitacion4 = new Habitacion();
+        habitacion4.setHotel(hotel3);
+        habitacion4.setProducto(producto3);
+        habitacion4.setNumeroHabitacion(202);
+        habitacion4.setPiso(2);
+        habitacion4.setTipo("Suite");
+        habitacion4.setCapacidad(4);
+        habitacion4.setOcupada(false);
+        habitacion4.setImagenUrl(defaultImage());
+        return habitacion4;
     }
+
+    private Habitacion habitacion11() {
+        habitacion11 = new Habitacion();
+        habitacion11.setHotel(hotel3);
+        habitacion11.setProducto(producto);
+        habitacion11.setNumeroHabitacion(203);
+        habitacion11.setPiso(3);
+        habitacion11.setTipo("Doble");
+        habitacion11.setCapacidad(2);
+        habitacion11.setOcupada(false);
+        habitacion11.setImagenUrl(defaultImage());
+        return habitacion11;
+    }
+
+    private Habitacion habitacion12() {
+        habitacion12 = new Habitacion();
+        habitacion12.setHotel(hotel3);
+        habitacion12.setProducto(producto2);
+        habitacion12.setNumeroHabitacion(204);
+        habitacion12.setPiso(3);
+        habitacion12.setTipo("Individual");
+        habitacion12.setCapacidad(1);
+        habitacion12.setOcupada(false);
+        habitacion12.setImagenUrl(defaultImage());
+        return habitacion12;
+    }
+
+    // Imagen reutilizable
+    private String defaultImage() {
+        return "https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=";
+    }
+
 
     private Producto producto;
     private Producto producto2;

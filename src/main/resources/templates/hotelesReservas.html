@@ -20,11 +20,11 @@
         <div class="container d-flex flex-wrap gap-3 align-items-center justify-content-center">
             <div>
                 <label for="globalEntrada" class="form-label">Fecha de entrada:</label>
-                <input type="date" class="form-control" id="globalEntrada" th:value="${fechaEntrada}" />
+                <input type="date" class="form-control" id="globalEntrada" name="fechaEntrada" th:value="${fechaEntrada}" />
             </div>
             <div>
                 <label for="globalSalida" class="form-label">Fecha de salida:</label>
-                <input type="date" class="form-control" id="globalSalida" th:value="${fechaSalida}" />
+                <input type="date" class="form-control" id="globalSalida" name="fechaSalida" th:value="${fechaSalida}" />
             </div>
             <button class="btn btn-warning mt-4" id="filtrarBtn">Filtrar habitaciones</button>
         </div>
@@ -39,9 +39,11 @@
             const hotelId = document.body.dataset.hotelId;
 
             // Ocultar todas las habitaciones al cargar
-            document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
-                card.classList.add("oculta");
-            });
+            function ocultarTodas() {
+                document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
+                    card.classList.add("oculta");
+                });
+            }
 
             // Función para ejecutar el filtrado
             async function filtrarHabitaciones() {
@@ -60,9 +62,7 @@
 
                     if (!Array.isArray(disponibles) || disponibles.length === 0) {
                         alert("No hay habitaciones disponibles para esas fechas.");
-                        document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
-                            card.classList.add("oculta");
-                        });
+                        ocultarTodas();
                         return;
                     }
 
@@ -81,13 +81,20 @@
                 }
             }
 
-            // Llamar la función al hacer clic manual
+            // Llamar al hacer clic manual
             filtrarBtn.addEventListener("click", filtrarHabitaciones);
 
-            // Llamar automáticamente si hay fechas ya cargadas
+            // Llamar automáticamente al cargar (por si ya hay fechas)
             if (entradaInput.value && salidaInput.value) {
-                filtrarHabitaciones(); // ← ya no clic, sino ejecutar la función directamente
+                setTimeout(() => filtrarHabitaciones(), 100); // asegura ejecución en carga
             }
+
+            // Volver a filtrar al volver a la página desde el historial
+            window.addEventListener("pageshow", function () {
+                if (entradaInput.value && salidaInput.value) {
+                    filtrarHabitaciones(); // asegura ejecución desde caché
+                }
+            });
         });
     </script>
 
@@ -183,6 +190,7 @@
     <div class="container mb-5 text-center">
         <img th:src="${hotel.direccionURL}" class="img-fluid rounded-4 shadow" alt="Imagen del hotel" style="max-height: 400px; object-fit: cover;">
     </div>
+
 
     <!-- Habitaciones disponibles -->
     <section class="py-5">
@@ -293,17 +301,22 @@
 
             <!-- Paginación -->
             <th:block th:with="
-    query='?page=' + ${habitaciones.number - 1}
-           + (${fechaEntrada} != null ? '&fechaEntrada=' + ${fechaEntrada} : '')
-           + (${fechaSalida} != null ? '&fechaSalida=' + ${fechaSalida} : '')">
+            baseUrl='/hotel/' + ${hotel.nombre},
+            params='&fechaEntrada=' + (${fechaEntrada} != null ? ${fechaEntrada} : '')
+            + '&fechaSalida=' + (${fechaSalida} != null ? ${fechaSalida} : '')">
 
                 <nav aria-label="Paginación habitaciones">
                     <ul class="pagination justify-content-center mt-4">
 
+                        <!-- Anterior -->
                         <li class="page-item" th:classappend="${habitaciones.hasPrevious()} ? '' : 'disabled'">
-                            <a class="page-link" th:href="@{'/hotel/' + ${hotel.nombre} + ${query}}">Anterior</a>
+                            <a class="page-link"
+                               th:href="@{${baseUrl}(page=${habitaciones.number - 1}, ${params})}">
+                                Anterior
+                            </a>
                         </li>
 
+                        <!-- Info -->
                         <li class="page-item disabled">
                 <span class="page-link">
                     Página <span th:text="${habitaciones.number + 1}">1</span> de
@@ -311,13 +324,10 @@
                 </span>
                         </li>
 
+                        <!-- Siguiente -->
                         <li class="page-item" th:classappend="${habitaciones.hasNext()} ? '' : 'disabled'">
                             <a class="page-link"
-                               th:with="
-                     nextQuery='?page=' + ${habitaciones.number + 1}
-                                + (${fechaEntrada} != null ? '&fechaEntrada=' + ${fechaEntrada} : '')
-                                + (${fechaSalida} != null ? '&fechaSalida=' + ${fechaSalida} : '')"
-                               th:href="@{'/hotel/' + ${hotel.nombre} + ${nextQuery}}">
+                               th:href="@{${baseUrl}(page=${habitaciones.number + 1}, ${params})}">
                                 Siguiente
                             </a>
                         </li>
@@ -325,6 +335,7 @@
                     </ul>
                 </nav>
             </th:block>
+
 
 
         </div>
