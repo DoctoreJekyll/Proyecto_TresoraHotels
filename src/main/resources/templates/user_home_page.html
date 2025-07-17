@@ -60,40 +60,108 @@
     <p class="lead">Explota nuestras opciones exclusivas y personaliza tu experiencia en Zen Aura</p>
 </section>
 
-<section class="row row-cols-1 row-cols-md-3 g-4">
-    <div class="col">
-        <div class="card h-100">
-            <img src="https://cdn.pixabay.com/photo/2015/11/06/11/45/interior-1026449_1280.jpg" class="card-img-top rounded" alt="Habitación">
-            <div class="card-body">
-                <h5 class="card-title">Habitaciones</h5>
-                <p class="card-text">Disfruta de nuestras amplias habitaciones con vistas espectaculares y comodidades únicas.</p>
-                <a href="#" class="btn btn-grupo5">Ver Detalles</a>
+    <section class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="card h-100">
+                <img src="https://cdn.pixabay.com/photo/2015/11/06/11/45/interior-1026449_1280.jpg" class="card-img-top rounded" alt="Habitación">
+                <div class="card-body">
+                    <h5 class="card-title">Habitaciones</h5>
+                    <p class="card-text">Disfruta de nuestras amplias habitaciones con vistas espectaculares y comodidades únicas.</p>
+                    <a href="#" class="btn btn-grupo5" data-bs-toggle="modal" data-bs-target="#modalHabitaciones">Ver Detalles</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100">
+                <img src="https://cdn.pixabay.com/photo/2016/08/22/16/23/massage-therapy-1612308_1280.jpg" class="card-img-top rounded" alt="Spa y Bienestar">
+                <div class="card-body">
+                    <h5 class="card-title">Spa y Bienestar</h5>
+                    <p class="card-text">Relájate con nuestros tratamientos de Spa y servicios de bienestar personalizados.</p>
+                    <a href="#" class="btn btn-grupo5" data-bs-toggle="modal" data-bs-target="#modalSpa">Ver Detalles</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100">
+                <img src="https://cdn.pixabay.com/photo/2015/11/19/10/38/food-1050813_1280.jpg" class="card-img-top rounded" alt="Gastronomía">
+                <div class="card-body">
+                    <h5 class="card-title">Gastronomía Exclusiva</h5>
+                    <p class="card-text">Saborea platos exquisitos en nuestro restaurante para todos los gustos.</p>
+                    <a href="#" class="btn btn-grupo5" data-bs-toggle="modal" data-bs-target="#modalGastronomia">Ver Detalles</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODALES -->
+
+    <!-- Modal Habitaciones -->
+    <div class="modal fade" id="modalHabitaciones" tabindex="-1" aria-labelledby="modalHabitacionesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalHabitacionesLabel">Tipos de Habitaciones</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>En Tresora, te ofrecemos habitaciones cuidadosamente diseñadas para cada tipo de huésped:</p>
+                    <ul>
+                        <li><strong>Individual:</strong> Ideal para viajeros solitarios. Compacta y funcional con todo lo esencial.</li>
+                        <li><strong>Doble:</strong> Perfecta para parejas. Amplia y acogedora, con cama matrimonial o dos camas individuales.</li>
+                        <li><strong>Triple:</strong> Espaciosa para grupos pequeños o familias con un niño. Cama doble + individual.</li>
+                        <li><strong>Suite:</strong> Lujo absoluto. Zona de estar, vistas exclusivas, y servicios premium incluidos.</li>
+                    </ul>
+                    <p class="mt-3">Todas las habitaciones cuentan con climatización, Wi-Fi de alta velocidad, TV inteligente, caja fuerte y minibar.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col">
-        <div class="card h-100">
-            <img src="https://cdn.pixabay.com/photo/2016/08/22/16/23/massage-therapy-1612308_1280.jpg" class="card-img-top rounded" alt="Spa y Bienestar">
-            <div class="card-body">
-                <h5 class="card-title">Spa y Bienestar</h5>
-                <p class="card-text">Relájate con nuestros tratamientos de Spa y servicios de bienestar personalizados.</p>
-                <a href="#" class="btn btn-grupo5">Ver Detalles</a>
+    <!-- Modal Spa -->
+    <div class="modal fade" id="modalSpa" tabindex="-1" aria-labelledby="modalSpaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalSpaLabel">Instalaciones de Spa y Bienestar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Nuestra zona wellness está diseñada para que desconectes y renueves cuerpo y mente:</p>
+                    <ul>
+                        <li><strong>Gimnasio:</strong> Totalmente equipado, abierto las 24h, con máquinas de última generación.</li>
+                        <li><strong>Jacuzzi y sauna:</strong> Relájate con hidroterapia y vapor después de un día activo.</li>
+                        <li><strong>Masajes y tratamientos:</strong> Reserva masajes descontracturantes, faciales o envolturas corporales.</li>
+                        <li><strong>Piscina climatizada:</strong> Interior y disponible todo el año con zonas chill-out.</li>
+                    </ul>
+                    <p class="mt-3">Nuestro equipo de bienestar está siempre disponible para personalizar tu experiencia.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col">
-        <div class="card h-100">
-            <img src="https://cdn.pixabay.com/photo/2015/11/19/10/38/food-1050813_1280.jpg" class="card-img-top rounded" alt="Gastronomía">
-            <div class="card-body">
-                <h5 class="card-title">Gastronomía Exclusiva</h5>
-                <p class="card-text">Saborea platos exquisitos en nuestro restaurante para todos los gustos.</p>
-                <a href="#" class="btn btn-grupo5">Ver Detalles</a>
+    <!-- Modal Gastronomía -->
+    <div class="modal fade" id="modalGastronomia" tabindex="-1" aria-labelledby="modalGastronomiaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalGastronomiaLabel">Experiencia Gastronómica</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>En Tresora cuidamos cada detalle culinario con una oferta gastronómica de primer nivel:</p>
+                    <ul>
+                        <li><strong>Restaurante Tresora:</strong> Cocina de autor con ingredientes de proximidad.</li>
+                        <li><strong>Bistró Zen:</strong> Platos internacionales con toques mediterráneos. Ideal para almuerzos ligeros.</li>
+                        <li><strong>Buffet sensorial:</strong> Desayunos y cenas con estaciones de cocina en vivo.</li>
+                        <li><strong>Room service 24h:</strong> Para quienes prefieren cenar con privacidad.</li>
+                    </ul>
+                    <p class="mt-3">Podrás <strong>reservar mesa al confirmar tu estancia</strong>, garantizando disponibilidad en tus horarios preferidos.</p>
+                </div>
             </div>
         </div>
     </div>
-</section>
 </main>
 
 </body>
