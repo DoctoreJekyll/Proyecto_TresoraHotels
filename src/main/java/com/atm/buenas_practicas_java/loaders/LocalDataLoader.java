@@ -634,11 +634,11 @@ public void loadReservas() {
         log.info("Datos de limpieza cargados");
     }
 
-    private LimpiezaHabitacion limpiezaHabitacion1;
-    private LimpiezaHabitacion limpiezaHabitacion2;
+    private LimpiezaHabitaciones limpiezaHabitacion1;
+    private LimpiezaHabitaciones limpiezaHabitacion2;
 
     private void SaveAllLimpiezaHabitaciones(){
-        List<LimpiezaHabitacion> limpiezas = new ArrayList<>();
+        List<LimpiezaHabitaciones> limpiezas = new ArrayList<>();
 
         limpiezaHabitacion1 = getLimpiezaHabitacion1();
         limpiezaHabitacion2 = getLimpiezaHabitacion2();
@@ -649,8 +649,8 @@ public void loadReservas() {
 
     }
 
-    private LimpiezaHabitacion getLimpiezaHabitacion1() {
-        LimpiezaHabitacion limpiezaHabitacion1 = new LimpiezaHabitacion();
+    private LimpiezaHabitaciones getLimpiezaHabitacion1() {
+        com.atm.buenas_practicas_java.entities.LimpiezaHabitaciones limpiezaHabitacion1 = new LimpiezaHabitaciones();
 
         limpiezaHabitacion1.setIdUsuario(usuarioRepo.getReferenceById(2));
         limpiezaHabitacion1.setIdHabitacion(habitacion2);
@@ -660,8 +660,8 @@ public void loadReservas() {
         limpiezaHabitacion1.setFoto2("");
         return limpiezaHabitacion1;
     }
-    private LimpiezaHabitacion getLimpiezaHabitacion2() {
-        LimpiezaHabitacion limpiezaHabitacion2 = new LimpiezaHabitacion();
+    private LimpiezaHabitaciones getLimpiezaHabitacion2() {
+        LimpiezaHabitaciones limpiezaHabitacion2 = new LimpiezaHabitaciones();
 
         limpiezaHabitacion2.setIdUsuario(usuarioRepo.getReferenceById(2));
         limpiezaHabitacion2.setIdHabitacion(habitacion3);
