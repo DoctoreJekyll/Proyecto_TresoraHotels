@@ -6,8 +6,13 @@ import com.atm.buenas_practicas_java.entities.*;
 import com.atm.buenas_practicas_java.repositories.*;
 import com.atm.buenas_practicas_java.services.templateMethod.AbstractTemplateServicesEntities;
 import com.atm.buenas_practicas_java.util.PasswordGenerator;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // Importar Transactional
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.*;
@@ -44,16 +49,28 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
     @Transactional // Aseguramos que toda la operación sea transaccional
     public Reserva crearReservaConProductos(ReservaRapidaDTO dto) {
         Usuario usuario;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (dto.getIdUsuario() != null)
-        {
-            usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow();
+        if (authentication != null && authentication.isAuthenticated()) {
+            UserDetails user = (UserDetails) authentication.getPrincipal();
+            String userEmail = user.getUsername();
+            usuario = usuarioRepository.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+            String userName = usuario.getNombre();
+
+            dto.setEmail(userEmail);
+            dto.setNombre(userName);
         }
         else
         {
-            usuario = findOrCreateUser(dto.getNombre(), dto.getEmail());
+            if (dto.getIdUsuario() != null)
+            {
+                usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow();
+            }
+            else
+            {
+                usuario = findOrCreateUser(dto.getNombre(), dto.getEmail());
+            }
         }
-
 
         // 2. Obtener y validar la habitación
         Habitacion habitacion = getAndValidateRoom(dto.getIdHabitacion());

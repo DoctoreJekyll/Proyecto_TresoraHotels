@@ -5,17 +5,24 @@ import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
 import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.entities.Reserva;
+import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.mappers.ReservaConfirmacionMapper;
 import com.atm.buenas_practicas_java.repositories.HotelesRepo;
 import com.atm.buenas_practicas_java.services.HabitacionService;
 import com.atm.buenas_practicas_java.services.ProductoService;
 import com.atm.buenas_practicas_java.services.ReservaService;
+import com.atm.buenas_practicas_java.services.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -35,6 +42,7 @@ public class ReservasController {
     private final HabitacionService habitacionService;
     private final ReservaConfirmacionMapper confirmacionReservaDTO;
     private final HotelesRepo hotelesRepo;
+    private final UsuarioService usuarioService;
 
     @GetMapping("/api/habitaciones")
     @ResponseBody
@@ -73,7 +81,24 @@ public class ReservasController {
         Map<Hotel, List<Habitacion>> habitacionesPorHotel = habitaciones.stream()
                 .collect(Collectors.groupingBy(Habitacion::getHotel, LinkedHashMap::new, Collectors.toList()));
 
-        model.addAttribute("reservaDTO", new ReservaRapidaDTO());
+        ReservaRapidaDTO dto = new ReservaRapidaDTO(); // Siempre creamos el DTO
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()
+                && !authentication.getPrincipal().equals("anonymousUser")) {
+            UserDetails user = (UserDetails) authentication.getPrincipal();
+            String userEmail = user.getUsername();
+
+            Usuario usuario = usuarioService.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+            dto.setNombre(usuario.getNombre());
+            dto.setEmail(authentication.getName());
+            dto.setIdUsuario(usuario.getId());
+        }
+
+        // El resto de campos quedan en null (vacíos en el formulario)
+        model.addAttribute("reservaDTO", dto);
         model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
         model.addAttribute("habitacionesPorHotel", habitacionesPorHotel);
         model.addAttribute("hoteles", hotelesRepo.findAll());
