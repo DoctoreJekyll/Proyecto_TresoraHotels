@@ -45,7 +45,14 @@
                     <span class="d-none d-sm-inline" th:text="${usuario.nombre}">Usuario</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" th:href="@{/usuarios/userhome}">Inicio</a></li>
+                    <li>
+                        <a class="dropdown-item" th:if="${#strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}" th:href="@{/usuarios/userhome}">
+                            Inicio
+                        </a>
+                        <a class="dropdown-item" th:unless="${#strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}" th:href="@{/panel}">
+                            Inicio
+                        </a>
+                    </li>
                     <li><a class="dropdown-item" href="#">Mis Reservas</a></li>
                     <li><a class="dropdown-item" th:href="@{/usuarios/miPerfil}">Perfil</a></li>
                     <li><hr class="dropdown-divider"></li>
