@@ -3,6 +3,7 @@ package com.atm.buenas_practicas_java.controllers;
 import com.atm.buenas_practicas_java.DTOs.UsuarioDTO;
 import com.atm.buenas_practicas_java.entities.Rol;
 import com.atm.buenas_practicas_java.entities.Usuario;
+import com.atm.buenas_practicas_java.services.HotelService;
 import com.atm.buenas_practicas_java.services.RolService;
 import com.atm.buenas_practicas_java.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
     private final RolService rolService;
+    private final HotelService hotelService;
 
     @GetMapping("/crear-cuenta")
     @PreAuthorize("permitAll()")
@@ -96,6 +98,7 @@ public class UsuarioController {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         model.addAttribute("usuario", usuario);
+        model.addAttribute("hoteles", hotelService.findAll());
         return "user_home_page";
     }
 

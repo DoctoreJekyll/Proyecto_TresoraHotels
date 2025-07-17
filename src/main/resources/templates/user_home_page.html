@@ -24,43 +24,24 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <form th:action="@{/reservahome}" method="get">
+                <form method="get" th:action="@{/hotel/buscar-disponibilidad}">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="entrada" class="form-label">Fecha de entrada</label>
-                            <input type="date" class="form-control" id="entrada" name="fechaEntrada" required />
+                            <input type="date" class="form-control" id="entrada" name="fechaEntrada" required>
                         </div>
-
                         <div class="col-md-6">
                             <label for="salida" class="form-label">Fecha de salida</label>
-                            <input type="date" class="form-control" id="salida" name="fechaSalida" required />
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="adultos" class="form-label">Adultos</label>
-                            <input type="number" class="form-control" id="adultos" name="adultos" min="1" value="1" required />
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="ninos" class="form-label">Niños</label>
-                            <input type="number" class="form-control" id="ninos" name="ninos" min="0" value="0" />
+                            <input type="date" class="form-control" id="salida" name="fechaSalida" required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="hotel" class="form-label">Hotel</label>
-                            <select class="form-select" id="hotel" name="hotelId" required>
-                                <option value="1">Hotel Playa</option>
-                                <option value="2">Hotel Montaña</option>
-                                <option value="3">Hotel Ciudad</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="habitacion" class="form-label">Tipo de habitación</label>
-                            <select class="form-select" id="habitacion" name="tipoHabitacion">
-                                <option value="ESTANDAR">Estándar</option>
-                                <option value="DELUXE">Deluxe</option>
-                                <option value="SUITE">Suite</option>
+                            <select class="form-select" id="hotel" name="hotelNombre">
+                                <option th:each="hotel : ${hoteles}"
+                                        th:value="${hotel.nombre}"
+                                        th:text="${hotel.nombre}">
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -114,6 +95,7 @@
     </div>
 </section>
 </main>
+
 </body>
 
 </html>
