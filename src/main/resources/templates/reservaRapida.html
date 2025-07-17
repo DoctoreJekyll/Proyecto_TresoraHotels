@@ -1,101 +1,255 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/plantilla}">
 
 <head>
-
-    <title>Reserva rápida</title>
-
+    <title>Reserva Rápida</title>
 </head>
 
 <body class="bg-gradient-primary">
+
 <main layout:fragment="contenido" id="main-content" class="main-container" role="main" aria-labelledby="booking-title">
     <div class="center-wrapper" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; width: 100%;">
+
+        <!-- script aquí dentro -->
+        <script th:inline="javascript">
+            document.addEventListener("DOMContentLoaded", function () {
+                console.log("🟢 DOM completamente cargado");
+
+                const habitacionSelect = document.getElementById('idHabitacion');
+                const hotelInput = document.getElementById('hotel');
+                const hotelSelect = document.getElementById('hotelSelect');
+                const precioTotalEl = document.getElementById('precioTotal');
+
+                const fechaEntradaEl = document.getElementById('fechaEntrada');
+                const fechaSalidaEl = document.getElementById('fechaSalida');
+
+                hotelSelect.addEventListener('change', cargarHabitaciones);
+                fechaEntradaEl.addEventListener('change', cargarHabitaciones);
+                fechaSalidaEl.addEventListener('change', cargarHabitaciones);
+
+                function cargarHabitaciones() {
+                    const hotelId = hotelSelect.value;
+                    const fechaEntrada = fechaEntradaEl.value;
+                    const fechaSalida = fechaSalidaEl.value;
+
+                    if (!hotelId || !fechaEntrada || !fechaSalida) {
+                        return;
+                    }
+
+                    hotelInput.value = hotelId;
+                    habitacionSelect.innerHTML = '<option value="" disabled selected>Seleccione habitación</option>';
+
+                    const url = `/reservas/api/habitaciones?hotelId=${hotelId}&fechaEntrada=${fechaEntrada}&fechaSalida=${fechaSalida}`;
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("🛏 Habitaciones disponibles:", data);
+                            data.forEach(habitacion => {
+                                const option = document.createElement('option');
+                                option.value = habitacion.id;
+                                option.textContent = habitacion.tipo + ' - Nº ' + habitacion.numeroHabitacion;
+                                option.dataset.precio = habitacion.precioBase;
+                                habitacionSelect.appendChild(option);
+                            });
+                            calcularPrecioTotal();
+                        })
+                        .catch(err => {
+                            console.error('Error cargando habitaciones disponibles:', err);
+                        });
+                }
+
+                function calcularPrecioTotal() {
+                    let total = 0;
+
+                    const selectedOption = habitacionSelect.options[habitacionSelect.selectedIndex];
+                    const precioHabitacion = selectedOption && selectedOption.dataset.precio
+                        ? parseFloat(selectedOption.dataset.precio)
+                        : 0;
+
+                    const fechaEntrada = new Date(fechaEntradaEl.value);
+                    const fechaSalida = new Date(fechaSalidaEl.value);
+
+                    const msPorDia = 1000 * 60 * 60 * 24;
+                    const noches = Math.max(1, Math.round((fechaSalida - fechaEntrada) / msPorDia));
+
+                    total += precioHabitacion * noches;
+
+                    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="productos"]');
+                    checkboxes.forEach(cb => {
+                        if (cb.checked && cb.dataset.precio) {
+                            total += parseFloat(cb.dataset.precio);
+                        }
+                    });
+
+                    precioTotalEl.innerText = total.toFixed(2) + ' €';
+
+                    const desglose = document.getElementById("desglosePrecio");
+                    if (desglose && precioHabitacion > 0) {
+                        desglose.innerText =
+                            `(${precioHabitacion.toFixed(2)} € x ${noches} noche${noches > 1 ? 's' : ''})`;
+                    } else if (desglose) {
+                        desglose.innerText = '';
+                    }
+                }
+
+                habitacionSelect.addEventListener('change', calcularPrecioTotal);
+                document.querySelectorAll('input[type="checkbox"][name^="productos"]').forEach(cb => {
+                    cb.addEventListener('change', calcularPrecioTotal);
+                });
+
+                document.getElementById("booking-form").addEventListener("submit", function (e) {
+                    const servicios = document.querySelectorAll('.checkbox-group');
+                    let error = false;
+
+                    servicios.forEach(group => {
+                        const checkbox = group.querySelector('input[type="checkbox"]');
+                        if (checkbox && checkbox.checked) {
+                            const cantidad = group.querySelector('input[name$=".cantidad"]');
+                            const fecha = group.querySelector('input[name$=".fecha"]');
+                            if (!cantidad.value || !fecha.value) {
+                                error = true;
+                            }
+                        }
+                    });
+
+                    if (error) {
+                        e.preventDefault();
+                        alert("Si seleccionas un servicio adicional, debes rellenar los campos: cantidad y fecha.");
+                    }
+                });
+
+                calcularPrecioTotal(); // Inicial
+            });
+        </script>
+
+
+
         <div class="card form-card" style="max-width: 512px; width: 100%; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
             <h1 id="booking-title" class="card-title text-center">Reserva Rápida</h1>
-            <form id="booking-form" role="form" aria-describedby="form-instructions">
-                <p id="form-instructions" class="card-text mb-4">Complete los campos para reservar su estancia. Todos los campos son obligatorios.</p>
 
+            <form th:action="@{/reservas/rapida}" th:object="${reservaDTO}" method="post" id="booking-form">
+
+                <p class="card-text mb-4">Complete los campos para reservar su estancia. Todos los campos son obligatorios.</p>
+
+                <!-- Nombre -->
                 <div class="form-group mb-4">
-                    <label for="hotels" class="form-label">Hotel</label>
-                    <select id="hotels" class="form-control" required aria-required="true" aria-describedby="hotels-error">
-                        <option value="">Seleccione el hotel deseado</option>
-                        <option value="Hotel Playa">Hotel Playa</option>
-                        <option value="Hotel Montaña">Hotel Montaña</option>
-                        <option value="Hotel Ciudad">Hotel Ciudad</option>
+                    <label for="nombre">Nombre</label>
+                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required />
+                </div>
+
+                <!-- Email -->
+                <div class="form-group mb-4">
+                    <label for="email">Email</label>
+                    <input type="email" th:field="*{email}" id="email" class="form-control" required />
+                </div>
+
+                <!-- Hotel -->
+                <div class="form-group mb-4">
+                    <label for="hotelSelect">Hotel</label>
+                    <select id="hotelSelect" class="form-control" required>
+                        <option value="" disabled selected>Seleccione un hotel</option>
+                        <option th:each="hotel : ${hoteles}"
+                                th:value="${hotel.id}"
+                                th:text="${hotel.nombre}">
+                        </option>
                     </select>
-                    <span id="hotels-error" class="error-message">Por favor, seleccione un hotel.</span>
                 </div>
 
-                <div class="form-group mb-4">
-                    <label for="check-in" class="form-label">Fecha de Entrada</label>
-                    <input type="date" id="check-in" class="form-control" required aria-required="true" aria-describedby="check-in-error">
-                    <span id="check-in-error" class="error-message">Por favor, seleccione una fecha válida.</span>
-                </div>
+                <!-- Campo oculto Hotel (formulario) -->
+                <input type="hidden" th:field="*{hotel}" id="hotel" />
 
+                <!-- Habitación (cambia según hotel) -->
                 <div class="form-group mb-4">
-                    <label for="check-out" class="form-label">Fecha de Salida</label>
-                    <input type="date" id="check-out" class="form-control" required aria-required="true" aria-describedby="check-out-error">
-                    <span id="check-out-error" class="error-message">Por favor, seleccione una fecha válida.</span>
-                </div>
-
-                <div class="form-group mb-4">
-                    <label for="guests" class="form-label">Huéspedes</label>
-                    <select id="guests" class="form-control" required aria-required="true" aria-describedby="guests-error">
-                        <option value="">Seleccione el número de huéspedes</option>
-                        <option value="1">1 Huésped</option>
-                        <option value="2">2 Huéspedes</option>
-                        <option value="3">3 Huéspedes</option>
-                        <option value="4">4 Huéspedes</option>
+                    <label for="idHabitacion">Habitación</label>
+                    <select th:field="*{idHabitacion}" id="idHabitacion" class="form-control" required>
+                        <option value="" disabled selected>Seleccione habitación</option>
                     </select>
-                    <span id="guests-error" class="error-message">Por favor, seleccione el número de huéspedes.</span>
                 </div>
 
+                <!-- Fecha entrada -->
                 <div class="form-group mb-4">
-                    <label for="room-type" class="form-label">Tipo de Habitación</label>
-                    <select id="room-type" class="form-control" required aria-required="true" aria-describedby="room-type-error">
-                        <option value="">Seleccione un tipo de habitación</option>
-                        <option value="standard">Estándar</option>
-                        <option value="deluxe">Deluxe</option>
-                        <option value="suite">Suite</option>
-                    </select>
-                    <span id="room-type-error" class="error-message">Por favor, seleccione un tipo de habitación.</span>
+                    <label for="fechaEntrada">Fecha de Entrada</label>
+                    <input type="date" th:field="*{fechaEntrada}" id="fechaEntrada" class="form-control" required />
                 </div>
 
+                <!-- Fecha salida -->
                 <div class="form-group mb-4">
-                    <p class="services-label mb-3">Seleccione los servicios adicionales:</p>
-                    <div class="checkbox-group mb-3">
-                        <input class="service-checkbox" type="checkbox" value="12" id="breakfast">
-                        <label class="checkbox-label" for="breakfast">Desayuno buffet (€12/noche)</label>
-                    </div>
-                    <div class="checkbox-group mb-3">
-                        <input class="service-checkbox" type="checkbox" value="20" id="spa">
-                        <label class="checkbox-label" for="spa">Acceso al spa (€20/noche)</label>
-                    </div>
-                    <div class="checkbox-group mb-3">
-                        <input class="service-checkbox" type="checkbox" value="15" id="lateCheckout">
-                        <label class="checkbox-label" for="lateCheckout">Late check-out (€15)</label>
-                    </div>
-                    <div class="checkbox-group mb-3">
-                        <input class="service-checkbox" type="checkbox" value="25" id="minibar">
-                        <label class="checkbox-label" for="minibar">Minibar premium (€25)</label>
-                    </div>
+                    <label for="fechaSalida">Fecha de Salida</label>
+                    <input type="date" th:field="*{fechaSalida}" id="fechaSalida" class="form-control" required />
                 </div>
 
-                <div class="price-section mb-4">
-                    <div class="price-info text-right">
-                        <h2 id="price-label" class="price-label">Precio Estimado</h2>
-                        <p id="price-info" class="price-value" aria-labelledby="price-label">120 € / noche</p>
-                        <p class="price-note" aria-live="polite">El precio final se confirmará al reservar. Incluye impuestos.</p>
-                    </div>
+                <!-- Pax -->
+                <div class="form-group mb-4">
+                    <label for="pax">Número de huéspedes</label>
+                    <input type="number" min="1" max="10" th:field="*{pax}" id="pax" class="form-control" required />
                 </div>
 
-                <button id="submit-button" type="submit" class="btn btn-grupo5" aria-label="Confirmar la reserva ahora">Reservar Ahora</button>
+                <!-- Comentarios -->
+                <div class="form-group mb-4">
+                    <label for="comentarios">Comentarios</label>
+                    <textarea th:field="*{comentarios}" id="comentarios" class="form-control" rows="3" placeholder="Comentarios adicionales..."></textarea>
+                </div>
+
+                <!-- Productos opcionales -->
+                <div class="form-group mb-4">
+                    <p class="services-label mb-2">Servicios adicionales:</p>
+
+                    <div th:each="producto, iterStat : ${productos}" class="checkbox-group mb-3">
+                        <div class="form-check mb-2">
+                            <input type="checkbox"
+                                   th:id="'producto_' + ${iterStat.index}"
+                                   th:name="'productos[' + ${iterStat.index} + '].idProducto'"
+                                   th:value="${producto.id}"
+                                   th:attr="data-precio=${producto.precioBase}"
+                                   class="form-check-input me-2"
+                                   onchange="calcularPrecioTotal()" />
+
+                            <label th:for="'producto_' + ${iterStat.index}"
+                                   th:text="${producto.nombre}"
+                                   class="form-check-label"></label>
+                        </div>
+
+                        <input type="number"
+                               th:name="'productos[' + ${iterStat.index} + '].cantidad'"
+                               placeholder="Cantidad"
+                               class="form-control mb-1"
+                               style="max-width: 100px;" min="1"/>
+
+                        <input type="date"
+                               th:name="'productos[' + ${iterStat.index} + '].fecha'"
+                               class="form-control mb-1"
+                               style="max-width: 200px;"/>
+
+                        <input type="number"
+                               th:name="'productos[' + ${iterStat.index} + '].descuento'"
+                               placeholder="% desc"
+                               class="form-control mb-3"
+                               style="max-width: 100px;" min="0" max="100"/>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <label>
+                            <strong>Precio estimado total:</strong>
+                            <span id="precioTotal">0 €</span>
+                        </label>
+                        <!-- 🔁 NUEVO ELEMENTO para mostrar el desglose -->
+                        <div id="desglosePrecio" style="font-size: 0.9em; color: #555;"></div>
+                    </div>
+
+                </div>
+
+
+
+                <!-- Botón enviar -->
+                <button type="submit" class="btn btn-grupo5 w-100 mt-3">Reservar Ahora</button>
             </form>
-            <p id="availability-message" class="card-text text-center mt-4">¡Disponibilidad limitada! Reserva en segundos.</p>
+
+            <p class="card-text text-center mt-4">¡Disponibilidad limitada! Reserva en segundos.</p>
         </div>
     </div>
 </main>
-</body>
 
+</body>
 </html>

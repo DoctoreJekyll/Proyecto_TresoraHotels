@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}" lang="es">
+<head>
+    <title th:text="'Hotel ' + ${hotel.nombre}">Detalle del Hotel</title>
+    <link th:href="@{/css/reserva.css}" rel="stylesheet" />
+    <style>
+        .oculta {
+            display: none !important;
+        }
+        /* Añadimos un estilo para el mensaje de "seleccionar fechas" */
+        .mensaje-filtro {
+            text-align: center;
+            font-size: 1.2em;
+            color: #6c757d;
+            margin-top: 50px;
+        }
+    </style>
+
+</head>
+<body class="bg-gradient-primary" th:attr="data-hotel-id=${hotel.id}">
+<main layout:fragment="contenido">
+
+    <form id="filtroHabitacionesForm" th:action="@{/hotel/{nombre}(nombre=${hotel.nombre})}" method="get">
+        <div class="container d-flex flex-wrap gap-3 align-items-center justify-content-center py-4 bg-dark text-light">
+            <div>
+                <label for="globalEntrada" class="form-label">Fecha de entrada:</label>
+                <input type="date" class="form-control" id="globalEntrada" name="fechaEntrada" th:value="${fechaEntrada}" />
+            </div>
+            <div>
+                <label for="globalSalida" class="form-label">Fecha de salida:</label>
+                <input type="date" class="form-control" id="globalSalida" name="fechaSalida" th:value="${fechaSalida}" />
+            </div>
+            <button type="submit" class="btn btn-warning mt-4">Filtrar habitaciones</button>
+        </div>
+    </form>
+
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const entradaInput = document.getElementById("globalEntrada");
+            const salidaInput = document.getElementById("globalSalida");
+            const hotelId = document.body.dataset.hotelId;
+            const habitacionesContainer = document.getElementById("habitacionesContainer"); // Nuevo contenedor para habitaciones
+            const mensajeFiltro = document.getElementById("mensajeFiltro"); // Nuevo mensaje
+
+            // Función para ocultar todas las habitaciones
+            function ocultarTodas() {
+                document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
+                    card.classList.add("oculta");
+                });
+                if (habitacionesContainer) habitacionesContainer.classList.add("oculta");
+                if (mensajeFiltro) mensajeFiltro.classList.remove("oculta");
+            }
+
+            // Función para mostrar el contenedor de habitaciones y ocultar el mensaje
+            function mostrarContenedorHabitaciones() {
+                if (habitacionesContainer) habitacionesContainer.classList.remove("oculta");
+                if (mensajeFiltro) mensajeFiltro.classList.add("oculta");
+            }
+
+
+            // Función para ejecutar el filtrado (AJAX)
+            async function filtrarHabitacionesVisualmente() {
+                const entrada = entradaInput.value;
+                const salida = salidaInput.value;
+
+                if (!entrada || !salida) {
+                    // Si no hay fechas, simplemente ocultamos visualmente
+                    ocultarTodas();
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`/hotel/api/habitacionesDisponibles?hotelId=${hotelId}&fechaEntrada=${entrada}&fechaSalida=${salida}`);
+                    if (!res.ok) throw new Error("Error al consultar disponibilidad");
+                    const disponibles = await res.json();
+
+                    if (!Array.isArray(disponibles) || disponibles.length === 0) {
+                        ocultarTodas(); // No hay disponibles, ocultar todo
+                        //alert("No hay habitaciones disponibles para esas fechas."); // Considera si quieres este alert.
+                        return;
+                    }
+
+                    // Mostrar el contenedor y luego las habitaciones específicas
+                    mostrarContenedorHabitaciones();
+                    document.querySelectorAll(".card[data-id-habitacion]").forEach(card => {
+                        const id = parseInt(card.getAttribute("data-id-habitacion"), 10);
+                        if (disponibles.some(h => h.id === id)) {
+                            card.classList.remove("oculta");
+                        } else {
+                            card.classList.add("oculta");
+                        }
+                    });
+
+                } catch (err) {
+                    console.error(err);
+                    ocultarTodas(); // En caso de error, ocultar
+                    //alert("No se pudo obtener disponibilidad. Revisa la conexión o el servidor."); // Considera si quieres este alert.
+                }
+            }
+
+            // Lógica al cargar la página
+            const fechaEntradaInicial = /*[[${fechaEntrada}]]*/ null; // Captura el valor inicial de Thymeleaf
+            const fechaSalidaInicial = /*[[${fechaSalida}]]*/ null; // Captura el valor inicial de Thymeleaf
+
+            if (fechaEntradaInicial && fechaSalidaInicial) {
+                // Si las fechas vienen de la URL (desde el home o una paginación previa con filtro)
+                // Se disparará un submit de formulario al final del DOMContentLoaded, lo que recargará la página con el filtro aplicado
+                // El JS de AJAX hará un filtrado visual si ya hay habitaciones cargadas por el servidor.
+                setTimeout(() => filtrarHabitacionesVisualmente(), 100);
+                mostrarContenedorHabitaciones(); // Asegura que el contenedor esté visible si hay filtro inicial
+            } else {
+                // Si NO hay fechas en la URL al cargar la página
+                ocultarTodas(); // Oculta todas las habitaciones y muestra el mensaje inicial
+            }
+
+
+            // Actualizar los enlaces de paginación cuando las fechas cambian
+            function actualizarEnlacesPaginacion() {
+                const entrada = entradaInput.value;
+                const salida = salidaInput.value;
+
+                document.querySelectorAll(".pagination .page-link").forEach(link => {
+                    let url = new URL(link.href);
+                    // Eliminar parámetros de fecha existentes para evitar duplicados si los hubiera
+                    url.searchParams.delete("fechaEntrada");
+                    url.searchParams.delete("fechaSalida");
+
+                    if (entrada) {
+                        url.searchParams.set("fechaEntrada", entrada);
+                    }
+                    if (salida) {
+                        url.searchParams.set("fechaSalida", salida);
+                    }
+                    link.href = url.toString();
+                });
+            }
+
+            // Escuchar cambios en los inputs de fecha para actualizar los enlaces de paginación
+            entradaInput.addEventListener("change", actualizarEnlacesPaginacion);
+            salidaInput.addEventListener("change", actualizarEnlacesPaginacion);
+
+            // También actualizamos al cargar la página por si se viene de un filtro previo
+            actualizarEnlacesPaginacion();
+        });
+    </script>
+
+
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('.card[data-index]').forEach(card => {
+                const index = card.getAttribute("data-index");
+                const precioBase = parseFloat(card.dataset.precioBase);
+                const entrada = document.getElementById('entrada__' + index);
+                const salida = document.getElementById('salida__' + index);
+                const totalEl = document.getElementById('precioTotal__' + index);
+                const desgloseEl = document.getElementById('desglosePrecio__' + index);
+
+                function calcular() {
+                    if (!entrada.value || !salida.value) {
+                        totalEl.innerText = '0 €';
+                        desgloseEl.innerText = '';
+                        return;
+                    }
+                    const f1 = new Date(entrada.value);
+                    const f2 = new Date(salida.value);
+                    const noches = Math.max(1, Math.round((f2 - f1) / (1000 * 60 * 60 * 24)));
+                    let total = noches * precioBase;
+                    let desglose = `(${precioBase.toFixed(2)} € x ${noches} noche${noches > 1 ? 's' : ''})`;
+
+                    document.querySelectorAll(`.producto-checkbox[data-index="${index}"]`).forEach(cb => {
+                        if (cb.checked) {
+                            const grupo = cb.closest('.checkbox-group');
+                            const cantidadInput = grupo.querySelector('.cantidad-input');
+                            const descuentoInput = grupo.querySelector('.descuento-input');
+                            const productoPrecio = parseFloat(cb.dataset.precio || 0);
+                            const cantidad = parseFloat(cantidadInput?.value || 0);
+                            const descuento = parseFloat(descuentoInput?.value || 0);
+                            const totalProd = productoPrecio * cantidad * (1 - descuento / 100);
+                            if (!isNaN(totalProd)) total += totalProd;
+                        }
+                    });
+
+                    totalEl.innerText = total.toFixed(2) + ' €';
+                    desgloseEl.innerText = desglose;
+                }
+
+                if (entrada && salida) {
+                    entrada.addEventListener("change", calcular);
+                    salida.addEventListener("change", calcular);
+                }
+
+                const boton = card.querySelector('button[data-bs-toggle="modal"]');
+                if (boton) {
+                    boton.addEventListener("click", function () {
+                        // Al abrir el modal, pre-rellenar las fechas del filtro global en los inputs del modal
+                        const globalEntrada = document.getElementById("globalEntrada").value;
+                        const globalSalida = document.getElementById("globalSalida").value;
+                        if(globalEntrada) entrada.value = globalEntrada;
+                        if(globalSalida) salida.value = globalSalida;
+
+                        calcular();
+                        document.querySelectorAll(`[data-index="${index}"]`).forEach(el => {
+                            el.addEventListener("change", () => calcular());
+                        });
+                    });
+                }
+
+                const form = card.querySelector('form');
+                if (form) {
+                    form.addEventListener("submit", function (e) {
+                        let error = false;
+                        form.querySelectorAll(`.checkbox-group`).forEach(group => {
+                            const checkbox = group.querySelector('.producto-checkbox');
+                            if (checkbox && checkbox.checked) {
+                                const cantidad = group.querySelector('.cantidad-input');
+                                const fecha = group.querySelector('.fecha-input');
+                                if (!cantidad.value || !fecha.value) {
+                                    error = true;
+                                }
+                            }
+                        });
+                        if (error) {
+                            e.preventDefault();
+                            alert("Si seleccionas un servicio adicional, debes rellenar cantidad y fecha.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+    <section class="py-5 text-center">
+        <div class="container">
+            <h1 class="display-4" th:text="${hotel.nombre}">Nombre Hotel</h1>
+            <p class="lead" th:text="${hotel.descripcion}">Descripción del hotel</p>
+        </div>
+    </section>
+
+    <div class="container mb-5 text-center">
+        <img th:src="${hotel.direccionURL}" class="img-fluid rounded-4 shadow" alt="Imagen del hotel" style="max-height: 400px; object-fit: cover;">
+    </div>
+
+    <div id="mensajeFiltro" class="mensaje-filtro oculta">
+        <p>Por favor, selecciona las fechas de entrada y salida para ver las habitaciones disponibles.</p>
+    </div>
+
+    <section class="py-5" id="habitacionesContainer">
+        <div class="container-xl px-4">
+            <h2 class="text-center display-5 mb-5" style="font-weight: 600;">Habitaciones Disponibles</h2>
+
+            <div th:each="habitacion, iterStat : ${habitaciones}"
+                 class="card mb-4 shadow-lg border-0 rounded-4 oculta"
+                 th:attr="data-index=${iterStat.index}, data-precio-base=${habitacion.producto.precioBase}, data-id-habitacion=${habitacion.id}">
+                <div class="row g-0">
+                    <div class="col-md-5">
+                        <img th:src="${habitacion.imagenUrl}" class="img-fluid rounded-start h-100" style="object-fit: cover;" alt="Imagen habitación">
+                    </div>
+
+                    <div class="col-md-7 d-flex flex-column justify-content-center p-4 bg-white text-dark">
+                        <h5 class="mb-2" th:text="${habitacion.tipo}">Tipo de habitación</h5>
+                        <p class="mb-1"><strong>Capacidad:</strong> <span th:text="${habitacion.capacidad}">2</span> pax</p>
+                        <p class="mb-1"><strong>Precio desde:</strong> <span th:text="${habitacion.producto.precioBase} + ' €/noche'"> 50€ / noche</span></p>
+                        <p class="mb-3" th:text="${habitacion.tipo}">Descripción de la habitación</p>
+
+                        <button type="button"
+                                class="btn btn-primary mt-auto"
+                                data-bs-toggle="modal"
+                                th:data-bs-target="'#modalReserva__' + ${iterStat.index}"
+                                th:attrappend="data-index=${iterStat.index}">
+                            Reservar ahora
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal fade" th:id="'modalReserva__' + ${iterStat.index}" tabindex="-1" aria-labelledby="modalLabel__${iterStat.index}" aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" th:id="'modalLabel__' + ${iterStat.index}" th:text="'Reserva: ' + ${habitacion.tipo}">Reserva</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form th:action="@{/hotel/reservaCompleta}" method="post">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <input type="hidden" name="hotel" th:value="${hotel.id}" />
+                                    <input type="hidden" name="idHabitacion" th:value="${habitacion.id}" />
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label th:for="'nombre__' + ${iterStat.index}" class="form-label">Nombre completo</label>
+                                            <input type="text" class="form-control" th:id="'nombre__' + ${iterStat.index}" name="nombre" placeholder="Tu nombre"
+                                                   th:value="${usuarioLogeadoName ?: ''}" th:readonly="${usuarioLogeadoName != null}">
+                                        </div>
+                                        <div class="col-md-6">
+                                        <label th:for="'email__' + ${iterStat.index}" class="form-label">Correo electrónico</label>
+                                        <input type="email" class="form-control" th:id="'email__' + ${iterStat.index}" name="email" placeholder="correo@email.com"
+                                               th:value="${usuarioLogeadoEmail ?: ''}" th:readonly="${usuarioLogeadoEmail != null}">
+                                         </div>
+                                        <div class="col-md-6">
+                                            <label th:for="'entrada__' + ${iterStat.index}" class="form-label">Fecha de entrada</label>
+                                            <input type="date" class="form-control" th:id="'entrada__' + ${iterStat.index}" name="fechaEntrada">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label th:for="'salida__' + ${iterStat.index}" class="form-label">Fecha de salida</label>
+                                            <input type="date" class="form-control" th:id="'salida__' + ${iterStat.index}" name="fechaSalida">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label th:for="'pax__' + ${iterStat.index}" class="form-label">Nº de personas</label>
+                                            <input type="number" class="form-control" th:id="'pax__' + ${iterStat.index}" name="pax" min="1" max="10">
+                                        </div>
+                                        <div class="col-12">
+                                            <label th:for="'comentarios__' + ${iterStat.index}" class="form-label">Comentarios adicionales</label>
+                                            <textarea class="form-control" th:id="'comentarios__' + ${iterStat.index}" name="comentarios" rows="3"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-4 mt-4">
+                                        <p class="services-label mb-2">Servicios adicionales:</p>
+                                        <div th:each="producto, pStat : ${productos}" class="checkbox-group mb-3">
+                                            <div class="form-check mb-2">
+                                                <input type="checkbox"
+                                                       th:id="'producto__' + ${iterStat.index} + '_' + ${pStat.index}"
+                                                       th:name="'productos[' + ${pStat.index} + '].idProducto'"
+                                                       th:value="${producto.id}"
+                                                       th:attr="data-precio=${producto.precioBase}, data-index=${iterStat.index}"
+                                                       class="form-check-input me-2 producto-checkbox" />
+                                                <label th:for="'producto__' + ${iterStat.index} + '_' + ${pStat.index}" th:text="${producto.nombre}" class="form-check-label"></label>
+                                            </div>
+                                            <input type="number" th:name="'productos[' + ${pStat.index} + '].cantidad'" placeholder="Cantidad" class="form-control mb-1 cantidad-input" style="max-width: 100px;" min="1" th:attr="data-index=${iterStat.index}" />
+                                            <input type="date" th:name="'productos[' + ${pStat.index} + '].fecha'" class="form-control mb-1 fecha-input" style="max-width: 200px;" th:attr="data-index=${iterStat.index}" />
+                                            <input type="number" th:name="'productos[' + ${pStat.index} + '].descuento'" placeholder="% desc" class="form-control mb-3 descuento-input" style="max-width: 100px;" min="0" max="100" th:attr="data-index=${iterStat.index}" />
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <label><strong>Precio estimado:</strong>
+                                            <span th:id="'precioTotal__' + ${iterStat.index}">0 €</span>
+                                        </label>
+                                        <div th:id="'desglosePrecio__' + ${iterStat.index}" style="font-size: 0.9em; color: #555;"></div>
+                                    </div>
+
+                                    <div class="mt-4 text-end">
+                                        <button type="submit" class="btn btn-success">Confirmar Reserva</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <th:block th:with="
+    urlBase=${'/hotel/' + hotel.nombre},
+    pageAnterior=${habitaciones.number - 1},
+    pageSiguiente=${habitaciones.number + 1}
+">
+                <nav aria-label="Paginación habitaciones">
+                    <ul class="pagination justify-content-center mt-4">
+                        <li class="page-item" th:classappend="${habitaciones.hasPrevious()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:href="@{${urlBase}(page=${pageAnterior}, fechaEntrada=${fechaEntrada}, fechaSalida=${fechaSalida})}">
+                                Anterior
+                            </a>
+                        </li>
+                        <li class="page-item disabled">
+        <span class="page-link">
+          Página <span th:text="${habitaciones.number + 1}">1</span> de
+          <span th:text="${habitaciones.totalPages}">1</span>
+        </span>
+                        </li>
+                        <li class="page-item" th:classappend="${habitaciones.hasNext()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:href="@{${urlBase}(page=${pageSiguiente}, fechaEntrada=${fechaEntrada}, fechaSalida=${fechaSalida})}">
+                                Siguiente
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </th:block>
+
+
+        </div>
+    </section>
+
+    <section class="py-5 bg-secondary text-white">
+        <div class="container">
+            <h3>Dirección y contacto</h3>
+            <p><strong>Ciudad:</strong> <span th:text="${hotel.ciudad}">Ciudad</span></p>
+            <p><strong>Dirección:</strong> <span th:text="${hotel.direccion}">Dirección</span></p>
+            <p><strong>Email:</strong> <span th:text="${hotel.email}">Email</span></p>
+            <p><strong>Teléfono:</strong> <span th:text="${hotel.telefono}">Teléfono</span></p>
+        </div>
+    </section>
+
+</main>
+</body>
+</html>

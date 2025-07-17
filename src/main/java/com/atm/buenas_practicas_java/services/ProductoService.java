@@ -19,4 +19,12 @@ public class ProductoService extends AbstractTemplateServicesEntities<Producto, 
         return getRepo().findByIdWithCategoria(id);
     }
 
+    public List<Producto> obtenerProductosActivos() {
+        return getRepo().findAllByActivoTrue();
+    }
+
+    public List<Producto> obtenerProductosActivosPorCategoria(Integer idCategoria) {
+        return getRepo().findAllByActivoTrueAndIdCategoria_Id(idCategoria);
+    }
+
 }
