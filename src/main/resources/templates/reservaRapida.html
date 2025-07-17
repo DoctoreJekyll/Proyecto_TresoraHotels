@@ -160,14 +160,6 @@
                 <!-- Campo oculto Hotel (formulario) -->
                 <input type="hidden" th:field="*{hotel}" id="hotel" />
 
-                <!-- Habitación (cambia según hotel) -->
-                <div class="form-group mb-4">
-                    <label for="idHabitacion">Habitación</label>
-                    <select th:field="*{idHabitacion}" id="idHabitacion" class="form-control" required>
-                        <option value="" disabled selected>Seleccione habitación</option>
-                    </select>
-                </div>
-
                 <!-- Fecha entrada -->
                 <div class="form-group mb-4">
                     <label for="fechaEntrada">Fecha de Entrada</label>
@@ -178,6 +170,14 @@
                 <div class="form-group mb-4">
                     <label for="fechaSalida">Fecha de Salida</label>
                     <input type="date" th:field="*{fechaSalida}" id="fechaSalida" class="form-control" required />
+                </div>
+
+                <!-- Habitación (cambia según hotel) -->
+                <div class="form-group mb-4">
+                    <label for="idHabitacion">Habitación</label>
+                    <select th:field="*{idHabitacion}" id="idHabitacion" class="form-control" required>
+                        <option value="" disabled selected>Seleccione habitación</option>
+                    </select>
                 </div>
 
                 <!-- Pax -->

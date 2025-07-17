@@ -91,7 +91,7 @@ main#contenido-principal {
 /* Navbar */
 .navbar {
   /*position: relative;*/
-  position: fixed; /* Fija el navbar en la parte superior */
+  position: relative; /* Fija el navbar en la parte superior */
   top: 0; /* Asegura que esté en la parte superior de la ventana */
   left: 0; /* Asegura que se extienda de lado a lado */
   width: 100%; /* Ocupa todo el ancho de la pantalla */
