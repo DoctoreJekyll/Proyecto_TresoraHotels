@@ -1,8 +1,7 @@
 package com.atm.buenas_practicas_java.controllers.FactoryImpl;
 
 import com.atm.buenas_practicas_java.controllers.Factory.IFactoryProvider;
-import com.atm.buenas_practicas_java.entities.Hotel;
-import com.atm.buenas_practicas_java.entities.LimpiezaHabitacion;
+import com.atm.buenas_practicas_java.entities.LimpiezaHabitaciones;
 import com.atm.buenas_practicas_java.services.InformesService;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +30,7 @@ public class InformesFactoryImpl implements IFactoryProvider {
 
     @Override
     public List<Map<String, Object>> getRows() {
-        List<LimpiezaHabitacion> limpiezaHabitaciones = informesService.findAll();
+        List<LimpiezaHabitaciones> limpiezaHabitaciones = informesService.findAll();
         List<Map<String, Object>> rows = limpiezaHabitaciones.stream()
                 .map(limpiezaHabitacion -> {
                     Map<String, Object> row = new LinkedHashMap<>();
