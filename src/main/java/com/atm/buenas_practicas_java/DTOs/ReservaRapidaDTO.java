@@ -17,6 +17,8 @@ public class ReservaRapidaDTO {
     private LocalDate fechaSalida;
     private Integer pax;
     private String comentarios;
+    private Integer idUsuario;
+
 
     // Productos contratados desde el formulario (opcional)
     private List<ProductoFormularioDTO> productos;
