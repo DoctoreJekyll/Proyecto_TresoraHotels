@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+<head>
+  <title>Formulario Usuario</title>
+</head>
+<body>
+<main layout:fragment="contenido" class="container mt-5">
+  <h2 class="mb-4 text-center" th:text="${usuario.id != null ? 'Editar Usuario' : 'Nuevo Usuario'}"></h2>
+
+  <form th:action="@{/usuarios/guardar}" th:object="${usuario}" method="post">
+    <input type="hidden" th:field="*{id}" />
+
+    <div class="mb-3">
+      <label th:for="*{nombre}" class="form-label">Nombre</label>
+      <input type="text" th:field="*{nombre}" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+      <label th:for="*{apellidos}" class="form-label">Apellidos</label>
+      <input type="text" th:field="*{apellidos}" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+      <label th:for="*{email}" class="form-label">Correo Electrónico</label>
+      <input type="email" th:field="*{email}" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+      <label th:for="*{password}" class="form-label">Contraseña</label>
+      <input type="password" th:field="*{password}" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+      <label th:for="*{telefono}" class="form-label">Teléfono</label>
+      <input type="text" th:field="*{telefono}" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+      <label th:for="*{activo}" class="form-label">Activo</label>
+      <input type="checkbox" th:field="*{activo}" class="form-check-input" />
+    </div>
+
+    <div class="mb-3">
+      <label for="rolId" class="form-label">Rol</label>
+      <select class="form-select" name="rolId" id="rolId" required>
+        <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombreRol}"
+                th:selected="${usuario.idRol != null and rol.id == usuario.idRol.id}">
+        </option>
+      </select>
+    </div>
+
+    <div class="text-center">
+      <button type="submit" class="btn btn-grupo5">Guardar</button>
+    </div>
+  </form>
+</main>
+</body>
+</html>

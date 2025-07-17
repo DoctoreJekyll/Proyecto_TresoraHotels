@@ -11,7 +11,8 @@
 <main class="container-fluid" layout:fragment="contenido">
     <div class="row login-container flex-column-reverse flex-md-row">
         <div class="col-md-6 p-0 login-image mb-4 mb-md-0">
-            <img src="https://cdn.pixabay.com/photo/2021/11/28/11/54/bed-6830011_1280.jpg" alt="Inicio de sesión" style="border-radius: 5px;" >
+            <img src="https://cdn.pixabay.com/photo/2021/11/28/11/54/bed-6830011_1280.jpg" alt="Inicio de sesión"
+                 style="border-radius: 5px;">
         </div>
         <div class="col-md-6 d-flex align-items-center justify-content-center">
             <div class="w-75 ">
@@ -19,11 +20,13 @@
                 <form id="loginForm1" th:action="@{/login}" th:object="${datoslogin}" method="post">
                     <div class="mb-3">
                         <label for="loginEmail" class="form-label">CORREO ELECTRÓNICO</label>
-                        <input type="email" class="form-control border-dark" id="loginEmail" th:field="${datoslogin.email}" required>
+                        <input type="email" class="form-control border-dark" id="loginEmail"
+                               th:field="${datoslogin.email}" required>
                     </div>
                     <div class="mb-3">
                         <label for="loginPassword" class="form-label">CONTRASEÑA</label>
-                        <input type="password" class="form-control border-dark" id="loginPassword" th:field="${datoslogin.password}" placeholder="Contraseña" required>
+                        <input type="password" class="form-control border-dark" id="loginPassword"
+                               th:field="${datoslogin.password}" placeholder="Contraseña" required>
                     </div>
 
                     <div class="d-grid gap-2 mb-4">
@@ -34,22 +37,24 @@
                     </div>
                     <div class="text-center mb-4">
                         <p>¿No tienes cuenta todavía?</p>
-                        <a th:href="@{/crear_cuenta}" class="btn btn-outline-grupo5">CREAR NUEVA CUENTA</a>
+                        <a th:href="@{/usuarios/crear-cuenta}" class="btn btn-outline-grupo5">CREAR NUEVA CUENTA</a>
                     </div>
                 </form>
                 <p class="mt-3">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#modalRecuperar">¿Has olvidado tu contraseña?</a>
                 </p>
-                <div class="modal fade" id="modalRecuperar" tabindex="-1" aria-labelledby="modalRecuperarLabel" aria-hidden="true">
+                <div class="modal fade" id="modalRecuperar" tabindex="-1" aria-labelledby="modalRecuperarLabel"
+                     aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="modalRecuperarLabel">Recuperar contraseña</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">
                                 <script>
-                                    function checkEmail(){
+                                    function checkEmail() {
                                         const itmemail2 = document.getElementById("email2")
                                         const itmemail1 = document.getElementById("email1")
                                         var itmemail2txt = itmemail2.value.trim();
@@ -73,16 +78,19 @@
                                 </script>
                                 <div class="mb-3">
                                     <label for="email1" class="form-label">Correo electrónico</label>
-                                    <input type="email" class="form-control" id="email1" onchange="checkEmail()" required>
+                                    <input type="email" class="form-control" id="email1" onchange="checkEmail()"
+                                           required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="email2" class="form-label">Repite el correo electrónico</label>
-                                    <input type="email" class="form-control" id="email2" onchange="checkEmail()" required>
+                                    <input type="email" class="form-control" id="email2" onchange="checkEmail()"
+                                           required>
                                 </div>
                                 <div id="mensajeConfirmacion" class="alert alert-success d-none">
                                     Hemos enviado a su correo un reseteo de contraseña.
                                 </div>
-                                <a th:href="@{/recuperarContrasena}" type="button" class="btn btn-grupo5" id="agreeButton">Aceptar</a>
+                                <a th:href="@{/recuperarContrasena}" type="button" class="btn btn-grupo5"
+                                   id="agreeButton">Aceptar</a>
 
                             </div>
                         </div>

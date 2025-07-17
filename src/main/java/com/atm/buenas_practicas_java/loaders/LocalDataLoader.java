@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -51,6 +52,9 @@ public class LocalDataLoader {
     private final FacturaRepo facturaRepo;
     private final MetodoPagoRepo metodoPagoRepo;
     private final MiembroEquipoRepo miembroEquipoRepo;
+
+    /** Aquí inyectamos el passwordEncoder para cifrar las contraseñas */
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Constructor de la clase {@code LocalDataLoader}.
@@ -210,42 +214,108 @@ public class LocalDataLoader {
         return hotel1;
     }
 
+    // Campos declarados fuera
     Habitacion habitacion;
     Habitacion habitacion2;
     Habitacion habitacion3;
     Habitacion habitacion4;
+    Habitacion habitacion5;
+    Habitacion habitacion6;
+    Habitacion habitacion7;
+    Habitacion habitacion8;
+    Habitacion habitacion9;
+    Habitacion habitacion10;
+    Habitacion habitacion11;
+    Habitacion habitacion12;
 
-    private void saveAllHabitaciones()
-    {
+    private void saveAllHabitaciones() {
         List<Habitacion> habitaciones = new ArrayList<>();
 
         habitacion = habitacion1();
         habitacion2 = habitacion2();
         habitacion3 = habitacion3();
         habitacion4 = habitacion4();
+        habitacion5 = habitacion5();
+        habitacion6 = habitacion6();
+        habitacion7 = habitacion7();
+        habitacion8 = habitacion8();
+        habitacion9 = habitacion9();
+        habitacion10 = habitacion10();
+        habitacion11 = habitacion11();
+        habitacion12 = habitacion12();
+
         habitaciones.add(habitacion);
         habitaciones.add(habitacion2);
         habitaciones.add(habitacion3);
         habitaciones.add(habitacion4);
+        habitaciones.add(habitacion5);
+        habitaciones.add(habitacion6);
+        habitaciones.add(habitacion7);
+        habitaciones.add(habitacion8);
+        habitaciones.add(habitacion9);
+        habitaciones.add(habitacion10);
+        habitaciones.add(habitacion11);
+        habitaciones.add(habitacion12);
 
         habitacionRepo.saveAll(habitaciones);
     }
 
-    private Habitacion habitacion1()
-    {
-        Habitacion habitacion1 = new Habitacion();
-        habitacion1.setHotel(hotel1);
-        habitacion1.setProducto(producto);
-        habitacion1.setNumeroHabitacion(0);
-        habitacion1.setPiso(0);
-        habitacion1.setTipo("Individual");
-        habitacion1.setCapacidad(1);
-        habitacion1.setOcupada(false);
-        habitacion1.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
-        return habitacion1;
+    // HOTEL 1
+    private Habitacion habitacion1() {
+        habitacion = new Habitacion();
+        habitacion.setHotel(hotel1);
+        habitacion.setProducto(producto);
+        habitacion.setNumeroHabitacion(1);
+        habitacion.setPiso(0);
+        habitacion.setTipo("Individual");
+        habitacion.setCapacidad(1);
+        habitacion.setOcupada(false);
+        habitacion.setImagenUrl(defaultImage());
+        return habitacion;
     }
+
+    private Habitacion habitacion5() {
+        habitacion5 = new Habitacion();
+        habitacion5.setHotel(hotel1);
+        habitacion5.setProducto(producto2);
+        habitacion5.setNumeroHabitacion(2);
+        habitacion5.setPiso(0);
+        habitacion5.setTipo("Doble");
+        habitacion5.setCapacidad(2);
+        habitacion5.setOcupada(false);
+        habitacion5.setImagenUrl(defaultImage());
+        return habitacion5;
+    }
+
+    private Habitacion habitacion6() {
+        habitacion6 = new Habitacion();
+        habitacion6.setHotel(hotel1);
+        habitacion6.setProducto(producto3);
+        habitacion6.setNumeroHabitacion(3);
+        habitacion6.setPiso(1);
+        habitacion6.setTipo("Triple");
+        habitacion6.setCapacidad(3);
+        habitacion6.setOcupada(true);
+        habitacion6.setImagenUrl(defaultImage());
+        return habitacion6;
+    }
+
+    private Habitacion habitacion7() {
+        habitacion7 = new Habitacion();
+        habitacion7.setHotel(hotel1);
+        habitacion7.setProducto(producto);
+        habitacion7.setNumeroHabitacion(4);
+        habitacion7.setPiso(1);
+        habitacion7.setTipo("Suite");
+        habitacion7.setCapacidad(4);
+        habitacion7.setOcupada(false);
+        habitacion7.setImagenUrl(defaultImage());
+        return habitacion7;
+    }
+
+    // HOTEL 2
     private Habitacion habitacion2() {
-        Habitacion habitacion2 = new Habitacion();
+        habitacion2 = new Habitacion();
         habitacion2.setHotel(hotel2);
         habitacion2.setProducto(producto2);
         habitacion2.setNumeroHabitacion(101);
@@ -253,35 +323,107 @@ public class LocalDataLoader {
         habitacion2.setTipo("Doble");
         habitacion2.setCapacidad(2);
         habitacion2.setOcupada(false);
-        habitacion2.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
+        habitacion2.setImagenUrl(defaultImage());
         return habitacion2;
     }
 
+    private Habitacion habitacion8() {
+        habitacion8 = new Habitacion();
+        habitacion8.setHotel(hotel2);
+        habitacion8.setProducto(producto3);
+        habitacion8.setNumeroHabitacion(102);
+        habitacion8.setPiso(1);
+        habitacion8.setTipo("Triple");
+        habitacion8.setCapacidad(3);
+        habitacion8.setOcupada(true);
+        habitacion8.setImagenUrl(defaultImage());
+        return habitacion8;
+    }
+
+    private Habitacion habitacion9() {
+        habitacion9 = new Habitacion();
+        habitacion9.setHotel(hotel2);
+        habitacion9.setProducto(producto);
+        habitacion9.setNumeroHabitacion(103);
+        habitacion9.setPiso(2);
+        habitacion9.setTipo("Suite");
+        habitacion9.setCapacidad(4);
+        habitacion9.setOcupada(false);
+        habitacion9.setImagenUrl(defaultImage());
+        return habitacion9;
+    }
+
+    private Habitacion habitacion10() {
+        habitacion10 = new Habitacion();
+        habitacion10.setHotel(hotel2);
+        habitacion10.setProducto(producto2);
+        habitacion10.setNumeroHabitacion(104);
+        habitacion10.setPiso(2);
+        habitacion10.setTipo("Individual");
+        habitacion10.setCapacidad(1);
+        habitacion10.setOcupada(false);
+        habitacion10.setImagenUrl(defaultImage());
+        return habitacion10;
+    }
+
+    // HOTEL 3
     private Habitacion habitacion3() {
-        Habitacion habitacion3 = new Habitacion();
+        habitacion3 = new Habitacion();
         habitacion3.setHotel(hotel3);
         habitacion3.setProducto(producto2);
-        habitacion3.setNumeroHabitacion(203);
+        habitacion3.setNumeroHabitacion(201);
         habitacion3.setPiso(2);
         habitacion3.setTipo("Suite");
         habitacion3.setCapacidad(4);
         habitacion3.setOcupada(true);
-        habitacion3.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
+        habitacion3.setImagenUrl(defaultImage());
         return habitacion3;
     }
 
     private Habitacion habitacion4() {
-        Habitacion habitacion3 = new Habitacion();
-        habitacion3.setHotel(hotel3);
-        habitacion3.setProducto(producto3);
-        habitacion3.setNumeroHabitacion(202);
-        habitacion3.setPiso(2);
-        habitacion3.setTipo("Suite");
-        habitacion3.setCapacidad(4);
-        habitacion3.setOcupada(false);
-        habitacion3.setImagenUrl("https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=");
-        return habitacion3;
+        habitacion4 = new Habitacion();
+        habitacion4.setHotel(hotel3);
+        habitacion4.setProducto(producto3);
+        habitacion4.setNumeroHabitacion(202);
+        habitacion4.setPiso(2);
+        habitacion4.setTipo("Suite");
+        habitacion4.setCapacidad(4);
+        habitacion4.setOcupada(false);
+        habitacion4.setImagenUrl(defaultImage());
+        return habitacion4;
     }
+
+    private Habitacion habitacion11() {
+        habitacion11 = new Habitacion();
+        habitacion11.setHotel(hotel3);
+        habitacion11.setProducto(producto);
+        habitacion11.setNumeroHabitacion(203);
+        habitacion11.setPiso(3);
+        habitacion11.setTipo("Doble");
+        habitacion11.setCapacidad(2);
+        habitacion11.setOcupada(false);
+        habitacion11.setImagenUrl(defaultImage());
+        return habitacion11;
+    }
+
+    private Habitacion habitacion12() {
+        habitacion12 = new Habitacion();
+        habitacion12.setHotel(hotel3);
+        habitacion12.setProducto(producto2);
+        habitacion12.setNumeroHabitacion(204);
+        habitacion12.setPiso(3);
+        habitacion12.setTipo("Individual");
+        habitacion12.setCapacidad(1);
+        habitacion12.setOcupada(false);
+        habitacion12.setImagenUrl(defaultImage());
+        return habitacion12;
+    }
+
+    // Imagen reutilizable
+    private String defaultImage() {
+        return "https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=";
+    }
+
 
     private Producto producto;
     private Producto producto2;
@@ -386,16 +528,16 @@ public class LocalDataLoader {
 
     public void loadRoles() {
         rolCliente = new Rol();
-        rolCliente.setNombreRol("cliente");
+        rolCliente.setNombreRol("CLIENTE");
 
         rolEmpleado = new Rol();
-        rolEmpleado.setNombreRol("empleado");
+        rolEmpleado.setNombreRol("EMPLEADO");
 
         rolLimpieza = new Rol();
-        rolLimpieza.setNombreRol("limpieza");
+        rolLimpieza.setNombreRol("LIMPIEZA");
 
         rolAdmin = new Rol();
-        rolAdmin.setNombreRol("admin");
+        rolAdmin.setNombreRol("ADMIN");
 
         rolRepo.saveAll(Arrays.asList(rolCliente, rolEmpleado, rolLimpieza, rolAdmin));
     }
@@ -403,16 +545,16 @@ public class LocalDataLoader {
     public void loadUsuarios() {
         log.info("Iniciando carga de usuarios ficticios...");
         List<Usuario> usuarios = new ArrayList<>();
-        usuarios.add(crearUsuario(rolCliente, null, "Lucas", "Martínez", "lucas.martinez@mail.com", "pass1234", "Calle A, Madrid", "612345678", LocalDate.of(1985, 7, 12), LocalDate.of(2023, 5, 1), true, "12345678A"));
-        usuarios.add(crearUsuario(rolCliente, null, "Sophie", "Dupont", "sophie.dupont@mail.fr", "bonjour2023", "5 Rue Rivoli, Paris", "3312345678", LocalDate.of(1992, 3, 22), LocalDate.of(2024, 1, 15), true, "FR9876543"));
-        usuarios.add(crearUsuario(rolCliente, null, "Ahmed", "El-Sayed", "ahmed.sayed@mail.com", "egypt321", "Cairo Road 3, Cairo", "201234567890", LocalDate.of(1990, 12, 1), LocalDate.of(2023, 11, 2), true, "EGP223344"));
-        usuarios.add(crearUsuario(rolEmpleado, hotel1, "Marta", "Gómez", "marta.gomez@hotelciudad.com", "empleado1", "Hotel Ciudad, Madrid", "613456789", LocalDate.of(1988, 6, 5), LocalDate.of(2022, 3, 20), true, "78965432Z"));
-        usuarios.add(crearUsuario(rolEmpleado, hotel2, "Carlos", "Ruiz", "carlos.ruiz@hotelcampo.com", "empleado2", "Hotel Campo, Sevilla", "611234567", LocalDate.of(1991, 2, 10), LocalDate.of(2022, 6, 15), true, "15975362Y"));
-        usuarios.add(crearUsuario(rolLimpieza, hotel1, "Lola", "Fernández", "lola.fernandez@limpieza.com", "limpieza1", "Hotel Ciudad, Piso 1", "622334455", LocalDate.of(1978, 11, 11), LocalDate.of(2021, 1, 10), true, "ESL123456"));
-        usuarios.add(crearUsuario(rolLimpieza, hotel2, "Ana", "Torres", "ana.torres@limpieza.com", "limpieza2", "Hotel Campo, Piso 2", "623456789", LocalDate.of(1982, 4, 19), LocalDate.of(2022, 4, 1), true, "ESL654321"));
-        usuarios.add(crearUsuario(rolLimpieza, hotel3, "Mateo", "Reyes", "mateo.reyes@limpieza.com", "limpieza3", "Hotel Playa, Piso 3", "624567890", LocalDate.of(1990, 1, 5), LocalDate.of(2023, 9, 20), true, "DNI998877"));
-        usuarios.add(crearUsuario(rolAdmin, null, "Admin", "Principal", "admin@hoteles.com", "adminroot", "Oficina Central", "600000001", LocalDate.of(1975, 1, 1), LocalDate.of(2020, 1, 1), true, "ADM0001"));
-        usuarios.add(crearUsuario(rolCliente, null, "Emma", "Lopez", "emma.lopez@mail.com", "emmalopez", "Calle Falsa 123, Zaragoza", "611112222", LocalDate.of(1995, 8, 23), LocalDate.of(2024, 4, 3), true, "23456789L"));
+        usuarios.add(crearUsuario(rolCliente, null, "Lucas", "Martínez", "lucas.martinez@mail.com", passwordEncoder.encode("pass1234"), "Calle A, Madrid", "612345678", LocalDate.of(1985, 7, 12), LocalDate.of(2023, 5, 1), true, "12345678A"));
+        usuarios.add(crearUsuario(rolCliente, null, "Sophie", "Dupont", "sophie.dupont@mail.fr", passwordEncoder.encode("bonjour2023"), "5 Rue Rivoli, Paris", "3312345678", LocalDate.of(1992, 3, 22), LocalDate.of(2024, 1, 15), true, "FR9876543"));
+        usuarios.add(crearUsuario(rolCliente, null, "Ahmed", "El-Sayed", "ahmed.sayed@mail.com", passwordEncoder.encode("egypt321"), "Cairo Road 3, Cairo", "201234567890", LocalDate.of(1990, 12, 1), LocalDate.of(2023, 11, 2), true, "EGP223344"));
+        usuarios.add(crearUsuario(rolEmpleado, hotel1, "Marta", "Gómez", "marta.gomez@hotelciudad.com", passwordEncoder.encode("empleado1"), "Hotel Ciudad, Madrid", "613456789", LocalDate.of(1988, 6, 5), LocalDate.of(2022, 3, 20), true, "78965432Z"));
+        usuarios.add(crearUsuario(rolEmpleado, hotel2, "Carlos", "Ruiz", "carlos.ruiz@hotelcampo.com", passwordEncoder.encode("empleado2"), "Hotel Campo, Sevilla", "611234567", LocalDate.of(1991, 2, 10), LocalDate.of(2022, 6, 15), true, "15975362Y"));
+        usuarios.add(crearUsuario(rolLimpieza, hotel1, "Lola", "Fernández", "lola.fernandez@limpieza.com", passwordEncoder.encode("limpieza1"), "Hotel Ciudad, Piso 1", "622334455", LocalDate.of(1978, 11, 11), LocalDate.of(2021, 1, 10), true, "ESL123456"));
+        usuarios.add(crearUsuario(rolLimpieza, hotel2, "Ana", "Torres", "ana.torres@limpieza.com", passwordEncoder.encode("limpieza2"), "Hotel Campo, Piso 2", "623456789", LocalDate.of(1982, 4, 19), LocalDate.of(2022, 4, 1), true, "ESL654321"));
+        usuarios.add(crearUsuario(rolLimpieza, hotel3, "Mateo", "Reyes", "mateo.reyes@limpieza.com", passwordEncoder.encode("limpieza3"), "Hotel Playa, Piso 3", "624567890", LocalDate.of(1990, 1, 5), LocalDate.of(2023, 9, 20), true, "DNI998877"));
+        usuarios.add(crearUsuario(rolAdmin, null, "Admin", "Principal", "admin@hoteles.com", passwordEncoder.encode("adminroot"), "Oficina Central", "600000001", LocalDate.of(1975, 1, 1), LocalDate.of(2020, 1, 1), true, "ADM0001"));
+        usuarios.add(crearUsuario(rolCliente, null, "Emma", "Lopez", "emma.lopez@mail.com", passwordEncoder.encode("emmalopez"), "Calle Falsa 123, Zaragoza", "611112222", LocalDate.of(1995, 8, 23), LocalDate.of(2024, 4, 3), true, "23456789L"));
 
         usuarioRepo.saveAll(usuarios);
         log.info("Usuarios cargados: {}", usuarios.size());

@@ -2,15 +2,14 @@ package com.atm.buenas_practicas_java.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -29,11 +28,17 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CustomUserDetailsService customUserDetailsService;
+    private final CustomAuthenticationSuccessHandler successHandler;
 
-    private final Environment environment;
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, CustomAuthenticationSuccessHandler successHandler) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.successHandler = successHandler;
+    }
 
-    public SecurityConfig(Environment environment) {
-        this.environment = environment;
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 
@@ -50,19 +55,18 @@ public class SecurityConfig {
      *
      * @Author No se especificó autor.
      */
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        String name = environment.getProperty("spring.security.user.name", "user");
-        String password = environment.getProperty("spring.security.user.password", "password");
-
-        var user = User.withUsername(name)
-                .password("{noop}" + password) // {noop} indica que no se usa encoder para simplificar (solo pruebas)
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(user);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        String name = environment.getProperty("spring.security.user.name", "user@hoteles.com");
+//        String password = environment.getProperty("spring.security.user.password", "password");
+//
+//        var user = User.withUsername(name)
+//                .password("{noop}" + password) // {noop} indica que no se usa encoder para simplificar (solo pruebas)
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user);
+//    }
 
     /**
      * Configura una cadena de filtros de seguridad para gestionar la seguridad HTTP de la aplicación.
@@ -87,24 +91,40 @@ public class SecurityConfig {
      * @Author No se especificó autor.
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationSuccessHandler successHandler) throws Exception {
         http
                 .csrf(Customizer.withDefaults()) // deshabilitado para pruebas o APIs
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .successHandler(successHandler)
                         .failureUrl("/login-error")
-                        .defaultSuccessUrl("/",true)
                         .permitAll())
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/entities").permitAll()
-                        .requestMatchers("/entities/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/hoteles").permitAll()
-                        .requestMatchers("/css/*").permitAll()
-                        .requestMatchers("/actuator/*").permitAll()
-                        .requestMatchers("/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/entidades/deleteHija/*").authenticated()
-                        .anyRequest().authenticated()
-                );
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.sendRedirect("/logout-exito");
+                        })
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll())
+                .authorizeHttpRequests(auth -> auth
+                        // Recursos públicos
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/home", "/login", "/login-error", "/logout-exito", "/usuarios/crear-cuenta").permitAll()
+
+                        // Rutas específicas por rol
+                        .requestMatchers("/panel").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")
+                        .requestMatchers("/lista/usuarios").hasAnyRole("ADMIN", "EMPLEADO")
+                        .requestMatchers("/lista/facturas").hasAnyRole("ADMIN", "EMPLEADO")
+                        .requestMatchers("/lista/reservas").hasAnyRole("ADMIN", "EMPLEADO")
+                        .requestMatchers("/lista/informes").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")
+                        .requestMatchers("/lista/habitaciones", "/lista/productos", "/lista/metodopago", "/lista/categorias").hasRole("ADMIN")
+
+
+                        // Cualquier otra ruta requiere autenticación
+                        .anyRequest().authenticated());
 
         return http.build();
     }
