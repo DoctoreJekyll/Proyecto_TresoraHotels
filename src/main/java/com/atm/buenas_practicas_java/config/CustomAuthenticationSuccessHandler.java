@@ -17,7 +17,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException {
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
@@ -29,7 +29,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                         a.getAuthority().equals("ROLE_LIMPIEZA"));
 
         if (isCliente) {
-            response.sendRedirect("/userhome");
+            response.sendRedirect("/usuarios/userhome");
         } else if (isAdminEmpLimpieza) {
             response.sendRedirect("/panel");
         } else {

@@ -25,6 +25,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.time.format.DateTimeParseException;
@@ -149,5 +151,17 @@ public class HotelWebController {
         model.addAttribute("diasEstancia", diasEstancia);
         model.addAttribute("reservaConfirmada", confirmacion);
         return "confirmacionReservaRapida";
+    }
+
+    @GetMapping("/buscar-disponibilidad")
+    public String redirigirAHotel(
+            @RequestParam("hotelNombre") String hotelNombre,
+            @RequestParam("fechaEntrada") String fechaEntrada,
+            @RequestParam("fechaSalida") String fechaSalida,
+            RedirectAttributes redirectAttributes
+    ) {
+        redirectAttributes.addAttribute("fechaEntrada", fechaEntrada);
+        redirectAttributes.addAttribute("fechaSalida", fechaSalida);
+        return "redirect:/hotel/" + hotelNombre;
     }
 }

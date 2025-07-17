@@ -3,6 +3,7 @@ package com.atm.buenas_practicas_java.controllers;
 import com.atm.buenas_practicas_java.DTOs.UsuarioDTO;
 import com.atm.buenas_practicas_java.entities.Rol;
 import com.atm.buenas_practicas_java.entities.Usuario;
+import com.atm.buenas_practicas_java.services.HotelService;
 import com.atm.buenas_practicas_java.services.RolService;
 import com.atm.buenas_practicas_java.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
     private final RolService rolService;
+    private final HotelService hotelService;
 
     @GetMapping("/crear-cuenta")
     @PreAuthorize("permitAll()")
@@ -36,6 +38,68 @@ public class UsuarioController {
         }
 
         return "crearCuenta";
+    }
+
+    @PostMapping("/crear-cuenta")
+    @PreAuthorize("permitAll()")
+    public String procesarFormularioRegistro(@ModelAttribute("userData") UsuarioDTO dto,
+                                             @RequestParam(name = "rolId", required = false) Integer rolId,
+                                             BindingResult result,
+                                             Model model,
+                                             Authentication auth) {
+
+        // Validaciones
+        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
+            result.rejectValue("confirmPassword", "error.userData", "Las contraseñas no coinciden");
+        }
+
+        if (usuarioService.findAllEntities().stream().anyMatch(u -> u.getEmail().equals(dto.getEmail()))) {
+            result.rejectValue("email", "error.userData", "El email ya está registrado");
+        }
+
+        if (result.hasErrors()) {
+            if (auth != null && auth.isAuthenticated()
+                    && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                model.addAttribute("roles", rolService.findAll());
+            }
+            return "crearCuenta";
+        }
+
+        // Conversión a entidad y guardado
+        Usuario usuario = new Usuario();
+        usuario.setNombre(dto.getNombre());
+        usuario.setApellidos(dto.getApellidos());
+        usuario.setEmail(dto.getEmail());
+        usuario.setPassword(dto.getPassword()); // Se cifrará en el servicio
+        usuario.setFechaAlta(java.time.LocalDate.now());
+        usuario.setActivo(true);
+
+
+        // Rol por defecto o elegido
+        Rol rol;
+        if (auth != null && auth.isAuthenticated()
+                && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")) && rolId != null) {
+            rol = rolService.findById(rolId).orElseThrow(() -> new RuntimeException("Rol no válido"));
+        } else {
+            rol = rolService.findByNombre("CLIENTE").orElseThrow(() -> new RuntimeException("Rol cliente no encontrado"));
+        }
+
+        usuario.setIdRol(rol);
+
+        usuarioService.saveEntity(usuario);
+
+        return "redirect:/login";
+    }
+
+    @GetMapping("/userhome")
+    public String userHomePage(Model model, Authentication auth) {
+        String email = auth.getName();
+        Usuario usuario = usuarioService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("hoteles", hotelService.findAll());
+        return "user_home_page";
     }
 
     @GetMapping("/miPerfil")
