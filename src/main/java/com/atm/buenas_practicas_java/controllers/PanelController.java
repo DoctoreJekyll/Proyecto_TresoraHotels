@@ -18,11 +18,11 @@ public class PanelController {
         String titulo;
 
         if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            titulo = "Bienvenido al Panel de Administración de Administradores";
+            titulo = "Bienvenido al Panel de Administradores";
         } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_EMPLEADO"))) {
-            titulo = "Bienvenido al Panel de Administración de Empleados";
+            titulo = "Bienvenido al Panel de Empleados";
         } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_LIMPIEZA"))) {
-            titulo = "Bienvenido al Panel de Administración de Personal de Limpieza";
+            titulo = "Bienvenido al Panel de Personal de Limpieza";
         } else {
             titulo = "Bienvenido al Panel de Administración";
         }
