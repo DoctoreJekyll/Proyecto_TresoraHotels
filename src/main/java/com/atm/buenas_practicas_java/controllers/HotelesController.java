@@ -1,25 +1,129 @@
 package com.atm.buenas_practicas_java.controllers;
 
 import com.atm.buenas_practicas_java.dtosOld.*;
-import com.atm.buenas_practicas_java.entities.Usuario;
+import com.atm.buenas_practicas_java.entities.DatosReserva;
+import com.atm.buenas_practicas_java.entities.Hotel;
+import com.atm.buenas_practicas_java.entities.MiembroEquipo;
+import com.atm.buenas_practicas_java.services.EquipoService;
 import com.atm.buenas_practicas_java.services.EmailService;
+import com.atm.buenas_practicas_java.services.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.*;
+
 
 @Controller
 public class HotelesController {
-    @GetMapping("/")
-    public String vistaHome( ModelMap interfazConPantalla){
+
+    @Autowired
+    private HotelService hotelService;
+    @Autowired
+    private EquipoService equipoService;
+
+    @GetMapping({"/hoteles","", "/", "/home"})
+    public String mostrarHoteles(Model model) {
+        List<Hotel> hotels = hotelService.findAll();
+       // System.out.println("Hoteles obtenidos: " + hotels); // Para depuración
+        model.addAttribute("hotels", hotels);
+        List<MiembroEquipo> equipo = equipoService.findAll();
+     //   System.out.println("Equipo obtenido: " + equipo);
+        model.addAttribute("equipo", equipo);
         return "home";
     }
+
+    @Controller
+    public class ReservaController {
+
+        @Autowired
+        private HotelService hotelService;
+
+        @GetMapping("/reservahome")
+        public String mostrarFormularioReserva(
+                @RequestParam(value = "id", required = false) String hotelId,
+                @RequestParam(value = "hotelId", required = false) String hotelIdFromForm,
+                @RequestParam(value = "fechaEntrada", required = false) String fechaEntrada,
+                @RequestParam(value = "fechaSalida", required = false) String fechaSalida,
+                @RequestParam(value = "adultos", required = false) String adultos,
+                Model model) {
+
+            // Unificar hotelId
+            String selectedHotelId = hotelId != null ? hotelId : hotelIdFromForm;
+
+            // Crear objeto para el formulario
+            DatosReserva datosReserva = new DatosReserva();
+            if (fechaEntrada != null && isValidDate(fechaEntrada)) {
+                datosReserva.setFechaEntrada(fechaEntrada);
+            }
+            if (fechaSalida != null && isValidDate(fechaSalida)) {
+                datosReserva.setFechaSalida(fechaSalida);
+            }
+            if (adultos != null && !adultos.trim().isEmpty()) {
+                try {
+                    int adultosInt = Integer.parseInt(adultos);
+                    datosReserva.setAdultos(adultosInt >= 1 && adultosInt <= 4 ? adultosInt : 2);
+                } catch (NumberFormatException e) {
+                    datosReserva.setAdultos(2);
+                }
+            } else {
+                datosReserva.setAdultos(2);
+            }
+
+            // Añadir datos al modelo
+            model.addAttribute("datosreserva", datosReserva);
+            model.addAttribute("hotelId", selectedHotelId);
+            model.addAttribute("hotels", hotelService.findAll());
+
+            // Determinar la plantilla según el hotel seleccionado
+            String templateName = "home";
+            if (selectedHotelId != null) {
+                try {
+                    int hotelIdInt = Integer.parseInt(selectedHotelId);
+                    if (hotelService.existsById(hotelIdInt)) {
+                        Map<Integer, String> hotelTemplates = new HashMap<>();
+                        hotelTemplates.put(1, "reservaHotelPlaya");
+                        hotelTemplates.put(2, "reservaHotelMontaña");
+                        hotelTemplates.put(3, "reservaHotelCiudad");
+                        templateName = hotelTemplates.getOrDefault(hotelIdInt, "home");
+                    } else {
+                        model.addAttribute("error", "El hotel seleccionado no existe");
+                    }
+                } catch (NumberFormatException e) {
+                    model.addAttribute("error", "Identificador de hotel inválido");
+                }
+            } else {
+                model.addAttribute("error", "No se seleccionó un hotel");
+            }
+
+            return templateName;
+        }
+
+        private boolean isValidDate(String date) {
+            try {
+                LocalDate.parse(date);
+                return true;
+            } catch (DateTimeParseException e) {
+                return false;
+            }
+        }
+    }
+
+    @PostMapping("/reserva")
+    public String procesarReserva(@ModelAttribute("datosreserva") DatosReserva datosReserva,
+                                  @RequestParam("hotelId") String hotelId) {
+        // Lógica para procesar la reserva
+        // Por ejemplo, guardar en la base de datos o redirigir a una página de confirmación
+        return "redirect:/confirmacion";
+    }
+
 
     @GetMapping("/servicios")
     public String vistaservicios( ){
@@ -40,101 +144,10 @@ public class HotelesController {
         return "crearCuenta";
     }
 
-    private final EmailService emailService;
-
-    @Autowired
-    public HotelesController(EmailService emailService) {
-        this.emailService = emailService;
-    }
-
     @PostMapping("/crearCuenta")
     public String postCrearCuenta(@ModelAttribute(name = "userData") UserDto user){
-        System.out.println(user.getName());
-        System.out.println(user.getEmail());
-        System.out.println(user.getPassword());
-
-        emailService.sendEmail(
-                "jrmar0805@gmail.com",
-                user.getEmail(),
-                "Creacion de cuenta en Tresora",
-                "Has creado tu cuenta con exito, estas son tus credenciales de usuario" + user.getEmail() + user.getPassword()
-        );
-
-        System.out.println("email sent");
-
         return "home";
     }
-
-    @GetMapping("/contact")
-    public String mostrarPaginaContact(ModelMap intefrazConPantalla) {
-        ContactDto contacto = new ContactDto();
-        contacto.setName("El lobo feroz");
-        intefrazConPantalla.addAttribute("contactInfo", contacto);
-        return "contact";
-    }
-
-    @PostMapping("/contact")
-    public String postMostrarPaginaContact(@ModelAttribute(name="contactInfo") ContactDto contactInfo) {
-        System.out.println(contactInfo.getName());
-        System.out.println(contactInfo.getMessage());
-
-        emailService.sendEmail(
-
-                "alba2gr@gmail.com",
-                contactInfo.getEmail(),
-                "Gracias por contactar con Tresora",
-                "Hola " + contactInfo.getName() + ",\n\n" +
-                        "Hemos recibido tu mensaje:\n" +
-                        contactInfo.getMessage() + "\n\n" +
-                        "Te contactaremos pronto.\n\n" +
-                        "Atentamente,\nTresora Hotels"
-        );
-        return "home";
-    }
-
-    @GetMapping("/reservaPlaya")
-    public String reservaPlaya( ModelMap ModelReserva) {
-        ReservaDto reserva= new ReservaDto();
-        reserva.setAdultos(4);
-        ModelReserva.addAttribute("datosreserva", reserva);
-        return "reservaHotelPlaya";
-    }
-
-    @PostMapping("/reservaPlaya")
-    public String postReservaPlaya(@ModelAttribute(name="datosreserva") ReservaDto reserva) {
-        System.out.println(reserva.getAdultos());
-        System.out.println(reserva.getFechaEntrada());
-        System.out.println(reserva.getFechaSalida());
-        return "home";
-    }
-
-    @GetMapping("/reservarapida")
-    public String reservarapida( ) {
-        return "reservaRapida";
-    }
-
-    @GetMapping("/confirmarReserva")
-    public String confirmarreserva( ) {
-        return "confirmarReserva";
-    }
-
-
-    @GetMapping("/reservaMontaña")
-    public String reservaMontaña( ModelMap ModelReserva) {
-        ReservaDto reserva= new ReservaDto();
-        reserva.setAdultos(4);
-        ModelReserva.addAttribute("datosreserva", reserva);
-        return "reservaHotelMontaña";
-    }
-
-    @PostMapping("/reservaMontaña")
-    public String postReservaMontaña(@ModelAttribute(name="datosreserva") ReservaDto reserva) {
-        System.out.println(reserva.getAdultos());
-        System.out.println(reserva.getFechaEntrada());
-        System.out.println(reserva.getFechaSalida());
-        return "home";
-    }
-
 
 
 
