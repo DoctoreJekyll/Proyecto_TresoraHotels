@@ -81,21 +81,7 @@ public class ReservasController {
         Map<Hotel, List<Habitacion>> habitacionesPorHotel = habitaciones.stream()
                 .collect(Collectors.groupingBy(Habitacion::getHotel, LinkedHashMap::new, Collectors.toList()));
 
-        ReservaRapidaDTO dto = new ReservaRapidaDTO(); // Siempre creamos el DTO
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated()
-                && !authentication.getPrincipal().equals("anonymousUser")) {
-            UserDetails user = (UserDetails) authentication.getPrincipal();
-            String userEmail = user.getUsername();
-
-            Usuario usuario = usuarioService.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-
-            dto.setNombre(usuario.getNombre());
-            dto.setEmail(authentication.getName());
-            dto.setIdUsuario(usuario.getId());
-        }
+        ReservaRapidaDTO dto = reservaService.reservaRapidaUsuarioLog(usuarioService);
 
         // El resto de campos quedan en null (vacíos en el formulario)
         model.addAttribute("reservaDTO", dto);

@@ -94,6 +94,24 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         return savedReserva;
     }
 
+    public ReservaRapidaDTO reservaRapidaUsuarioLog(UsuarioService usuarioService) {
+        ReservaRapidaDTO dto = new ReservaRapidaDTO(); // Siempre creamos el DTO
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()){
+            UserDetails user = (UserDetails) authentication.getPrincipal();
+            String userEmail = user.getUsername();
+
+            Usuario usuario = usuarioService.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+            dto.setNombre(usuario.getNombre());
+            dto.setEmail(userEmail);
+            dto.setIdUsuario(usuario.getId());
+        }
+        return dto;
+    }
+
     /**
      * Busca un usuario por email o crea uno nuevo si no existe.
      * Genera una contraseña aleatoria y la codifica para nuevos usuarios.
