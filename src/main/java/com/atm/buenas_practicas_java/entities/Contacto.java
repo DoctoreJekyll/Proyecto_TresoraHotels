@@ -38,10 +38,10 @@ public class Contacto {
     @Column(name = "fecha_envio")
     private Instant fechaEnvio;
 
-    @Column(name = "foto1", length = 25)
+    @Column(name = "foto1", length = 250)
     private String foto1;
 
-    @Column(name = "foto2", length = 25)
+    @Column(name = "foto2", length = 250)
     private String foto2;
 
 }

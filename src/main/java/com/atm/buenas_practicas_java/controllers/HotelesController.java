@@ -38,7 +38,6 @@ public class HotelesController {
      //   System.out.println("Equipo obtenido: " + equipo);
         model.addAttribute("equipo", equipo);
         return "home";
-
     }
 
     @Controller
