@@ -5,53 +5,39 @@ import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
 import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.entities.Reserva;
-import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.mappers.ReservaConfirmacionMapper;
-import com.atm.buenas_practicas_java.repositories.HotelesRepo;
 import com.atm.buenas_practicas_java.services.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-//TODO RENAME RESERVASCONTROLLER X RESERVARAPIDACONTROLLER
 @Controller
-@RequestMapping("/reserva")
+@RequestMapping("/reservas")
 @RequiredArgsConstructor
-public class ReservasController {
+public class CrudReservaController {
 
-    private final ReservaService reservaService;
-    private final ProductoService productoService; // Para mostrar productos en el formulario
     private final HabitacionService habitacionService;
-    private final ReservaConfirmacionMapper confirmacionReservaDTO;
-    private final HotelService hotelService;
+    private final ReservaService reservaService;
     private final UsuarioService usuarioService;
+    private final ProductoService productoService;
+    private final HotelService hotelService;
+    private final ReservaConfirmacionMapper confirmacionReservaDTO;
 
     @GetMapping("/api/habitaciones")
     @ResponseBody
     public List<Map<String, Object>> getHabitacionesDisponibles(
             @RequestParam("hotelId") Integer hotelId,
             @RequestParam("fechaEntrada") String fechaEntradaStr,
-            @RequestParam("fechaSalida") String fechaSalidaStr,
-            HttpSession session
+            @RequestParam("fechaSalida") String fechaSalidaStr
     ) {
-
-        session.getAttribute("dummy");
 
         LocalDate fechaEntrada = LocalDate.parse(fechaEntradaStr);
         LocalDate fechaSalida = LocalDate.parse(fechaSalidaStr);
@@ -69,41 +55,70 @@ public class ReservasController {
                 .toList();
     }
 
-
-    // 1️⃣ Mostrar el formulario de reserva rápida
-    @GetMapping("/rapida")
-    public String mostrarFormularioReservaRapida(Model model) {
+    @GetMapping("/nuevo")
+    public String formReservaNuevo(Model model) {
         List<Habitacion> habitaciones = habitacionService.findAllConHotel();
-
-        // Agrupar habitaciones por hotel
         Map<Hotel, List<Habitacion>> habitacionesPorHotel = habitaciones.stream()
                 .collect(Collectors.groupingBy(Habitacion::getHotel, LinkedHashMap::new, Collectors.toList()));
 
         ReservaRapidaDTO dto = reservaService.reservaRapidaUsuarioLog(usuarioService);
 
-        // El resto de campos quedan en null (vacíos en el formulario)
         model.addAttribute("reservaDTO", dto);
         model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
         model.addAttribute("habitacionesPorHotel", habitacionesPorHotel);
         model.addAttribute("hoteles", hotelService.findAll());
 
-        return "reservaRapida";
+        return "reservaForm";
     }
 
-    // 2️⃣ Procesar el envío del formulario
-    @PostMapping("/rapida")
+    // 🆗 CREAR o EDITAR usando parámetro "id" externo al DTO
+    @PostMapping("/guardar")
     @Transactional
     public String procesarReservaRapida(
             @ModelAttribute("reservaDTO") ReservaRapidaDTO dto,
+            @RequestParam(value = "id", required = false) Integer reservaId,
             Model model
     ) {
+        Reserva reservaGuardada;
 
-        Reserva reservaGuardada = reservaService.crearReservaConProductos(dto);
+        if (reservaId != null) {
+            reservaGuardada = reservaService.actualizarReservaDesdeDTO(reservaId, dto);
+        } else {
+            reservaGuardada = reservaService.crearReservaConProductos(dto);
+        }
+
         ConfirmacionReservaDTO confirmacion = confirmacionReservaDTO.toDto(reservaGuardada, dto);
         long diasEstancia = ChronoUnit.DAYS.between(confirmacion.getFechaEntrada(), confirmacion.getFechaSalida());
         model.addAttribute("diasEstancia", diasEstancia);
         model.addAttribute("reservaConfirmada", confirmacion);
-        return "confirmacionReservaRapida";
+
+        return "redirect:/lista/reservas";
     }
 
+    @GetMapping("/editar/{id}")
+    public String editarReserva(@PathVariable Integer id, Model model, HttpSession session) {
+        session.getAttribute("dummy");
+        Reserva reserva = reservaService.findByIdWithAllRelations(id)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        ReservaRapidaDTO dto = reservaService.mapearReservaADto(reserva);
+
+        List<Habitacion> habitaciones = habitacionService.findAllConHotel();
+        Map<Hotel, List<Habitacion>> habitacionesPorHotel = habitaciones.stream()
+                .collect(Collectors.groupingBy(Habitacion::getHotel, LinkedHashMap::new, Collectors.toList()));
+
+        model.addAttribute("reservaDTO", dto);
+        model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
+        model.addAttribute("habitacionesPorHotel", habitacionesPorHotel);
+        model.addAttribute("hoteles", hotelService.findAll());
+        model.addAttribute("reservaId", id); // solo para construir el action del formulario
+
+        return "reservaForm";
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminarReserva(@PathVariable Integer id) {
+        reservaService.deleteById(id);
+        return "redirect:/lista/reservas";
+    }
 }

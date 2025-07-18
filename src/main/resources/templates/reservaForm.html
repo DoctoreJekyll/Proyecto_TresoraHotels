@@ -41,7 +41,7 @@
                     hotelInput.value = hotelId;
                     habitacionSelect.innerHTML = '<option value="" disabled selected>Seleccione habitación</option>';
 
-                    const url = `/reserva/api/habitaciones?hotelId=${hotelId}&fechaEntrada=${fechaEntrada}&fechaSalida=${fechaSalida}`;
+                    const url = `/reservas/api/habitaciones?hotelId=${hotelId}&fechaEntrada=${fechaEntrada}&fechaSalida=${fechaSalida}`;
                     fetch(url)
                         .then(response => response.json())
                         .then(data => {
@@ -123,13 +123,10 @@
                 calcularPrecioTotal(); // Inicial
             });
         </script>
-
-
-
         <div class="card form-card" style="max-width: 512px; width: 100%; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            <h1 id="booking-title" class="card-title text-center">Reserva Rápida</h1>
+            <h1 id="booking-title" class="card-title text-center">Reserva desde Empleado</h1>
 
-            <form th:action="@{/reserva/rapida}" th:object="${reservaDTO}" method="post" id="booking-form">
+            <form th:action="@{/reservas/guardar}" th:object="${reservaDTO}" method="post" id="booking-form">
 
                 <p class="card-text mb-4">Complete los campos para reservar su estancia. Todos los campos son obligatorios.</p>
 

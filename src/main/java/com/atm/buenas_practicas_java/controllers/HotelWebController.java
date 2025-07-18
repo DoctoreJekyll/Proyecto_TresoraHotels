@@ -30,7 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.time.format.DateTimeParseException;
-
+//TODO RENAME HOTELWEBCONTROLLER X RESERVAWEBCONTROLLER
 @Controller
 @RequestMapping("/hotel")
 @RequiredArgsConstructor
