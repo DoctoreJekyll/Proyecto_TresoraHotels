@@ -42,6 +42,11 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         this.emailService = emailService;
     }
 
+    public List<Reserva> findReservaByUsuario(Integer idUsuario)
+    {
+        return getRepo().findByIdUsuario_Id(idUsuario);
+    }
+
     public Habitacion obtenerHotelPorHabitacionId(Integer idHabitacion) {
         return habitacionRepository.findHabitacionConHotel(idHabitacion);
     }

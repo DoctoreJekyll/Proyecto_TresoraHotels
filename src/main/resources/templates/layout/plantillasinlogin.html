@@ -48,7 +48,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" th:href="@{/usuarios/userhome}">Inicio</a></li>
-                    <li><a class="dropdown-item" href="#">Mis Reservas</a></li>
+                    <li><a class="dropdown-item" th:href="@{'/usuarios/reserva/' + ${usuario.id}}">Mis Reservas</a></li>
                     <li><a class="dropdown-item" th:href="@{/usuarios/miPerfil}">Perfil</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
