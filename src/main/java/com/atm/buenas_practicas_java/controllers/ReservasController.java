@@ -10,12 +10,14 @@ import com.atm.buenas_practicas_java.repositories.HotelesRepo;
 import com.atm.buenas_practicas_java.services.HabitacionService;
 import com.atm.buenas_practicas_java.services.ProductoService;
 import com.atm.buenas_practicas_java.services.ReservaService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -36,9 +38,20 @@ public class ReservasController {
 
     @GetMapping("/api/habitaciones")
     @ResponseBody
-    @Transactional(readOnly = true)
-    public List<Map<String, Object>> getHabitacionesPorHotel(@RequestParam("hotelId") Integer hotelId) {
-        return habitacionService.findByHotelIdAndOcupada(hotelId).stream()
+    public List<Map<String, Object>> getHabitacionesDisponibles(
+            @RequestParam("hotelId") Integer hotelId,
+            @RequestParam("fechaEntrada") String fechaEntradaStr,
+            @RequestParam("fechaSalida") String fechaSalidaStr,
+            HttpSession session
+    ) {
+
+        session.getAttribute("dummy");
+
+        LocalDate fechaEntrada = LocalDate.parse(fechaEntradaStr);
+        LocalDate fechaSalida = LocalDate.parse(fechaSalidaStr);
+
+        return habitacionService.findDisponiblesPorHotelYFechas(hotelId, fechaEntrada, fechaSalida)
+                .stream()
                 .map(h -> {
                     Map<String, Object> map = new HashMap<>();
                     map.put("id", h.getId());
@@ -49,6 +62,7 @@ public class ReservasController {
                 })
                 .toList();
     }
+
 
     // 1️⃣ Mostrar el formulario de reserva rápida
     @GetMapping("/rapida")
