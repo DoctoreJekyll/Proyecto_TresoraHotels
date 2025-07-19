@@ -12,7 +12,7 @@ services:
       # Usuario que se creará para acceder a la base de datos
       POSTGRES_USER: 'postgres'
       # Contraseña del usuario creado
-      POSTGRES_PASSWORD: 'Talakk01'
+      POSTGRES_PASSWORD: '4444'
     ports:
       # Mapea el puerto 5432 del contenedor al puerto 5432 del anfitrión
       - '5432:5432'

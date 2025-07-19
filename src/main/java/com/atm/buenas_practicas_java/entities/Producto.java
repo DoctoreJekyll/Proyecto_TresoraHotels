@@ -44,7 +44,7 @@ public class Producto {
     @Column(name = "fecha_hasta")
     private LocalDate fechaHasta;
 
-    @OneToMany(mappedBy = "idProducto")
+    @OneToMany(mappedBy = "producto")
     private Set<Habitacion> habitaciones = new LinkedHashSet<>();
 
     @ManyToMany(mappedBy = "productos")

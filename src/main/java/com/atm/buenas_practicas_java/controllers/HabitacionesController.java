@@ -27,8 +27,6 @@ public class HabitacionesController {
 
     private final IUploadFilesService  uploadFilesService;
 
-    private final EmailService emailService;
-
 
     @GetMapping("/nuevo")
     public String mostrarFormularioHabitaciones(Model model) {
@@ -49,22 +47,18 @@ public class HabitacionesController {
                                     @RequestParam("imagen") MultipartFile imagen,
                                     Model model) throws Exception {
 
-        if (imagen != null && !imagen.isEmpty()) {
+        if (!imagen.isEmpty()) {
             String nombreArchivo = uploadFilesService.handleFileUpload(imagen);
             habitacion.setImagenUrl("/images/" + nombreArchivo);
+        } else {
+            // Obtener la habitación existente desde la base de datos
+            Habitacion habitacionExistente = habitacionService.findById(habitacion.getId()).orElseThrow();
+            if (habitacionExistente != null) {
+                habitacion.setImagenUrl(habitacionExistente.getImagenUrl());
+            }
         }
 
         habitacionService.save(habitacion);
-
-
-        emailService.sendEmail(
-                "notificaciones@agestturnos.es",
-                "jarmar0805@gmail.com",
-                "Su habitacion",
-                "Esta es su habitacion " + habitacion.getNumeroHabitacion() + " Capacidad: " + habitacion.getCapacidad()
-        );
-
-        System.out.println("email sent");
 
         return "redirect:/lista/habitaciones";
     }

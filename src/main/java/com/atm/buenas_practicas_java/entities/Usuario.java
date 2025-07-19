@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -23,7 +25,7 @@ public class Usuario {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol idRol;
 
@@ -34,13 +36,13 @@ public class Usuario {
     @Column(name = "nombre", nullable = false, length = 40)
     private String nombre;
 
-    @Column(name = "apellidos", nullable = false, length = 70)
+    @Column(name = "apellidos", length = 70)
     private String apellidos;
 
     @Column(name = "email", nullable = false, length = 50)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 50)
+    @Column(name = "password", nullable = false, length = 500)
     private String password;
 
     @Column(name = "direccion", length = Integer.MAX_VALUE)
@@ -56,6 +58,11 @@ public class Usuario {
     @Column(name = "fecha_alta", nullable = false)
     private LocalDate fechaAlta;
 
+    @PrePersist
+    void alta(){
+        this.fechaAlta = Instant.now().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
     @Column(name = "activo")
     private Boolean activo;
 
@@ -69,7 +76,7 @@ public class Usuario {
     private Set<Factura> facturas = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idUsuario")
-    private Set<LimpiezaHabitacion> limpiezaHabitacions = new LinkedHashSet<>();
+    private Set<LimpiezaHabitaciones> limpiezaHabitacions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idUsuario")
     private Set<ProductosUsuario> productosUsuarios = new LinkedHashSet<>();

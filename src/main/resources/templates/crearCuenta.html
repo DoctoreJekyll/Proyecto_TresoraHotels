@@ -46,6 +46,13 @@
                             <div th:if="${#fields.hasErrors('confirmPassword')}" class="text-danger" th:errors="*{confirmPassword}"></div>
                         </div>
 
+                        <div class="mb-3" sec:authorize="hasRole('ADMIN')">
+                            <label for="rol" class="form-label">ROL</label>
+                            <select class="form-select" id="rol" name="rolId" required>
+                                <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombreRol}">Rol</option>
+                            </select>
+                        </div>
+
                         <div class="d-grid">
                             <button type="submit" class="btn btn-grupo5">CREAR CUENTA</button>
                         </div>

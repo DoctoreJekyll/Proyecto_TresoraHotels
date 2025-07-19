@@ -17,13 +17,18 @@ public abstract class AbstractTemplateServicesEntities<ENTITIES, ID, REPOSITORY 
         this.repo = repo;
     }
 
+    //Encontrar una entidad
     public Optional<ENTITIES> findById(ID id) {
         if (repo.findById(id).isPresent()) {
             return Optional.of(repo.findById(id).get());
         }
         return Optional.empty();
     }
+    public boolean existsById(ID id) {
+        return repo.existsById(id);
+    }
 
+    //Encontrar distintos tipos de listas
     public List<ENTITIES> findAll() {
         return repo.findAll();
     }
@@ -38,6 +43,8 @@ public abstract class AbstractTemplateServicesEntities<ENTITIES, ID, REPOSITORY 
         return repo.findAll(pageable);
     }
 
+
+    //Guardar
     public ENTITIES save(ENTITIES entity){
         return repo.save(entity);
     }
@@ -50,6 +57,7 @@ public abstract class AbstractTemplateServicesEntities<ENTITIES, ID, REPOSITORY 
         repo.saveAll(list);
     }
 
+    //Borrar por id
     public void deleteById(ID id) {
         this.repo.deleteById(id);
     }

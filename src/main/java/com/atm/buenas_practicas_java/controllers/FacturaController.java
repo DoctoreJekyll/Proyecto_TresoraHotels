@@ -58,12 +58,12 @@ public class FacturaController {
         } else {
             msg = "Factura pendiente";
         }
-        emailService.sendEmail(
-                "notificaciones@agestturnos.es",
-                "alba2gr@gmail.com",
-                "Factura registrada",
-                "Estado de la factura : " + msg);
-        System.out.println("Email enviado");
+//        emailService.sendEmail(
+//                "notificaciones@agestturnos.es",
+//                "alba2gr@gmail.com",
+//                "Factura registrada",
+//                "Estado de la factura : " + msg);
+//        System.out.println("Email enviado");
         return "redirect:/lista/facturas";
     }
 

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 @Getter
 @Setter
@@ -36,12 +38,18 @@ public class Contacto {
     private String mensaje;
 
     @Column(name = "fecha_envio")
-    private Instant fechaEnvio;
+    private LocalDate fechaEnvio;
 
-    @Column(name = "foto1", length = 25)
+    @PrePersist
+    void alta(){
+        this.fechaEnvio = Instant.now().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+
+    @Column(name = "foto1", length = 250)
     private String foto1;
 
-    @Column(name = "foto2", length = 25)
+    @Column(name = "foto2", length = 250)
     private String foto2;
 
 }
