@@ -1,7 +1,5 @@
 package com.atm.buenas_practicas_java.services;
 
-import com.atm.buenas_practicas_java.entities.EntidadPadre;
-import com.atm.buenas_practicas_java.repositories.EntidadPadreRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
