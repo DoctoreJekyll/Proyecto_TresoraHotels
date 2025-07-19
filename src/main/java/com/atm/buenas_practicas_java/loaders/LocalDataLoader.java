@@ -606,10 +606,11 @@ public void loadReservas() {
         reserva1.setIdHabitacion(habitacion2);
         reserva1.setFechaEntrada(LocalDate.of(2025, 7, 27));
         reserva1.setFechaSalida(LocalDate.of(2025, 7, 29));
-        reserva1.setEstado("Confirmada");
+        reserva1.setEstado(Reserva.ESTADO_RESERVA.PAGADA);
         reserva1.setPax(2);
         reserva1.setFechaReserva(Instant.now());
         reserva1.setComentarios("");
+        reserva1.setTotalReserva(200);
         return reserva1;
     }
 
@@ -619,10 +620,11 @@ public void loadReservas() {
         reserva2.setIdHabitacion(habitacion3);
         reserva2.setFechaEntrada(LocalDate.of(2025, 8, 1));
         reserva2.setFechaSalida(LocalDate.of(2025, 8, 10));
-        reserva2.setEstado("Pendiente");
+        reserva2.setEstado(Reserva.ESTADO_RESERVA.PENDIENTE);
         reserva2.setPax(3);
         reserva2.setFechaReserva(Instant.now());
         reserva2.setComentarios("Alergia almendras");
+        reserva2.setTotalReserva(100);
         return reserva2;
     }
 
@@ -634,11 +636,11 @@ public void loadReservas() {
         log.info("Datos de limpieza cargados");
     }
 
-    private LimpiezaHabitacion limpiezaHabitacion1;
-    private LimpiezaHabitacion limpiezaHabitacion2;
+    private LimpiezaHabitaciones limpiezaHabitacion1;
+    private LimpiezaHabitaciones limpiezaHabitacion2;
 
     private void SaveAllLimpiezaHabitaciones(){
-        List<LimpiezaHabitacion> limpiezas = new ArrayList<>();
+        List<LimpiezaHabitaciones> limpiezas = new ArrayList<>();
 
         limpiezaHabitacion1 = getLimpiezaHabitacion1();
         limpiezaHabitacion2 = getLimpiezaHabitacion2();
@@ -649,8 +651,8 @@ public void loadReservas() {
 
     }
 
-    private LimpiezaHabitacion getLimpiezaHabitacion1() {
-        LimpiezaHabitacion limpiezaHabitacion1 = new LimpiezaHabitacion();
+    private LimpiezaHabitaciones getLimpiezaHabitacion1() {
+        com.atm.buenas_practicas_java.entities.LimpiezaHabitaciones limpiezaHabitacion1 = new LimpiezaHabitaciones();
 
         limpiezaHabitacion1.setIdUsuario(usuarioRepo.getReferenceById(2));
         limpiezaHabitacion1.setIdHabitacion(habitacion2);
@@ -660,8 +662,8 @@ public void loadReservas() {
         limpiezaHabitacion1.setFoto2("");
         return limpiezaHabitacion1;
     }
-    private LimpiezaHabitacion getLimpiezaHabitacion2() {
-        LimpiezaHabitacion limpiezaHabitacion2 = new LimpiezaHabitacion();
+    private LimpiezaHabitaciones getLimpiezaHabitacion2() {
+        LimpiezaHabitaciones limpiezaHabitacion2 = new LimpiezaHabitaciones();
 
         limpiezaHabitacion2.setIdUsuario(usuarioRepo.getReferenceById(2));
         limpiezaHabitacion2.setIdHabitacion(habitacion3);

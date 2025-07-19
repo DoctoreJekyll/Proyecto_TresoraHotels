@@ -6,11 +6,16 @@ import com.atm.buenas_practicas_java.entities.*;
 import com.atm.buenas_practicas_java.repositories.*;
 import com.atm.buenas_practicas_java.services.templateMethod.AbstractTemplateServicesEntities;
 import com.atm.buenas_practicas_java.util.PasswordGenerator;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // Importar Transactional
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -21,7 +26,6 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
     private final ProductoRepo productoRepository;
     private final RolRepo rolRepository;
     private final EmailService emailService;
-
 
     public ReservaService(
             ReservaRepo reservaRepository,
@@ -39,23 +43,44 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         this.emailService = emailService;
     }
 
+    public List<Reserva> findReservaByUsuario(Integer idUsuario)
+    {
+        return getRepo().findByIdUsuario_Id(idUsuario);
+    }
+
     public Habitacion obtenerHotelPorHabitacionId(Integer idHabitacion) {
         return habitacionRepository.findHabitacionConHotel(idHabitacion);
+    }
+
+    public Optional<Reserva> findByIdWithAllRelations(Integer id) {
+        return getRepo().findByIdWithAllRelations(id);
     }
 
     @Transactional // Aseguramos que toda la operación sea transaccional
     public Reserva crearReservaConProductos(ReservaRapidaDTO dto) {
         Usuario usuario;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (dto.getIdUsuario() != null)
-        {
-            usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow();
+        if (authentication != null && authentication.isAuthenticated()) {
+            UserDetails user = (UserDetails) authentication.getPrincipal();
+            String userEmail = user.getUsername();
+            usuario = usuarioRepository.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+            String userName = usuario.getNombre();
+
+            dto.setEmail(userEmail);
+            dto.setNombre(userName);
         }
         else
         {
-            usuario = findOrCreateUser(dto.getNombre(), dto.getEmail());
+            if (dto.getIdUsuario() != null)
+            {
+                usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow();
+            }
+            else
+            {
+                usuario = findOrCreateUser(dto.getNombre(), dto.getEmail());
+            }
         }
-
 
         // 2. Obtener y validar la habitación
         Habitacion habitacion = getAndValidateRoom(dto.getIdHabitacion());
@@ -68,6 +93,12 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         Set<ProductosUsuario> productosUsuarios = processAdditionalProducts(dto.getProductos(), usuario, reserva);
         reserva.setProductosUsuarios(productosUsuarios);
 
+        // 5. Calcular total correctamente
+        long diasEstancia = ChronoUnit.DAYS.between(dto.getFechaEntrada(), dto.getFechaSalida());
+        double precioTotalReserva = getPrecioTotalReserva(habitacion, productosUsuarios, diasEstancia);
+        reserva.setTotalReserva(precioTotalReserva); // ✅ Asignas el total a la entidad aquí
+        dto.setTotalReserva(precioTotalReserva);
+
         // 5. Guardar la reserva y actualizar el estado de la habitación
         habitacion.setOcupada(true);
         habitacionRepository.save(habitacion);
@@ -77,6 +108,38 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         // sendUserCreationEmail(usuario);
 
         return savedReserva;
+    }
+
+    private static double getPrecioTotalReserva(Habitacion habitacion, Set<ProductosUsuario> productosUsuarios, long diasEstancia) {
+        double precioBase = habitacion.getProducto().getPrecioBase();
+        double precioProductosTotal = 0.0;
+
+        for (ProductosUsuario pu : productosUsuarios) {
+            double precioUnitario = pu.getIdProducto().getPrecioBase();
+            int cantidad = pu.getCantidad();
+            precioProductosTotal += precioUnitario * cantidad;
+        }
+
+        double precioHabitacionTotal = precioBase * diasEstancia;
+        return precioProductosTotal + precioHabitacionTotal;
+    }
+
+    public ReservaRapidaDTO reservaRapidaUsuarioLog(UsuarioService usuarioService) {
+        ReservaRapidaDTO dto = new ReservaRapidaDTO(); // Siempre creamos el DTO
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()){
+            UserDetails user = (UserDetails) authentication.getPrincipal();
+            String userEmail = user.getUsername();
+
+            Usuario usuario = usuarioService.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+            dto.setNombre(usuario.getNombre());
+            dto.setEmail(userEmail);
+            dto.setIdUsuario(usuario.getId());
+        }
+        return dto;
     }
 
     /**
@@ -135,9 +198,10 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         reserva.setFechaEntrada(dto.getFechaEntrada());
         reserva.setFechaSalida(dto.getFechaSalida());
         reserva.setPax(dto.getPax());
-        reserva.setEstado("Pendiente"); // Estado inicial de la reserva
+        reserva.setEstado(Reserva.ESTADO_RESERVA.PENDIENTE); // Estado inicial de la reserva
         reserva.setFechaReserva(Instant.now());
         reserva.setComentarios(dto.getComentarios());
+        //reserva.setTotalReserva(dto.getTotalReserva());
         return reserva;
     }
 
@@ -183,6 +247,75 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         return productosUsuarios;
     }
 
+    public ReservaRapidaDTO mapearReservaADto(Reserva reserva) {
+        ReservaRapidaDTO dto = new ReservaRapidaDTO();
+
+        dto.setIdHabitacion(reserva.getIdHabitacion().getId());
+        dto.setHotel(reserva.getIdHabitacion().getHotel().getId());
+        dto.setFechaEntrada(reserva.getFechaEntrada());
+        dto.setFechaSalida(reserva.getFechaSalida());
+        dto.setPax(reserva.getPax());
+        dto.setComentarios(reserva.getComentarios());
+
+        if (reserva.getIdUsuario() != null) {
+            dto.setIdUsuario(reserva.getIdUsuario().getId());
+            dto.setNombre(reserva.getIdUsuario().getNombre());
+            dto.setEmail(reserva.getIdUsuario().getEmail());
+        }
+
+        if (reserva.getProductosUsuarios() != null) {
+            List<ProductoFormularioDTO> productos = reserva.getProductosUsuarios().stream().map(pu -> {
+                ProductoFormularioDTO p = new ProductoFormularioDTO();
+                p.setIdProducto(pu.getIdProducto().getId());
+                p.setCantidad(pu.getCantidad());
+                p.setFecha(pu.getFecha());
+                p.setDescuento(pu.getDescuento());
+                return p;
+            }).toList();
+            dto.setProductos(productos);
+        }
+
+        dto.setTotalReserva(reserva.getTotalReserva());
+
+        return dto;
+    }
+
+    @Transactional
+    public Reserva actualizarReservaDesdeDTO(Integer id, ReservaRapidaDTO dto) {
+        Reserva reserva = getRepo().findByIdWithAllRelations(id)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        // 1. Usuario
+        Usuario usuario = reserva.getIdUsuario();
+        if (usuario == null && dto.getIdUsuario() != null) {
+            usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow();
+            reserva.setIdUsuario(usuario);
+        }
+
+        // 2. Habitación
+        Habitacion nuevaHabitacion = getAndValidateRoom(dto.getIdHabitacion());
+        reserva.setIdHabitacion(nuevaHabitacion);
+
+        // 3. Campos simples
+        reserva.setFechaEntrada(dto.getFechaEntrada());
+        reserva.setFechaSalida(dto.getFechaSalida());
+        reserva.setPax(dto.getPax());
+        reserva.setComentarios(dto.getComentarios());
+
+
+        // 4. Reemplazar productos
+        reserva.getProductosUsuarios().clear(); // Limpia los anteriores
+        Set<ProductosUsuario> nuevosProductos = processAdditionalProducts(dto.getProductos(), usuario, reserva);
+        reserva.getProductosUsuarios().addAll(nuevosProductos);
+
+         long diasEstancia = ChronoUnit.DAYS.between(dto.getFechaEntrada(), dto.getFechaSalida());
+        double nuevoTotal = getPrecioTotalReserva(nuevaHabitacion, nuevosProductos, diasEstancia);
+        reserva.setTotalReserva(nuevoTotal);
+
+        return getRepo().save(reserva);
+    }
+
+
     /**
      * Envía un correo electrónico al usuario tras su creación.
      * Este método debería idealmente recibir la contraseña sin cifrar si es un email de bienvenida.
@@ -206,4 +339,6 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
                         "¡Esperamos verte pronto!"
         );
     }
+
+
 }

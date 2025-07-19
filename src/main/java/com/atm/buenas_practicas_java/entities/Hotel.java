@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "hoteles")
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"habitaciones", "facturas", "usuarios"})
+//@JsonIgnoreProperties({"habitaciones", "facturas", "usuarios"})
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
