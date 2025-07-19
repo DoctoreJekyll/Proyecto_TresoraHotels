@@ -18,9 +18,9 @@
                 <th>Fecha entrada</th>
                 <th>Fecha salida</th>
                 <th>Total (€)</th>
-                <th>Método de Pago</th>
                 <th>Estado</th>
-                <th>Acciones</th>
+                <th>Comentarios</th>
+                <th>Descargar Factura</th>
             </tr>
             </thead>
             <tbody>
@@ -29,8 +29,8 @@
                 <td th:text="${#temporals.format(reservas.fechaEntrada, 'dd/MM/yyyy')}">01/01/2025</td>
                 <td th:text="${#temporals.format(reservas.fechaSalida, 'dd/MM/yyyy')}">01/01/2025</td>
                 <td th:text="${reservas.totalReserva}">100.00</td>
-                <td th:text="${reservas.getId()}">Tarjeta</td>
-                <td th:text="${reservas.comentarios}">Pagada</td>
+                <td th:text="${reservas.getEstado()}">Pagada</td>
+                <td th:text="${reservas.getComentarios()}">Comentario</td>
                 <td>
                     <a th:href="@{'/facturas/ver/' + ${reservas.id}}"
                        class="btn btn-sm btn-primary me-1">Ver</a>
