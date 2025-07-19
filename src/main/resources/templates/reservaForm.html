@@ -20,32 +20,77 @@
                 const fechaEntradaEl = document.getElementById('fechaEntrada');
                 const fechaSalidaEl = document.getElementById('fechaSalida');
 
+                // --- Event Listeners principales ---
                 hotelSelect.addEventListener('change', cargarHabitaciones);
                 fechaEntradaEl.addEventListener('change', cargarHabitaciones);
                 fechaSalidaEl.addEventListener('change', cargarHabitaciones);
+                habitacionSelect.addEventListener('change', calcularPrecioTotal); // Asegurarse de que el cambio de habitación recalcule
 
+                // Escucha cambios en los checkboxes y también en cantidad y descuento para recalcular el precio
+                document.querySelectorAll('input[type="checkbox"][name^="productos"]').forEach(cb => {
+                    cb.addEventListener('change', calcularPrecioTotal);
+                    const group = cb.closest('.checkbox-group');
+                    if (group) {
+                        group.querySelector('input[name$=".cantidad"]')?.addEventListener('input', calcularPrecioTotal);
+                        group.querySelector('input[name$=".descuento"]')?.addEventListener('input', calcularPrecioTotal);
+                    }
+                });
+
+                // --- Funciones de Lógica ---
                 function cargarHabitaciones() {
                     const hotelId = hotelSelect.value;
                     const fechaEntrada = fechaEntradaEl.value;
                     const fechaSalida = fechaSalidaEl.value;
 
-                    if (!hotelId || !fechaEntrada || !fechaSalida) return;
+                    if (!hotelId || !fechaEntrada || !fechaSalida) {
+                        habitacionSelect.innerHTML = '<option value="" disabled selected>Seleccione hotel y fechas primero</option>';
+                        // Si no hay datos completos para la búsqueda, limpiar y recalcular con lo que haya
+                        calcularPrecioTotal();
+                        return;
+                    }
 
-                    habitacionSelect.innerHTML = '<option value="" disabled selected>Seleccione habitación</option>';
+                    habitacionSelect.innerHTML = '<option value="" disabled selected>Cargando habitaciones...</option>';
 
                     fetch(`/reservas/api/habitaciones?hotelId=${hotelId}&fechaEntrada=${fechaEntrada}&fechaSalida=${fechaSalida}`)
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error al cargar habitaciones: ' + response.statusText);
+                            }
+                            return response.json();
+                        })
                         .then(data => {
+                            habitacionSelect.innerHTML = '<option value="" disabled selected>Seleccione habitación</option>'; // Limpiar y añadir opción por defecto
+                            const currentHabitacionId = [[${reservaDTO.idHabitacion}]]; // ID de habitación del DTO
+                            let habitacionEncontradaYSeleccionada = false;
+
                             data.forEach(habitacion => {
                                 const option = document.createElement('option');
                                 option.value = habitacion.id;
                                 option.textContent = habitacion.tipo + ' - Nº ' + habitacion.numeroHabitacion;
                                 option.dataset.precio = habitacion.precioBase;
+
+                                if (currentHabitacionId && habitacion.id === currentHabitacionId) {
+                                    option.selected = true;
+                                    habitacionEncontradaYSeleccionada = true;
+                                }
                                 habitacionSelect.appendChild(option);
                             });
-                            calcularPrecioTotal();
+
+                            // Si se está editando una reserva y la habitación previamente seleccionada no está disponible
+                            // o si el campo estaba vacío, asegúrate de que el select quede en la opción por defecto.
+                            if (currentHabitacionId && !habitacionEncontradaYSeleccionada) {
+                                // Aquí puedes añadir lógica para notificar que la habitación no está disponible
+                                console.warn(`La habitación con ID ${currentHabitacionId} no está disponible para las fechas seleccionadas.`);
+                                habitacionSelect.value = ""; // Deseleccionar la opción no disponible
+                            }
+
+                            calcularPrecioTotal(); // Recalcular el precio después de cargar y potencialmente seleccionar la habitación
                         })
-                        .catch(err => console.error('Error cargando habitaciones:', err));
+                        .catch(err => {
+                            console.error('Error cargando habitaciones:', err);
+                            habitacionSelect.innerHTML = '<option value="" disabled selected>Error al cargar habitaciones</option>';
+                            calcularPrecioTotal(); // Recalcular incluso si hay error para limpiar el total
+                        });
                 }
 
                 function calcularPrecioTotal() {
@@ -56,32 +101,49 @@
 
                     const fechaEntrada = new Date(fechaEntradaEl.value);
                     const fechaSalida = new Date(fechaSalidaEl.value);
+
+                    // Asegúrate de que las fechas sean válidas y la fecha de salida sea posterior a la de entrada
+                    if (isNaN(fechaEntrada) || isNaN(fechaSalida) || fechaEntrada >= fechaSalida) {
+                        precioTotalEl.innerText = '0.00 €';
+                        const desglose = document.getElementById("desglosePrecio");
+                        if (desglose) {
+                            desglose.innerText = '';
+                        }
+                        return; // Salir si las fechas no son válidas
+                    }
                     const msPorDia = 1000 * 60 * 60 * 24;
-                    const noches = Math.max(1, Math.round((fechaSalida - fechaEntrada) / msPorDia));
+                    const noches = Math.max(0, Math.round((fechaSalida - fechaEntrada) / msPorDia)); // Asegúrate de que noches no sea negativo
 
                     total += precioHabitacion * noches;
 
-                    document.querySelectorAll('input[type="checkbox"][name^="productos"]').forEach(cb => {
-                        if (cb.checked && cb.dataset.precio) {
-                            total += parseFloat(cb.dataset.precio);
+                    document.querySelectorAll('.checkbox-group').forEach(group => {
+                        const checkbox = group.querySelector('input[type="checkbox"]');
+                        if (checkbox?.checked && checkbox.dataset.precio) {
+                            const cantidadInput = group.querySelector('input[name$=".cantidad"]');
+                            const descuentoInput = group.querySelector('input[name$=".descuento"]');
+
+                            const cantidad = parseFloat(cantidadInput?.value) || 0;
+                            let descuentoPorcentaje = parseFloat(descuentoInput?.value) || 0;
+                            descuentoPorcentaje = Math.max(0, Math.min(100, descuentoPorcentaje)); // Asegurar que el descuento esté entre 0 y 100
+
+                            let precioProducto = parseFloat(checkbox.dataset.precio);
+                            precioProducto = precioProducto * cantidad;
+                            precioProducto = precioProducto * (1 - (descuentoPorcentaje / 100)); // Aplicar descuento
+                            total += precioProducto;
                         }
                     });
 
                     precioTotalEl.innerText = total.toFixed(2) + ' €';
 
                     const desglose = document.getElementById("desglosePrecio");
-                    if (desglose && precioHabitacion > 0) {
-                        desglose.innerText = `(${precioHabitacion.toFixed(2)} € x ${noches} noche${noches > 1 ? 's' : ''})`;
+                    if (desglose && precioHabitacion > 0 && noches > 0) { // Mostrar desglose solo si hay precio de habitación y noches
+                        desglose.innerText = `(${precioHabitacion.toFixed(2)} € x ${noches} noche${noches !== 1 ? 's' : ''})`;
                     } else if (desglose) {
                         desglose.innerText = '';
                     }
                 }
 
-                habitacionSelect.addEventListener('change', calcularPrecioTotal);
-                document.querySelectorAll('input[type="checkbox"][name^="productos"]').forEach(cb => {
-                    cb.addEventListener('change', calcularPrecioTotal);
-                });
-
+                // --- Validación del formulario antes de enviar ---
                 document.getElementById("booking-form").addEventListener("submit", function (e) {
                     let error = false;
                     document.querySelectorAll('.checkbox-group').forEach(group => {
@@ -89,7 +151,18 @@
                         if (checkbox?.checked) {
                             const cantidad = group.querySelector('input[name$=".cantidad"]');
                             const fecha = group.querySelector('input[name$=".fecha"]');
-                            if (!cantidad.value || !fecha.value) error = true;
+                            // Si el checkbox está marcado, cantidad y fecha son obligatorios
+                            if (!cantidad.value || !fecha.value) {
+                                error = true;
+                                cantidad.classList.add('is-invalid'); // Añadir clase para resaltar el error
+                                fecha.classList.add('is-invalid');
+                            } else {
+                                cantidad.classList.remove('is-invalid'); // Quitar la clase si es válido
+                                fecha.classList.remove('is-invalid');
+                            }
+                        } else { // Si el checkbox no está marcado, limpiar posibles errores de validación anteriores
+                            group.querySelector('input[name$=".cantidad"]')?.classList.remove('is-invalid');
+                            group.querySelector('input[name$=".fecha"]')?.classList.remove('is-invalid');
                         }
                     });
                     if (error) {
@@ -98,12 +171,42 @@
                     }
                 });
 
-                // ⚡ Si ya hay valores cargados, forzar carga de habitaciones
-                if (hotelSelect.value && fechaEntradaEl.value && fechaSalidaEl.value) {
-                    cargarHabitaciones();
+                // --- Carga inicial de datos para el modo edición ---
+                // Esta lógica debe ejecutarse DESPUÉS de que los listeners estén configurados
+                // y antes de la primera llamada a calcularPrecioTotal para que los valores de los productos estén
+                // correctamente enlazados con el DTO.
+
+                const productosSeleccionados = /*[[${reservaDTO.productos}]]*/ []; // Thymeleaf inserta el valor aquí
+                if (productosSeleccionados && productosSeleccionados.length > 0) {
+                    document.querySelectorAll('input[type="checkbox"][name^="productos"]').forEach(function(cb) {
+                        const productoIdEnCheckbox = parseInt(cb.value);
+                        const pDto = productosSeleccionados.find(p => p.idProducto === productoIdEnCheckbox);
+
+                        if (pDto) {
+                            cb.checked = true;
+                            const group = cb.closest('.checkbox-group');
+                            if (group) {
+                                group.querySelector('input[name$=".cantidad"]').value = pDto.cantidad;
+                                // Asegúrate de que la fecha se formatee correctamente si no lo está (YYYY-MM-DD)
+                                group.querySelector('input[name$=".fecha"]').value = pDto.fecha ? String(pDto.fecha).substring(0, 10) : '';
+                                group.querySelector('input[name$=".descuento"]').value = pDto.descuento;
+                            }
+                        }
+                    });
                 }
 
-                calcularPrecioTotal();
+                // --- Carga inicial de habitaciones y cálculo de precio al cargar la página ---
+                // Debe ser la última llamada después de que todo el DOM y los valores estén listos.
+                if (hotelSelect.value && fechaEntradaEl.value && fechaSalidaEl.value) {
+                    // Si ya hay valores de hotel y fechas, cargar habitaciones.
+                    // calcularPrecioTotal() se llamará dentro de cargarHabitaciones al finalizar.
+                    cargarHabitaciones();
+                } else {
+                    // Si no hay valores completos para cargar habitaciones (ej. creando una nueva reserva sin datos aún),
+                    // simplemente calcular el precio con los valores por defecto o vacíos.
+                    calcularPrecioTotal();
+                }
+
             });
         </script>
 
@@ -131,7 +234,8 @@
                         <option value="" disabled>Seleccione un hotel</option>
                         <option th:each="hotel : ${hoteles}"
                                 th:value="${hotel.id}"
-                                th:text="${hotel.nombre}">
+                                th:text="${hotel.nombre}"
+                                th:selected="${hotel.id == reservaDTO.hotel}">
                         </option>
                     </select>
                 </div>
@@ -149,7 +253,12 @@
                 <div class="form-group mb-4">
                     <label for="idHabitacion">Habitación</label>
                     <select th:field="*{idHabitacion}" id="idHabitacion" class="form-control" required>
-                        <option value="" disabled selected>Seleccione habitación</option>
+                        <option value="" disabled selected>Seleccione hotel y fechas primero</option>
+                        <option th:if="${reservaDTO.idHabitacion != null}"
+                                th:value="${reservaDTO.idHabitacion}"
+                                th:text="${'Habitación actual (cargando...) '}"
+                                th:selected="true">
+                        </option>
                     </select>
                 </div>
 
@@ -164,6 +273,16 @@
                 </div>
 
                 <div class="form-group mb-4">
+                    <label for="estado">Estado de la Reserva</label>
+                    <select th:field="*{estado}" id="estado" class="form-control" required>
+                        <option th:each="estadoOpt : ${T(com.atm.buenas_practicas_java.entities.Reserva.ESTADO_RESERVA).values()}"
+                                th:value="${estadoOpt}"
+                                th:text="${estadoOpt.name().replace('_', ' ')}"
+                                th:selected="${estadoOpt == reservaDTO.estado}">
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group mb-4">
                     <p class="services-label mb-2">Servicios adicionales:</p>
 
                     <div th:each="producto, iterStat : ${productos}" class="checkbox-group mb-3">
@@ -173,8 +292,7 @@
                                    th:name="'productos[' + ${iterStat.index} + '].idProducto'"
                                    th:value="${producto.id}"
                                    th:attr="data-precio=${producto.precioBase}"
-                                   class="form-check-input me-2"
-                                   onchange="calcularPrecioTotal()" />
+                                   class="form-check-input me-2" />
                             <label th:for="'producto_' + ${iterStat.index}"
                                    th:text="${producto.nombre}"
                                    class="form-check-label"></label>
@@ -197,7 +315,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-grupo5 w-100 mt-3">Reservar Ahora</button>
+                <button type="submit" class="btn btn-primary w-100">Guardar Reserva</button>
             </form>
 
             <p class="card-text text-center mt-4">¡Disponibilidad limitada! Reserva en segundos.</p>
@@ -206,4 +324,5 @@
 </main>
 
 </body>
+
 </html>
