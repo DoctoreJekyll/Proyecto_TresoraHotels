@@ -10,7 +10,7 @@ import org.springframework.ui.Model;
 
 @ControllerAdvice
 @RequiredArgsConstructor
-public class GlobalModelAttributesController {
+public class GlobalModelAttributes {
 
     private final UsuarioService usuarioService;
 
