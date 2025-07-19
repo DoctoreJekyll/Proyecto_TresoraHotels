@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors; // Asegúrate de importar esto
+import java.util.stream.Collectors;
 
 @Service
 public class ReservaService extends AbstractTemplateServicesEntities<Reserva, Integer, ReservaRepo> {
@@ -60,7 +60,7 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         Usuario usuario;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.isAuthenticated()) {
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails user = (UserDetails) authentication.getPrincipal();
             String userEmail = user.getUsername();
             usuario = usuarioRepository.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
@@ -69,6 +69,7 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
             dto.setEmail(userEmail);
             dto.setNombre(userName);
         } else {
+            // El usuario no está autenticado o es anónimo
             if (dto.getIdUsuario() != null) {
                 usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow();
             } else {
@@ -115,7 +116,8 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.isAuthenticated()) {
+        // **MODIFICACIÓN AQUÍ:** Verifica si el principal es una instancia de UserDetails
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails user = (UserDetails) authentication.getPrincipal();
             String userEmail = user.getUsername();
 
@@ -125,6 +127,7 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
             dto.setEmail(userEmail);
             dto.setIdUsuario(usuario.getId());
         }
+        // Si no está autenticado o el principal no es UserDetails (ej. "anonymousUser"), el DTO se devuelve vacío para el usuario.
         return dto;
     }
 
