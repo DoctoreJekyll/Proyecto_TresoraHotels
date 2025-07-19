@@ -1,8 +1,6 @@
 package com.atm.buenas_practicas_java.controllers;
 
-import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
 import com.atm.buenas_practicas_java.DTOs.UsuarioDTO;
-import com.atm.buenas_practicas_java.entities.Reserva;
 import com.atm.buenas_practicas_java.entities.Rol;
 import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.services.HotelService;
@@ -175,7 +173,7 @@ public class UsuarioController {
     public String nuevoUsuarioForm(Model model) {
         model.addAttribute("usuario", new Usuario());
         model.addAttribute("roles", rolService.findAll()); // para el desplegable de roles
-        return "formUsuario";
+        return "usuarioForm";
     }
 
     @GetMapping("/editar/{id}")
@@ -185,7 +183,7 @@ public class UsuarioController {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         model.addAttribute("usuario", usuario);
         model.addAttribute("roles", rolService.findAll());
-        return "formUsuario";
+        return "usuarioForm";
     }
 
     @PostMapping("/guardar")
