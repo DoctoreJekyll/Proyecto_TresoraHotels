@@ -25,6 +25,9 @@ body, .offcanvas {
   color: #E0E0E0;
 }
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
   background-color: #000000 !important;
 }
 
@@ -310,8 +313,10 @@ h6 {
 }
 
 /* Footer y iconos */
+/* FOOTER STICKY - Los cambios principales están aquí */
 footer {
-  flex-shrink: 0; /* No se encoge */
+  flex-shrink: 0; /* Mantiene el tamaño del footer */
+  margin-top: auto; /* NUEVO: Empuja el footer hacia la parte inferior */
   background-color: #E0E0E0;
   color: #000000;
   padding-top: 1rem;
