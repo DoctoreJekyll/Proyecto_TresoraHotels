@@ -19,24 +19,13 @@
     <link th:href="@{/css/Burbujas.css}" rel="stylesheet" />
 </head>
 <script th:src="@{/js/scrollButon.js}"></script>
-
 <body>
-
-<!--&lt;!&ndash; Selector de voces &ndash;&gt;-->
-<!--<select id="voiceSelect" aria-label="Seleccionar voz para lectura">-->
-<!--    <option value="" disabled selected>Selecciona una voz</option>-->
-<!--</select>-->
-
-<!--&lt;!&ndash; Botón de accesibilidad &ndash;&gt;-->
-<!--<button id="accessibilityBtn" aria-label="Leer contenido en voz alta" title="Leer contenido en voz alta">-->
-<!--    🔊-->
-<!--</button>-->
 
 <!-- NAVBAR -->
 <nav class="navbar" style="background-color: #E0E0E0;">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <a class="navbar-brand" th:href="@{/}">
-            <img th:src="@{/images/LogoTresora.png}" alt="Logo Tresora Hotels" style="height: 40px;">
+            <img th:src="@{/images/LogoTresora.png}" alt="Logo Tresora Hotels" style="height: 30px;">
         </a>
 
         <div class="d-flex align-items-center gap-2">
@@ -118,102 +107,6 @@
     <i class="bi bi-volume-up"></i>
 </button>
 
-<!--&lt;!&ndash; Script para Web Speech API con selector de voces &ndash;&gt;-->
-<!--<script>-->
-<!--    // Referencias al botón y al selector-->
-<!--    const accessibilityBtn = document.getElementById('accessibilityBtn');-->
-<!--    const voiceSelect = document.getElementById('voiceSelect');-->
-<!--    let isSpeaking = false;-->
-<!--    let voices = [];-->
-
-<!--    // Cargar voces disponibles-->
-<!--    function loadVoices() {-->
-<!--        voices = window.speechSynthesis.getVoices();-->
-<!--        voiceSelect.innerHTML = '<option value="" disabled selected>Selecciona una voz</option>';-->
-<!--        voices.forEach((voice, index) => {-->
-<!--            const option = document.createElement('option');-->
-<!--            option.value = index;-->
-<!--            option.textContent = `${voice.name} (${voice.lang})`;-->
-<!--            voiceSelect.appendChild(option);-->
-<!--        });-->
-<!--        // Seleccionar una voz en español por defecto, si está disponible-->
-<!--        const defaultVoice = voices.find(voice => voice.lang === 'es-ES' || voice.lang === 'es-MX');-->
-<!--        if (defaultVoice) {-->
-<!--            voiceSelect.value = voices.indexOf(defaultVoice);-->
-<!--        }-->
-<!--    }-->
-
-<!--    // Cargar voces al iniciar y cuando cambien-->
-<!--    window.speechSynthesis.onvoiceschanged = loadVoices;-->
-<!--    loadVoices(); // Cargar voces inmediatamente-->
-
-<!--    // Evento para alternar entre iniciar y detener la lectura-->
-<!--    accessibilityBtn.addEventListener('click', function() {-->
-<!--        if (isSpeaking) {-->
-<!--            // Detener la lectura-->
-<!--            window.speechSynthesis.cancel();-->
-<!--            accessibilityBtn.innerHTML = '🔊';-->
-<!--            accessibilityBtn.setAttribute('aria-label', 'Leer contenido en voz alta');-->
-<!--            accessibilityBtn.setAttribute('title', 'Leer contenido en voz alta');-->
-<!--            isSpeaking = false;-->
-<!--        } else {-->
-<!--            // Iniciar la lectura-->
-<!--            window.speechSynthesis.cancel(); // Limpiar cualquier reproducción previa-->
-
-<!--            // Recolectar contenido marcado con la clase 'tts-content'-->
-<!--            const contentElements = document.querySelectorAll('.tts-content');-->
-<!--            let textToRead = '';-->
-
-<!--            contentElements.forEach(element => {-->
-<!--                textToRead += element.innerText + ' ';-->
-<!--            });-->
-
-<!--            // Configurar la síntesis de voz-->
-<!--            const speech = new SpeechSynthesisUtterance(textToRead);-->
-<!--            speech.lang = 'es-ES'; // Idioma base-->
-<!--            speech.volume = 1; // Volumen (0 a 1)-->
-<!--            speech.rate = 0.9; // Velocidad (0.1 a 10, 0.9 para mayor claridad)-->
-<!--            speech.pitch = 1; // Tono (0 a 2)-->
-
-<!--            // Usar la voz seleccionada-->
-<!--            const selectedVoiceIndex = voiceSelect.value;-->
-<!--            if (selectedVoiceIndex !== '' && voices[selectedVoiceIndex]) {-->
-<!--                speech.voice = voices[selectedVoiceIndex];-->
-<!--                speech.lang = voices[selectedVoiceIndex].lang; // Ajustar idioma según la voz-->
-<!--            } else {-->
-<!--                // Fallback a una voz en español-->
-<!--                const spanishVoice = voices.find(voice => voice.lang === 'es-ES' || voice.lang === 'es-MX');-->
-<!--                if (spanishVoice) {-->
-<!--                    speech.voice = spanishVoice;-->
-<!--                    speech.lang = spanishVoice.lang;-->
-<!--                }-->
-<!--            }-->
-
-<!--            // Cambiar el botón a "detener"-->
-<!--            accessibilityBtn.innerHTML = '⏹';-->
-<!--            accessibilityBtn.setAttribute('aria-label', 'Detener lectura');-->
-<!--            accessibilityBtn.setAttribute('title', 'Detener lectura');-->
-<!--            isSpeaking = true;-->
-
-<!--            // Reproducir el texto-->
-<!--            window.speechSynthesis.speak(speech);-->
-
-<!--            // Restaurar el botón cuando termine la lectura-->
-<!--            speech.onend = () => {-->
-<!--                accessibilityBtn.innerHTML = '🔊';-->
-<!--                accessibilityBtn.setAttribute('aria-label', 'Leer contenido en voz alta');-->
-<!--                accessibilityBtn.setAttribute('title', 'Leer contenido en voz alta');-->
-<!--                isSpeaking = false;-->
-<!--            };-->
-<!--        }-->
-<!--    });-->
-
-<!--    // Depuración: mostrar voces disponibles-->
-<!--    window.speechSynthesis.onvoiceschanged = () => {-->
-<!--        loadVoices();-->
-<!--        console.log(voices);-->
-<!--    };-->
-<!--</script>-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- FOOTER -->

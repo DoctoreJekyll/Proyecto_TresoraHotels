@@ -114,6 +114,8 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/", "/home", "/login", "/login-error", "/logout-exito", "/usuarios/crear-cuenta").permitAll()
                         .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/reserva/rapida").permitAll()
+                        .requestMatchers("/contactos/nuevo").permitAll()
 
                         // Rutas específicas por rol
                         .requestMatchers("/panel").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")

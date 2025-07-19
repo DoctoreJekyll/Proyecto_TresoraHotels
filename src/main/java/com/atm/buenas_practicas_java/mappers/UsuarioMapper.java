@@ -1,4 +1,4 @@
-package com.atm.buenas_practicas_java.services.mappers;
+package com.atm.buenas_practicas_java.mappers;
 
 import com.atm.buenas_practicas_java.DTOs.UsuarioDTO;
 import com.atm.buenas_practicas_java.entities.Usuario;

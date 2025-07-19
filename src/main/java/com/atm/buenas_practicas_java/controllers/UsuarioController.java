@@ -1,20 +1,26 @@
 package com.atm.buenas_practicas_java.controllers;
 
+import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
 import com.atm.buenas_practicas_java.DTOs.UsuarioDTO;
+import com.atm.buenas_practicas_java.entities.Reserva;
 import com.atm.buenas_practicas_java.entities.Rol;
 import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.services.HotelService;
+import com.atm.buenas_practicas_java.services.ReservaService;
 import com.atm.buenas_practicas_java.services.RolService;
 import com.atm.buenas_practicas_java.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Controller
@@ -25,6 +31,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final RolService rolService;
     private final HotelService hotelService;
+    private final ReservaService reservaService;
 
     @GetMapping("/crear-cuenta")
     @PreAuthorize("permitAll()")
@@ -197,6 +204,30 @@ public class UsuarioController {
         usuarioService.deleteById(id);
         return "redirect:/lista/usuarios";
     }
+
+    //--------------------------------CONTROLLER DE VISTAS USUARIOS LOG/RESERVAS----------------------------------------------//
+
+    @GetMapping("/reserva/{id}")
+    public String usuarioListaReservas(@PathVariable("id") Integer id, Model model)
+    {
+        Usuario usuario;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()){
+            UserDetails user = (UserDetails) authentication.getPrincipal();
+            String userEmail = user.getUsername();
+
+            usuario = usuarioService.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+            model.addAttribute("reserva", reservaService.findReservaByUsuario(usuario.getId()));
+            return "usuarioListaReservas";
+        }
+        else
+        {
+            return "redirect:/user_home_page";
+        }
+
+    }
+
 }
 
 

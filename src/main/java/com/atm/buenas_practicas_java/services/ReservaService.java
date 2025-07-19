@@ -11,12 +11,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // Importar Transactional
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors; // Asegúrate de importar esto
 
 @Service
 public class ReservaService extends AbstractTemplateServicesEntities<Reserva, Integer, ReservaRepo> {
@@ -43,8 +43,7 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         this.emailService = emailService;
     }
 
-    public List<Reserva> findReservaByUsuario(Integer idUsuario)
-    {
+    public List<Reserva> findReservaByUsuario(Integer idUsuario) {
         return getRepo().findByIdUsuario_Id(idUsuario);
     }
 
@@ -56,7 +55,7 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         return getRepo().findByIdWithAllRelations(id);
     }
 
-    @Transactional // Aseguramos que toda la operación sea transaccional
+    @Transactional
     public Reserva crearReservaConProductos(ReservaRapidaDTO dto) {
         Usuario usuario;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -69,43 +68,30 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
 
             dto.setEmail(userEmail);
             dto.setNombre(userName);
-        }
-        else
-        {
-            if (dto.getIdUsuario() != null)
-            {
+        } else {
+            if (dto.getIdUsuario() != null) {
                 usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow();
-            }
-            else
-            {
+            } else {
                 usuario = findOrCreateUser(dto.getNombre(), dto.getEmail());
             }
         }
 
-        // 2. Obtener y validar la habitación
         Habitacion habitacion = getAndValidateRoom(dto.getIdHabitacion());
-        dto.setHotel(habitacion.getHotel().getId()); // Asegurar que el DTO tiene el ID del hotel
+        dto.setHotel(habitacion.getHotel().getId());
 
-        // 3. Crear la instancia de reserva y establecer atributos básicos
         Reserva reserva = createBaseReservation(usuario, habitacion, dto);
 
-        // 4. Procesar y adjuntar productos adicionales
         Set<ProductosUsuario> productosUsuarios = processAdditionalProducts(dto.getProductos(), usuario, reserva);
         reserva.setProductosUsuarios(productosUsuarios);
 
-        // 5. Calcular total correctamente
         long diasEstancia = ChronoUnit.DAYS.between(dto.getFechaEntrada(), dto.getFechaSalida());
         double precioTotalReserva = getPrecioTotalReserva(habitacion, productosUsuarios, diasEstancia);
-        reserva.setTotalReserva(precioTotalReserva); // ✅ Asignas el total a la entidad aquí
+        reserva.setTotalReserva(precioTotalReserva);
         dto.setTotalReserva(precioTotalReserva);
 
-        // 5. Guardar la reserva y actualizar el estado de la habitación
         habitacion.setOcupada(true);
         habitacionRepository.save(habitacion);
         Reserva savedReserva = this.save(reserva);
-
-        // 6. Enviar correo (descomentar si se necesita)
-        // sendUserCreationEmail(usuario);
 
         return savedReserva;
     }
@@ -125,11 +111,11 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
     }
 
     public ReservaRapidaDTO reservaRapidaUsuarioLog(UsuarioService usuarioService) {
-        ReservaRapidaDTO dto = new ReservaRapidaDTO(); // Siempre creamos el DTO
+        ReservaRapidaDTO dto = new ReservaRapidaDTO();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.isAuthenticated()){
+        if (authentication != null && authentication.isAuthenticated()) {
             UserDetails user = (UserDetails) authentication.getPrincipal();
             String userEmail = user.getUsername();
 
@@ -142,13 +128,6 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         return dto;
     }
 
-    /**
-     * Busca un usuario por email o crea uno nuevo si no existe.
-     * Genera una contraseña aleatoria y la codifica para nuevos usuarios.
-     * @param nombre El nombre del usuario.
-     * @param email El email del usuario.
-     * @return El objeto Usuario existente o recién creado.
-     */
     private Usuario findOrCreateUser(String nombre, String email) {
         return usuarioRepository.findByEmail(email)
                 .orElseGet(() -> {
@@ -159,23 +138,14 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
                     String encodedPassword = PasswordGenerator.generateRandomPassword();
                     newUser.setPassword(encodedPassword);
 
-                    // Asignar el rol por defecto (por ejemplo, 'Cliente' o 'Usuario')
-                    Rol defaultRole = rolRepository.findById(1) // Asumiendo que 1 es el ID del rol por defecto
+                    Rol defaultRole = rolRepository.findById(1)
                             .orElseThrow(() -> new RuntimeException("Rol por defecto no encontrado"));
                     newUser.setIdRol(defaultRole);
 
-                    // TODO: Considerar enviar el email con la contraseña temporal aquí, o encapsularlo en un evento/listener.
-                    // sendUserCreationEmail(newUser, rawPassword); // Pasar la contraseña sin cifrar para el email
                     return usuarioRepository.save(newUser);
                 });
     }
 
-    /**
-     * Obtiene una habitación por su ID y valida que exista y tenga un hotel asociado.
-     * @param idHabitacion El ID de la habitación.
-     * @return El objeto Habitacion.
-     * @throws RuntimeException Si la habitación no se encuentra o no tiene un hotel.
-     */
     private Habitacion getAndValidateRoom(Integer idHabitacion) {
         Habitacion habitacion = habitacionRepository.findHabitacionConHotel(idHabitacion);
         if (habitacion == null || habitacion.getHotel() == null) {
@@ -184,13 +154,6 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         return habitacion;
     }
 
-    /**
-     * Crea una nueva instancia de Reserva con los datos básicos.
-     * @param usuario El usuario asociado a la reserva.
-     * @param habitacion La habitación reservada.
-     * @param dto El DTO con los detalles de la reserva.
-     * @return La instancia de Reserva pre-configurada.
-     */
     private Reserva createBaseReservation(Usuario usuario, Habitacion habitacion, ReservaRapidaDTO dto) {
         Reserva reserva = new Reserva();
         reserva.setIdUsuario(usuario);
@@ -198,39 +161,28 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         reserva.setFechaEntrada(dto.getFechaEntrada());
         reserva.setFechaSalida(dto.getFechaSalida());
         reserva.setPax(dto.getPax());
-        reserva.setEstado(Reserva.ESTADO_RESERVA.PENDIENTE); // Estado inicial de la reserva
+        reserva.setEstado(Reserva.ESTADO_RESERVA.PENDIENTE);
         reserva.setFechaReserva(Instant.now());
         reserva.setComentarios(dto.getComentarios());
-        //reserva.setTotalReserva(dto.getTotalReserva());
         return reserva;
     }
 
-    /**
-     * Procesa la lista de productos adicionales del DTO y los convierte en entidades ProductosUsuario.
-     * Solo incluye productos de la categoría especificada (ID 2 en este caso).
-     * @param productoDtos La lista de DTOs de productos del formulario.
-     * @param usuario El usuario al que se asocian los productos.
-     * @param reserva La reserva a la que se asocian los productos.
-     * @return Un Set de ProductosUsuario.
-     * @throws RuntimeException Si un producto no se encuentra.
-     */
     private Set<ProductosUsuario> processAdditionalProducts(List<ProductoFormularioDTO> productoDtos, Usuario usuario, Reserva reserva) {
         if (productoDtos == null || productoDtos.isEmpty()) {
             return Collections.emptySet();
         }
 
         Set<ProductosUsuario> productosUsuarios = new LinkedHashSet<>();
-        Integer CategoriaServicioAdicionalId = 2; // ID de la categoría de servicios adicionales
+        Integer CategoriaServicioAdicionalId = 2;
 
         for (ProductoFormularioDTO pDto : productoDtos) {
             if (pDto.getIdProducto() == null) {
-                continue; // Saltar si no hay ID de producto
+                continue;
             }
 
             Producto producto = productoRepository.findById(pDto.getIdProducto())
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + pDto.getIdProducto()));
 
-            // Solo añadir productos que pertenecen a la categoría de servicios adicionales (ID 2)
             if (producto.getIdCategoria() != null && producto.getIdCategoria().getId().equals(CategoriaServicioAdicionalId)) {
                 ProductosUsuario pu = new ProductosUsuario();
                 pu.setIdProducto(producto);
@@ -239,7 +191,7 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
                 pu.setCantidad(pDto.getCantidad());
                 pu.setFecha(pDto.getFecha());
                 pu.setDescuento(pDto.getDescuento());
-                pu.setFacturado(false); // Por defecto, no facturado al crear la reserva
+                pu.setFacturado(false);
 
                 productosUsuarios.add(pu);
             }
@@ -256,6 +208,7 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         dto.setFechaSalida(reserva.getFechaSalida());
         dto.setPax(reserva.getPax());
         dto.setComentarios(reserva.getComentarios());
+        dto.setEstado(reserva.getEstado()); // ¡Mapear el estado de la reserva existente al DTO!
 
         if (reserva.getIdUsuario() != null) {
             dto.setIdUsuario(reserva.getIdUsuario().getId());
@@ -301,14 +254,21 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         reserva.setFechaSalida(dto.getFechaSalida());
         reserva.setPax(dto.getPax());
         reserva.setComentarios(dto.getComentarios());
+        reserva.setEstado(dto.getEstado()); // ¡Actualizar el estado de la reserva!
 
 
         // 4. Reemplazar productos
-        reserva.getProductosUsuarios().clear(); // Limpia los anteriores
+        // Primero, creamos una copia de los productos actuales para evitar ConcurrentModificationException
+        Set<ProductosUsuario> productosAntiguos = new HashSet<>(reserva.getProductosUsuarios());
+        // Luego, limpia los productos de la reserva
+        reserva.getProductosUsuarios().clear();
+
+        // Finalmente, añade los nuevos productos. Esto también gestionará los "orphanRemoval" si está configurado.
         Set<ProductosUsuario> nuevosProductos = processAdditionalProducts(dto.getProductos(), usuario, reserva);
         reserva.getProductosUsuarios().addAll(nuevosProductos);
 
-         long diasEstancia = ChronoUnit.DAYS.between(dto.getFechaEntrada(), dto.getFechaSalida());
+
+        long diasEstancia = ChronoUnit.DAYS.between(dto.getFechaEntrada(), dto.getFechaSalida());
         double nuevoTotal = getPrecioTotalReserva(nuevaHabitacion, nuevosProductos, diasEstancia);
         reserva.setTotalReserva(nuevoTotal);
 
@@ -316,19 +276,10 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
     }
 
 
-    /**
-     * Envía un correo electrónico al usuario tras su creación.
-     * Este método debería idealmente recibir la contraseña sin cifrar si es un email de bienvenida.
-     * O mejor aún, un token de restablecimiento de contraseña.
-     * @param usuario El usuario al que se le envía el correo.
-     */
     private void sendUserCreationEmail(Usuario usuario) {
-        // Precaución: `usuario.getPassword()` devolverá la contraseña cifrada.
-        // Si necesitas enviar la contraseña "plana", debes pasarla como argumento desde `findOrCreateUser`.
-        // Considera implementar un flujo de "establecer contraseña" o "restablecer contraseña" en lugar de enviar la contraseña por email.
         emailService.sendEmail(
                 "notificaciones@agestturnos.es",
-                usuario.getEmail(), // Enviar al email del usuario real
+                usuario.getEmail(),
                 "¡Bienvenido a nuestro hotel! Tu acceso temporal",
                 "Hola " + usuario.getNombre() + ",\n\n" +
                         "Hemos creado un usuario temporal en nuestra base de datos para que puedas acceder a tu perfil y ver tu reserva.\n" +
@@ -339,6 +290,4 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
                         "¡Esperamos verte pronto!"
         );
     }
-
-
 }
