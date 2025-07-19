@@ -75,12 +75,15 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
         </div>
         <div class="offcanvas-body d-flex flex-column align-items-start">
-            <a class="nav-link fs-4 mb-2" th:href="@{/login}">Acceso</a>
-            <a class="nav-link fs-4 mb-2" th:href="@{/reservaPlaya}">Reserva Hotel Playa</a>
-            <a class="nav-link fs-4 mb-2" th:href="@{/reservaMontaña}">Reserva Hotel Montaña</a>
-            <a class="nav-link fs-4 mb-2" th:href="@{/hoteles}">Hoteles</a>
-            <a class="nav-link fs-4 mb-2" href="#">Servicios</a>
-            <a class="nav-link fs-4 mb-2" th:href="@{/contact}">Contacto</a>
+            <a class="nav-link fs-4 mb-2" th:href="@{/hoteles}">TresoraHotels</a>
+            <a class="nav-link fs-4 mb-2" th:text="${usuario == null} ? 'Acceso' : 'Mi Perfil'" th:href="${usuario == null} ? @{/login} : @{/usuarios/userhome}"></a>
+            <a class="nav-link fs-4 mb-2" data-bs-toggle="collapse" href="#hotelList" role="button" aria-expanded="false" aria-controls="hotelList">Reserva</a>
+            <div class="collapse" id="hotelList">
+                <div th:each="hotel : ${hotels}">
+                    <a class="nav-link fs-4 mb-2 ms-3" th:href="@{'/hotel/' + ${hotel.nombre}}" th:attr="data-nombre=${hotel.nombre}" th:text="${hotel.nombre}"></a>
+                </div>
+            </div>
+            <a class="nav-link fs-4 mb-2" th:href="@{/contactos/nuevo}">Contacto</a>
         </div>
     </div>
 </nav>
