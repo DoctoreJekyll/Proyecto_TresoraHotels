@@ -25,7 +25,7 @@ public class ReservaFactoryImpl implements IFactoryProvider {
 
     @Override
     public List<String> getHeaders() {
-        return List.of("id","idUsuario","idHabitacion","fechaEntrada","fechaSalida","estado","pax","fechaReserva","comentarios");
+        return List.of("id","idUsuario","idHabitacion","fechaEntrada","fechaSalida","estado","pax","fechaReserva","comentarios","totalReserva");
     }
 
     @Override
@@ -43,6 +43,8 @@ public class ReservaFactoryImpl implements IFactoryProvider {
                     row.put("pax", reserva.getPax());
                     row.put("fechaReserva", reserva.getFechaReserva());
                     row.put("comentarios", reserva.getComentarios());
+                    row.put("totalReserva", reserva.getTotalReserva());
+                    System.out.println(reserva.getTotalReserva());
                     return row;
                 }).toList();
 
