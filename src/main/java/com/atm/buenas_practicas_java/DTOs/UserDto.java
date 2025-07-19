@@ -1,4 +1,4 @@
-package com.atm.buenas_practicas_java.controllers.dtosOld;
+package com.atm.buenas_practicas_java.DTOs;
 
 import lombok.Getter;
 import lombok.Setter;

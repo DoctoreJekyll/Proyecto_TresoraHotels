@@ -1,16 +1,15 @@
 package com.atm.buenas_practicas_java.controllers;
 
-import com.atm.buenas_practicas_java.dtosOld.*;
+import com.atm.buenas_practicas_java.DTOs.LoginDto;
+import com.atm.buenas_practicas_java.DTOs.UserDto;
 import com.atm.buenas_practicas_java.entities.DatosReserva;
 import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.entities.MiembroEquipo;
 import com.atm.buenas_practicas_java.services.EquipoService;
-import com.atm.buenas_practicas_java.services.EmailService;
 import com.atm.buenas_practicas_java.services.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -117,13 +116,13 @@ public class HotelesController {
         }
     }
 
-    @PostMapping("/reserva")
-    public String procesarReserva(@ModelAttribute("datosreserva") DatosReserva datosReserva,
-                                  @RequestParam("hotelId") String hotelId) {
-        // Lógica para procesar la reserva
-        // Por ejemplo, guardar en la base de datos o redirigir a una página de confirmación
-        return "redirect:/confirmacion";
-    }
+//    @PostMapping("/reserva")
+//    public String procesarReserva(@ModelAttribute("datosreserva") DatosReserva datosReserva,
+//                                  @RequestParam("hotelId") String hotelId) {
+//        // Lógica para procesar la reserva
+//        // Por ejemplo, guardar en la base de datos o redirigir a una página de confirmación
+//        return "redirect:/confirmacion";
+//    }
 
 
     @GetMapping("/servicios")
