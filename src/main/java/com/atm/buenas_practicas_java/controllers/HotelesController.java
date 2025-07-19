@@ -116,13 +116,13 @@ public class HotelesController {
         }
     }
 
-    @PostMapping("/reserva")
-    public String procesarReserva(@ModelAttribute("datosreserva") DatosReserva datosReserva,
-                                  @RequestParam("hotelId") String hotelId) {
-        // Lógica para procesar la reserva
-        // Por ejemplo, guardar en la base de datos o redirigir a una página de confirmación
-        return "redirect:/confirmacion";
-    }
+//    @PostMapping("/reserva")
+//    public String procesarReserva(@ModelAttribute("datosreserva") DatosReserva datosReserva,
+//                                  @RequestParam("hotelId") String hotelId) {
+//        // Lógica para procesar la reserva
+//        // Por ejemplo, guardar en la base de datos o redirigir a una página de confirmación
+//        return "redirect:/confirmacion";
+//    }
 
 
     @GetMapping("/servicios")
