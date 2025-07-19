@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,5 +38,22 @@ public class HabitacionService extends AbstractTemplateServicesEntities<Habitaci
     public Page<Habitacion> findByHotelId(Integer hotelId, Pageable pageable) {
         return getRepo().findByHotelId(hotelId, pageable);
     }
+
+    public List<Habitacion> findDisponiblesPorHotelYFechas(Integer hotelId, LocalDate entrada, LocalDate salida) {
+        return getRepo().findDisponiblesPorHotelYFechas(hotelId, entrada, salida);
+    }
+
+    public List<Habitacion> obtenerDisponiblesPorHotelYFechas(Integer hotelId, String fechaEntrada, String fechaSalida) {
+        LocalDate entrada = LocalDate.parse(fechaEntrada);
+        LocalDate salida = LocalDate.parse(fechaSalida);
+        return getRepo().findDisponiblesPorHotelYFechas(hotelId, entrada, salida);
+    }
+
+    // NUEVO MÉTODO para paginar habitaciones por hotel e IDs específicos
+    @Transactional(readOnly = true)
+    public Page<Habitacion> findByHotelIdAndIdsIn(Integer hotelId, List<Integer> habitacionIds, Pageable pageable) {
+        return getRepo().findByHotelIdAndIdIn(hotelId, habitacionIds, pageable);
+    }
+
 
 }

@@ -1,4 +1,4 @@
-package com.atm.buenas_practicas_java.DTOs;
+package com.atm.buenas_practicas_java.dto;
 
 import lombok.Data;
 
