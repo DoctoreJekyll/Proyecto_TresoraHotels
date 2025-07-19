@@ -4,6 +4,7 @@ import com.atm.buenas_practicas_java.controllers.Factory.IFactoryProvider;
 import com.atm.buenas_practicas_java.entities.Reserva;
 import com.atm.buenas_practicas_java.services.ReservaService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ public class ReservaFactoryImpl implements IFactoryProvider {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Map<String, Object>> getRows() {
         List<Reserva> reservas = reservaService.findAll();
         List<Map<String, Object>> rows = reservas.stream()
@@ -36,7 +38,7 @@ public class ReservaFactoryImpl implements IFactoryProvider {
                     Map<String, Object> row = new HashMap<>();
                     row.put("id", reserva.getId());
                     row.put("idUsuario", reserva.getIdUsuario().getId());
-                    row.put("idHabitacion", reserva.getIdHabitacion().getId());
+                    row.put("idHabitacion", reserva.getIdHabitacion().getTipo());
                     row.put("fechaEntrada", reserva.getFechaEntrada());
                     row.put("fechaSalida", reserva.getFechaSalida());
                     row.put("estado", reserva.getEstado());
