@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" /> <title>Factura de Reserva</title>
+    <style>
+        /* Aquí va el CSS para tu factura. Flying Saucer soporta un subconjunto de CSS 2.1 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #4CAF50;
+            margin: 0;
+        }
+        .info-section {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 0;
+            color: #555;
+        }
+        .info-item {
+            margin-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total-section {
+            text-align: right;
+            margin-top: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.8em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Factura de Reserva</h1>
+    <p><strong>Hoteles Tresora</strong></p>
+    <p>Fecha de Emisión: <span th:text="${#temporals.format(factura.fechaEmision, 'dd-MM-yyyy')}"></span></p>
+</div>
+
+<div class="info-section">
+    <h3>Datos del Cliente</h3>
+    <div class="info-item"><strong>Nombre:</strong> <span th:text="${factura.nombre}"></span></div>
+    <div class="info-item"><strong>Email:</strong> <span th:text="${factura.email}"></span></div>
+    <div class="info-item"><strong>Nº de Factura:</strong> <span th:text="${factura.id}"></span></div>
+</div> <div class="info-section">
+    <h3>Detalles de la Reserva</h3>
+    <div class="info-item"><strong>ID de Reserva:</strong> <span th:text="${factura.id}"></span></div>
+    <div class="info-item"><strong>Hotel:</strong> <span th:text="${factura.hotel}"></span></div>
+    <div class="info-item"><strong>Nº Habitación:</strong> <span th:text="${factura.numHabitacion}"></span></div>
+    <div class="info-item"><strong>Fecha Entrada:</strong> <span th:text="${#temporals.format(factura.fechaEntrada, 'dd-MM-yyyy')}"></span></div>
+    <div class="info-item"><strong>Fecha Salida:</strong> <span th:text="${#temporals.format(factura.fechaSalida, 'dd-MM-yyyy')}"></span></div>
+    <div class="info-item"><strong>Precio Base Habitación / Noche:</strong> <span th:text="${#numbers.formatCurrency(factura.precioBaseHabitacion)}"></span></div>
+    <div class="info-item"><strong>Noches:</strong> <span th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(factura.fechaEntrada, factura.fechaSalida)}"></span></div>
+</div>
+
+<div th:if="${!#lists.isEmpty(factura.productos)}" class="info-section">
+    <h3>Productos y Servicios Adicionales</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="producto : ${factura.productos}">
+            <td th:text="${producto.categoria}"></td> <td th:text="${producto.cantidad}"></td>
+            <td th:text="${#numbers.formatCurrency(producto.precioBase)}"></td> </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="total-section">
+    <p>TOTAL A PAGAR: <span th:text="${#numbers.formatCurrency(factura.precioTotal)}"></span></p>
+</div>
+
+<div class="footer">
+    <p>Gracias por su reserva en Hoteles Tresora.</p>
+    <p>Dirección: Calle Ficticia, 123 - Ciudad Ficticia</p>
+    <p>CIF: B12345678</p>
+</div>
+</body>
+</html>

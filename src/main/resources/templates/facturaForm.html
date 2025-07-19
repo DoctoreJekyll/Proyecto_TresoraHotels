@@ -32,7 +32,7 @@
             <!-- Usuario -->
             <div class="mb-4">
               <label for="idUsuario" class="form-label">Usuario *</label>
-              <select class="form-select" id="idUsuario" th:field="*{idUsuario}" required aria-required="true">
+              <select class="form-select" id="idUsuario" th:field="*{getId()}" required aria-required="true">
                 <option value="" disabled selected>Seleccione un usuario</option>
                 <option th:each="usuario : ${usuarios}"
                         th:value="${usuario.id}"
@@ -43,7 +43,7 @@
             <!-- Metodo de Pago -->
             <div class="mb-4">
               <label for="idMetodoPago" class="form-label">Método de Pago *</label>
-              <select class="form-select" id="idMetodoPago" th:field="*{idMetodoPago}" required aria-required="true">
+              <select class="form-select" id="idMetodoPago" th:field="*{metodoPago}" required aria-required="true">
                 <option value="" disabled selected>Seleccione un método</option>
                 <option th:each="metodo : ${metodosPagos}"
                         th:value="${metodo.id}"
@@ -54,7 +54,7 @@
             <!-- Hotel -->
             <div class="mb-4">
               <label for="idHotel" class="form-label">Hotel *</label>
-              <select class="form-select" id="idHotel" th:field="*{idHotel}" required aria-required="true">
+              <select class="form-select" id="idHotel" th:field="*{hotel}" required aria-required="true">
                 <option value="" disabled selected>Seleccione un hotel</option>
                 <option th:each="hotel : ${hoteles}"
                         th:value="${hotel.id}"
@@ -66,7 +66,7 @@
             <div class="mb-4">
               <label for="idDetalle" class="form-label">ID Detalle *</label>
               <input type="number" class="form-control" id="idDetalle"
-                     th:field="*{idDetalle}" required aria-required="true"
+                     th:field="*{getId()}" required aria-required="true"
                      placeholder="Ingrese el ID del detalle relacionado" />
             </div>
 
@@ -83,7 +83,7 @@
             <div class="mb-4">
               <label for="estado" class="form-label">Estado *</label>
               <input type="text" class="form-control" id="estado"
-                     th:field="*{estado}" required aria-required="true"
+                     th:field="*{metodoPago}" required aria-required="true"
                      maxlength="255"
                      placeholder="Ingrese el estado de la factura (Ej: Pagada, Pendiente)" />
             </div>
@@ -92,7 +92,7 @@
             <div class="mb-4">
               <label for="observaciones" class="form-label">Observaciones</label>
               <textarea class="form-control" id="observaciones"
-                        th:field="*{observaciones}" rows="3" maxlength="80"
+                        th:field="*{metodoPago}" rows="3" maxlength="80"
                         placeholder="Observaciones adicionales (opcional)"></textarea>
             </div>
 

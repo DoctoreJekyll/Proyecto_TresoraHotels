@@ -590,13 +590,16 @@ public void loadReservas() {
 
     private Reserva reserva1;
     private Reserva reserva2;
+    private Reserva reserva3;
 
     private void SaveAllReservas() {
         List<Reserva> reservas = new ArrayList<>();
         reserva1 = getReserva1();
         reserva2 = getReserva2();
+        reserva3 = getReserva3();
         reservas.add(reserva1);
         reservas.add(reserva2);
+        reservas.add(reserva3);
         reservaRepo.saveAll(reservas);
     }
 
@@ -626,6 +629,20 @@ public void loadReservas() {
         reserva2.setComentarios("Alergia almendras");
         reserva2.setTotalReserva(100);
         return reserva2;
+    }
+
+    private Reserva getReserva3() {
+        Reserva reserva3 = new Reserva();
+        reserva3.setIdUsuario(usuarioRepo.getReferenceById(1));
+        reserva3.setIdHabitacion(habitacion3);
+        reserva3.setFechaEntrada(LocalDate.of(2025, 6, 1));
+        reserva3.setFechaSalida(LocalDate.of(2025, 6, 10));
+        reserva3.setEstado(Reserva.ESTADO_RESERVA.PAGADA);
+        reserva3.setPax(3);
+        reserva3.setFechaReserva(Instant.now());
+        reserva3.setComentarios("Alergia almendras");
+        reserva3.setTotalReserva(100);
+        return reserva3;
     }
 
     /*---------------------------------------------------------------------------------------------------------------*/
