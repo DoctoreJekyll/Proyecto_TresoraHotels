@@ -606,10 +606,11 @@ public void loadReservas() {
         reserva1.setIdHabitacion(habitacion2);
         reserva1.setFechaEntrada(LocalDate.of(2025, 7, 27));
         reserva1.setFechaSalida(LocalDate.of(2025, 7, 29));
-        reserva1.setEstado("Confirmada");
+        reserva1.setEstado(Reserva.ESTADO_RESERVA.PAGADA);
         reserva1.setPax(2);
         reserva1.setFechaReserva(Instant.now());
         reserva1.setComentarios("");
+        reserva1.setTotalReserva(200);
         return reserva1;
     }
 
@@ -619,10 +620,11 @@ public void loadReservas() {
         reserva2.setIdHabitacion(habitacion3);
         reserva2.setFechaEntrada(LocalDate.of(2025, 8, 1));
         reserva2.setFechaSalida(LocalDate.of(2025, 8, 10));
-        reserva2.setEstado("Pendiente");
+        reserva2.setEstado(Reserva.ESTADO_RESERVA.PENDIENTE);
         reserva2.setPax(3);
         reserva2.setFechaReserva(Instant.now());
         reserva2.setComentarios("Alergia almendras");
+        reserva2.setTotalReserva(100);
         return reserva2;
     }
 

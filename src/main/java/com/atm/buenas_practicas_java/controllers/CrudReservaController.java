@@ -101,7 +101,11 @@ public class CrudReservaController {
         Reserva reserva = reservaService.findByIdWithAllRelations(id)
                 .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
+        System.out.println(reserva.getTotalReserva() + "precio desde reserva");
+
         ReservaRapidaDTO dto = reservaService.mapearReservaADto(reserva);
+
+        System.out.println(dto.getTotalReserva() + "aaaaaaaaaaaaaaaaaaa");
 
         List<Habitacion> habitaciones = habitacionService.findAllConHotel();
         Map<Hotel, List<Habitacion>> habitacionesPorHotel = habitaciones.stream()

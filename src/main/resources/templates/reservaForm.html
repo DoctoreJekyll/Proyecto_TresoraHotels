@@ -12,16 +12,11 @@
 <main layout:fragment="contenido" id="main-content" class="main-container" role="main" aria-labelledby="booking-title">
     <div class="center-wrapper" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; width: 100%;">
 
-        <!-- script aquí dentro -->
         <script th:inline="javascript">
             document.addEventListener("DOMContentLoaded", function () {
-                console.log("🟢 DOM completamente cargado");
-
                 const habitacionSelect = document.getElementById('idHabitacion');
-                const hotelInput = document.getElementById('hotel');
                 const hotelSelect = document.getElementById('hotelSelect');
                 const precioTotalEl = document.getElementById('precioTotal');
-
                 const fechaEntradaEl = document.getElementById('fechaEntrada');
                 const fechaSalidaEl = document.getElementById('fechaSalida');
 
@@ -34,18 +29,13 @@
                     const fechaEntrada = fechaEntradaEl.value;
                     const fechaSalida = fechaSalidaEl.value;
 
-                    if (!hotelId || !fechaEntrada || !fechaSalida) {
-                        return;
-                    }
+                    if (!hotelId || !fechaEntrada || !fechaSalida) return;
 
-                    hotelInput.value = hotelId;
                     habitacionSelect.innerHTML = '<option value="" disabled selected>Seleccione habitación</option>';
 
-                    const url = `/reservas/api/habitaciones?hotelId=${hotelId}&fechaEntrada=${fechaEntrada}&fechaSalida=${fechaSalida}`;
-                    fetch(url)
+                    fetch(`/reservas/api/habitaciones?hotelId=${hotelId}&fechaEntrada=${fechaEntrada}&fechaSalida=${fechaSalida}`)
                         .then(response => response.json())
                         .then(data => {
-                            console.log("🛏 Habitaciones disponibles:", data);
                             data.forEach(habitacion => {
                                 const option = document.createElement('option');
                                 option.value = habitacion.id;
@@ -55,29 +45,23 @@
                             });
                             calcularPrecioTotal();
                         })
-                        .catch(err => {
-                            console.error('Error cargando habitaciones disponibles:', err);
-                        });
+                        .catch(err => console.error('Error cargando habitaciones:', err));
                 }
 
                 function calcularPrecioTotal() {
                     let total = 0;
 
                     const selectedOption = habitacionSelect.options[habitacionSelect.selectedIndex];
-                    const precioHabitacion = selectedOption && selectedOption.dataset.precio
-                        ? parseFloat(selectedOption.dataset.precio)
-                        : 0;
+                    const precioHabitacion = selectedOption?.dataset.precio ? parseFloat(selectedOption.dataset.precio) : 0;
 
                     const fechaEntrada = new Date(fechaEntradaEl.value);
                     const fechaSalida = new Date(fechaSalidaEl.value);
-
                     const msPorDia = 1000 * 60 * 60 * 24;
                     const noches = Math.max(1, Math.round((fechaSalida - fechaEntrada) / msPorDia));
 
                     total += precioHabitacion * noches;
 
-                    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="productos"]');
-                    checkboxes.forEach(cb => {
+                    document.querySelectorAll('input[type="checkbox"][name^="productos"]').forEach(cb => {
                         if (cb.checked && cb.dataset.precio) {
                             total += parseFloat(cb.dataset.precio);
                         }
@@ -87,8 +71,7 @@
 
                     const desglose = document.getElementById("desglosePrecio");
                     if (desglose && precioHabitacion > 0) {
-                        desglose.innerText =
-                            `(${precioHabitacion.toFixed(2)} € x ${noches} noche${noches > 1 ? 's' : ''})`;
+                        desglose.innerText = `(${precioHabitacion.toFixed(2)} € x ${noches} noche${noches > 1 ? 's' : ''})`;
                     } else if (desglose) {
                         desglose.innerText = '';
                     }
@@ -100,53 +83,52 @@
                 });
 
                 document.getElementById("booking-form").addEventListener("submit", function (e) {
-                    const servicios = document.querySelectorAll('.checkbox-group');
                     let error = false;
-
-                    servicios.forEach(group => {
+                    document.querySelectorAll('.checkbox-group').forEach(group => {
                         const checkbox = group.querySelector('input[type="checkbox"]');
-                        if (checkbox && checkbox.checked) {
+                        if (checkbox?.checked) {
                             const cantidad = group.querySelector('input[name$=".cantidad"]');
                             const fecha = group.querySelector('input[name$=".fecha"]');
-                            if (!cantidad.value || !fecha.value) {
-                                error = true;
-                            }
+                            if (!cantidad.value || !fecha.value) error = true;
                         }
                     });
-
                     if (error) {
                         e.preventDefault();
-                        alert("Si seleccionas un servicio adicional, debes rellenar los campos: cantidad y fecha.");
+                        alert("Si seleccionas un servicio adicional, debes rellenar cantidad y fecha.");
                     }
                 });
 
-                calcularPrecioTotal(); // Inicial
+                // ⚡ Si ya hay valores cargados, forzar carga de habitaciones
+                if (hotelSelect.value && fechaEntradaEl.value && fechaSalidaEl.value) {
+                    cargarHabitaciones();
+                }
+
+                calcularPrecioTotal();
             });
         </script>
+
         <div class="card form-card" style="max-width: 512px; width: 100%; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
             <h1 id="booking-title" class="card-title text-center">Reserva desde Empleado</h1>
 
             <form th:action="@{/reservas/guardar}" th:object="${reservaDTO}" method="post" id="booking-form">
+                <input type="hidden" name="id" th:value="${reservaId}" />
 
                 <p class="card-text mb-4">Complete los campos para reservar su estancia. Todos los campos son obligatorios.</p>
 
-                <!-- Nombre -->
                 <div class="form-group mb-4">
                     <label for="nombre">Nombre</label>
                     <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required />
                 </div>
 
-                <!-- Email -->
                 <div class="form-group mb-4">
                     <label for="email">Email</label>
                     <input type="email" th:field="*{email}" id="email" class="form-control" required />
                 </div>
 
-                <!-- Hotel -->
                 <div class="form-group mb-4">
                     <label for="hotelSelect">Hotel</label>
-                    <select id="hotelSelect" class="form-control" required>
-                        <option value="" disabled selected>Seleccione un hotel</option>
+                    <select th:field="*{hotel}" id="hotelSelect" class="form-control" required>
+                        <option value="" disabled>Seleccione un hotel</option>
                         <option th:each="hotel : ${hoteles}"
                                 th:value="${hotel.id}"
                                 th:text="${hotel.nombre}">
@@ -154,22 +136,16 @@
                     </select>
                 </div>
 
-                <!-- Campo oculto Hotel (formulario) -->
-                <input type="hidden" th:field="*{hotel}" id="hotel" />
-
-                <!-- Fecha entrada -->
                 <div class="form-group mb-4">
                     <label for="fechaEntrada">Fecha de Entrada</label>
                     <input type="date" th:field="*{fechaEntrada}" id="fechaEntrada" class="form-control" required />
                 </div>
 
-                <!-- Fecha salida -->
                 <div class="form-group mb-4">
                     <label for="fechaSalida">Fecha de Salida</label>
                     <input type="date" th:field="*{fechaSalida}" id="fechaSalida" class="form-control" required />
                 </div>
 
-                <!-- Habitación (cambia según hotel) -->
                 <div class="form-group mb-4">
                     <label for="idHabitacion">Habitación</label>
                     <select th:field="*{idHabitacion}" id="idHabitacion" class="form-control" required>
@@ -177,19 +153,16 @@
                     </select>
                 </div>
 
-                <!-- Pax -->
                 <div class="form-group mb-4">
                     <label for="pax">Número de huéspedes</label>
                     <input type="number" min="1" max="10" th:field="*{pax}" id="pax" class="form-control" required />
                 </div>
 
-                <!-- Comentarios -->
                 <div class="form-group mb-4">
                     <label for="comentarios">Comentarios</label>
                     <textarea th:field="*{comentarios}" id="comentarios" class="form-control" rows="3" placeholder="Comentarios adicionales..."></textarea>
                 </div>
 
-                <!-- Productos opcionales -->
                 <div class="form-group mb-4">
                     <p class="services-label mb-2">Servicios adicionales:</p>
 
@@ -202,28 +175,17 @@
                                    th:attr="data-precio=${producto.precioBase}"
                                    class="form-check-input me-2"
                                    onchange="calcularPrecioTotal()" />
-
                             <label th:for="'producto_' + ${iterStat.index}"
                                    th:text="${producto.nombre}"
                                    class="form-check-label"></label>
                         </div>
 
-                        <input type="number"
-                               th:name="'productos[' + ${iterStat.index} + '].cantidad'"
-                               placeholder="Cantidad"
-                               class="form-control mb-1"
-                               style="max-width: 100px;" min="1"/>
-
-                        <input type="date"
-                               th:name="'productos[' + ${iterStat.index} + '].fecha'"
-                               class="form-control mb-1"
-                               style="max-width: 200px;"/>
-
-                        <input type="number"
-                               th:name="'productos[' + ${iterStat.index} + '].descuento'"
-                               placeholder="% desc"
-                               class="form-control mb-3"
-                               style="max-width: 100px;" min="0" max="100"/>
+                        <input type="number" th:name="'productos[' + ${iterStat.index} + '].cantidad'"
+                               placeholder="Cantidad" class="form-control mb-1" style="max-width: 100px;" min="1"/>
+                        <input type="date" th:name="'productos[' + ${iterStat.index} + '].fecha'"
+                               class="form-control mb-1" style="max-width: 200px;"/>
+                        <input type="number" th:name="'productos[' + ${iterStat.index} + '].descuento'"
+                               placeholder="% desc" class="form-control mb-3" style="max-width: 100px;" min="0" max="100"/>
                     </div>
 
                     <div class="form-group mt-4">
@@ -231,15 +193,10 @@
                             <strong>Precio estimado total:</strong>
                             <span id="precioTotal">0 €</span>
                         </label>
-                        <!-- 🔁 NUEVO ELEMENTO para mostrar el desglose -->
                         <div id="desglosePrecio" style="font-size: 0.9em; color: #555;"></div>
                     </div>
-
                 </div>
 
-
-
-                <!-- Botón enviar -->
                 <button type="submit" class="btn btn-grupo5 w-100 mt-3">Reservar Ahora</button>
             </form>
 

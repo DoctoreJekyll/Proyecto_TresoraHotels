@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional; // Importar Tra
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -92,6 +93,12 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         Set<ProductosUsuario> productosUsuarios = processAdditionalProducts(dto.getProductos(), usuario, reserva);
         reserva.setProductosUsuarios(productosUsuarios);
 
+        // 5. Calcular total correctamente
+        long diasEstancia = ChronoUnit.DAYS.between(dto.getFechaEntrada(), dto.getFechaSalida());
+        double precioTotalReserva = getPrecioTotalReserva(habitacion, productosUsuarios, diasEstancia);
+        reserva.setTotalReserva(precioTotalReserva); // ✅ Asignas el total a la entidad aquí
+        dto.setTotalReserva(precioTotalReserva);
+
         // 5. Guardar la reserva y actualizar el estado de la habitación
         habitacion.setOcupada(true);
         habitacionRepository.save(habitacion);
@@ -101,6 +108,20 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         // sendUserCreationEmail(usuario);
 
         return savedReserva;
+    }
+
+    private static double getPrecioTotalReserva(Habitacion habitacion, Set<ProductosUsuario> productosUsuarios, long diasEstancia) {
+        double precioBase = habitacion.getProducto().getPrecioBase();
+        double precioProductosTotal = 0.0;
+
+        for (ProductosUsuario pu : productosUsuarios) {
+            double precioUnitario = pu.getIdProducto().getPrecioBase();
+            int cantidad = pu.getCantidad();
+            precioProductosTotal += precioUnitario * cantidad;
+        }
+
+        double precioHabitacionTotal = precioBase * diasEstancia;
+        return precioProductosTotal + precioHabitacionTotal;
     }
 
     public ReservaRapidaDTO reservaRapidaUsuarioLog(UsuarioService usuarioService) {
@@ -177,9 +198,10 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         reserva.setFechaEntrada(dto.getFechaEntrada());
         reserva.setFechaSalida(dto.getFechaSalida());
         reserva.setPax(dto.getPax());
-        reserva.setEstado("Pendiente"); // Estado inicial de la reserva
+        reserva.setEstado(Reserva.ESTADO_RESERVA.PENDIENTE); // Estado inicial de la reserva
         reserva.setFechaReserva(Instant.now());
         reserva.setComentarios(dto.getComentarios());
+        //reserva.setTotalReserva(dto.getTotalReserva());
         return reserva;
     }
 
@@ -253,6 +275,8 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
             dto.setProductos(productos);
         }
 
+        dto.setTotalReserva(reserva.getTotalReserva());
+
         return dto;
     }
 
@@ -278,10 +302,15 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         reserva.setPax(dto.getPax());
         reserva.setComentarios(dto.getComentarios());
 
+
         // 4. Reemplazar productos
         reserva.getProductosUsuarios().clear(); // Limpia los anteriores
         Set<ProductosUsuario> nuevosProductos = processAdditionalProducts(dto.getProductos(), usuario, reserva);
         reserva.getProductosUsuarios().addAll(nuevosProductos);
+
+         long diasEstancia = ChronoUnit.DAYS.between(dto.getFechaEntrada(), dto.getFechaSalida());
+        double nuevoTotal = getPrecioTotalReserva(nuevaHabitacion, nuevosProductos, diasEstancia);
+        reserva.setTotalReserva(nuevoTotal);
 
         return getRepo().save(reserva);
     }

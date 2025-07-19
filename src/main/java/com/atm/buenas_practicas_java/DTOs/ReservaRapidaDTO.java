@@ -22,6 +22,8 @@ public class ReservaRapidaDTO {
     private String comentarios;
     private Integer idUsuario;
 
+    private double totalReserva;
+
 
     // Productos contratados desde el formulario (opcional)
     private List<ProductoFormularioDTO> productos;
