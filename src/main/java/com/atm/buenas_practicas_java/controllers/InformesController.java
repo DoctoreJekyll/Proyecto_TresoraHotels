@@ -82,7 +82,7 @@ public class InformesController {
         Usuario usuario = usuarioService.findEntity(dto.getIdUsuario()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         Habitacion habitacion = habitacionService.findByIdWithHotelAndProducto(dto.getIdHabitacion()).orElseThrow();
 
-        LimpiezaHabitaciones entidad = limpiezaHabitacionesMapper.toEntity(dto, usuario, habitacion);
+        LimpiezaHabitacion entidad = limpiezaHabitacionesMapper.toEntity(dto, usuario, habitacion);
 
         informesService.save(entidad);
 
@@ -91,7 +91,7 @@ public class InformesController {
 
     @GetMapping("/editar/{id}")
     public String mostrarFormularioInformesEditar(Model model, @PathVariable int id) {
-        LimpiezaHabitaciones entidad = informesService.findByIdWithHabitacion(id).orElseThrow(() -> new RuntimeException("Habitacion no encontrada"));
+        LimpiezaHabitacion entidad = informesService.findByIdWithHabitacion(id).orElseThrow(() -> new RuntimeException("Habitacion no encontrada"));
         LimpiezaHabitacionesDTO dto = limpiezaHabitacionesMapper.toDTO(entidad);
 
 

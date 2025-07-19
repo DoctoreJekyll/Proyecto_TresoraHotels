@@ -76,7 +76,7 @@ public class Usuario {
     private Set<Factura> facturas = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idUsuario")
-    private Set<LimpiezaHabitaciones> limpiezaHabitacions = new LinkedHashSet<>();
+    private Set<LimpiezaHabitacion> limpiezaHabitacions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idUsuario")
     private Set<ProductosUsuario> productosUsuarios = new LinkedHashSet<>();
