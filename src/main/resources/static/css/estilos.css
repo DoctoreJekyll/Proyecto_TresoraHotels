@@ -374,4 +374,10 @@ footer i:hover,
     height: 30vh; /* Hace que la imagen ocupe toda la altura de la pantalla */
     z-index: -1; /* Hace que la imagen quede detrás del contenido */
   }
+
+  /* Cambiar el color de la cruz del botón de cierre */
+  .btn-close {
+    filter: invert(100%); /* Invierte el color a blanco */
+  }
+
 }
