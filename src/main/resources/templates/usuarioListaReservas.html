@@ -6,47 +6,61 @@
 <body>
 <div layout:fragment="contenido">
 
-    <main>
-
-        <!-- ----------------------------------------Reserva Rapida----------------------------------------------------------------------------------------- -->
-        <a th:href="@{/reserva/rapida}" target="_blank" class="d-block-text text-center reserva_rapida" aria-label="Reserva rápida">
-            <p style= "margin: 0; font-size: 0.8rem; color: #FFFFFF; letter-spacing: 2px; font-weight: bold;">RESERVA</p>
-            <i class="bi bi-rocket" style="font-size: 1.75rem; color: #FFFFFF;"></i>
-        </a>
-
+    <main role="main" aria-labelledby="reservas-heading">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1>Mis Reservas</h1>
+            <h1 id="reservas-heading">Mis Reservas</h1>
         </div>
 
-        <table class="table table-bordered align-middle text-center">
+        <p class="lead" id="reservas-intro">Aquí puedes consultar el detalle de tus reservas y descargar las facturas correspondientes una vez finalizada tu estancia y si la reserva está pagada.</p>
+
+        <div th:if="${#lists.isEmpty(reserva)}" class="alert alert-info" role="status" aria-live="polite">
+            <p>No tienes reservas registradas en este momento.</p>
+        </div>
+
+        <table class="table table-bordered align-middle text-center"
+               aria-describedby="reservas-intro"
+               th:unless="${#lists.isEmpty(reserva)}">
+            <caption class="visually-hidden">Tabla que muestra el historial de tus reservas, incluyendo fechas, total, estado y la opción de descargar factura.</caption>
             <thead class="table-dark">
             <tr>
-                <th>#</th>
-                <th>Fecha entrada</th>
-                <th>Fecha salida</th>
-                <th>Total (€)</th>
-                <th>Método de Pago</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th scope="col">ID Reserva</th>
+                <th scope="col">Fecha entrada</th>
+                <th scope="col">Fecha salida</th>
+                <th scope="col">Total (€)</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Comentarios</th>
+                <th scope="col">Factura</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="reservas : ${reserva}">
-                <td th:text="${reservas.id}">1</td>
-                <td th:text="${#temporals.format(reservas.fechaEntrada, 'dd/MM/yyyy')}">01/01/2025</td>
-                <td th:text="${#temporals.format(reservas.fechaSalida, 'dd/MM/yyyy')}">01/01/2025</td>
-                <td th:text="${reservas.totalReserva}">100.00</td>
-                <td th:text="${reservas.getId()}">Tarjeta</td>
-                <td th:text="${reservas.comentarios}">Pagada</td>
-                <td>
-                    <a th:href="@{'/facturas/ver/' + ${reservas.id}}"
-                       class="btn btn-sm btn-primary me-1">Ver</a>
+                <td data-label="ID Reserva" th:text="${reservas.id}">1</td>
+                <td data-label="Fecha entrada" th:text="${#temporals.format(reservas.fechaEntrada, 'dd/MM/yyyy')}">01/01/2025</td>
+                <td data-label="Fecha salida" th:text="${#temporals.format(reservas.fechaSalida, 'dd/MM/yyyy')}">01/01/2025</td>
+                <td data-label="Total" th:text="${#numbers.formatDecimal(reservas.totalReserva, 1, 2)} + ' €'">100.00 €</td>
+                <td data-label="Estado" th:text="${reservas.getEstado().name().replace('_', ' ')}">Pagada</td>
+                <td data-label="Comentarios" th:text="${reservas.getComentarios()} ?: 'Sin comentarios'">Comentario</td>
+                <td data-label="Descargar Factura">
+                    <a th:if="${reservas.getEstado().name() == 'PAGADA' and reservas.fechaSalida.isBefore(T(java.time.LocalDate).now())}"
+                       th:href="@{/facturas/descargar-factura/{id}(id=${reservas.id})}"
+                       class="btn btn-info btn-sm" target="_blank"
+                       th:aria-label="'Descargar factura de la reserva ' + ${reservas.id} + ' de ' + ${#temporals.format(reservas.fechaEntrada, 'dd/MM/yyyy')} + ' a ' + ${#temporals.format(reservas.fechaSalida, 'dd/MM/yyyy')}">
+                        Descargar Factura
+                    </a>
+                    <span th:if="${reservas.getEstado().name() != 'PAGADA'}"
+                          th:text="(${reservas.estado.name() == 'CANCELADA' ? 'Reserva cancelada' : 'Reserva no pagada'})"
+                          aria-live="polite" aria-atomic="true">
+                        Reserva no pagada
+                    </span>
+                    <span th:if="${reservas.getEstado().name() == 'PAGADA' and !reservas.fechaSalida.isBefore(T(java.time.LocalDate).now())}"
+                          aria-live="polite" aria-atomic="true">
+                        Disponible tras la salida
+                    </span>
                 </td>
             </tr>
             </tbody>
         </table>
     </main>
-
 </div>
 </body>
 </html>

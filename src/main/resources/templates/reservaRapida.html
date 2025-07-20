@@ -12,7 +12,6 @@
 <main layout:fragment="contenido" id="main-content" class="main-container" role="main" aria-labelledby="booking-title">
     <div class="center-wrapper" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; width: 100%;">
 
-        <!-- script aquí dentro -->
         <script th:inline="javascript">
             document.addEventListener("DOMContentLoaded", function () {
                 console.log("🟢 DOM completamente cargado");
@@ -125,30 +124,26 @@
         </script>
 
 
+        <div class="card form-card">
+        <h1 id="booking-title" class="card-title text-center">Reserva Rápida</h1>
 
-        <div class="card form-card" style="max-width: 512px; width: 100%; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            <h1 id="booking-title" class="card-title text-center">Reserva Rápida</h1>
+            <form th:action="@{/reserva/rapida}" th:object="${reservaDTO}" method="post" id="booking-form" aria-describedby="form-instructions">
 
-            <form th:action="@{/reserva/rapida}" th:object="${reservaDTO}" method="post" id="booking-form">
+                <p class="card-text mb-4" id="form-instructions">Complete los campos para reservar su estancia. Todos los campos son obligatorios.</p>
 
-                <p class="card-text mb-4">Complete los campos para reservar su estancia. Todos los campos son obligatorios.</p>
-
-                <!-- Nombre -->
                 <div class="form-group mb-4">
                     <label for="nombre">Nombre</label>
-                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required />
+                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required aria-required="true" aria-label="Introduzca su nombre" />
                 </div>
 
-                <!-- Email -->
                 <div class="form-group mb-4">
                     <label for="email">Email</label>
-                    <input type="email" th:field="*{email}" id="email" class="form-control" required />
+                    <input type="email" th:field="*{email}" id="email" class="form-control" required aria-required="true" aria-label="Introduzca su correo electrónico" />
                 </div>
 
-                <!-- Hotel -->
                 <div class="form-group mb-4">
                     <label for="hotelSelect">Hotel</label>
-                    <select id="hotelSelect" class="form-control" required>
+                    <select id="hotelSelect" class="form-control" required aria-required="true" aria-label="Seleccione un hotel de la lista">
                         <option value="" disabled selected>Seleccione un hotel</option>
                         <option th:each="hotel : ${hoteles}"
                                 th:value="${hotel.id}"
@@ -157,44 +152,49 @@
                     </select>
                 </div>
 
-                <!-- Campo oculto Hotel (formulario) -->
                 <input type="hidden" th:field="*{hotel}" id="hotel" />
 
-                <!-- Fecha entrada -->
                 <div class="form-group mb-4">
                     <label for="fechaEntrada">Fecha de Entrada</label>
-                    <input type="date" th:field="*{fechaEntrada}" id="fechaEntrada" class="form-control" required />
+                    <input type="date" th:field="*{fechaEntrada}" id="fechaEntrada" class="form-control" required aria-required="true" aria-label="Seleccione la fecha de entrada" />
                 </div>
 
-                <!-- Fecha salida -->
                 <div class="form-group mb-4">
                     <label for="fechaSalida">Fecha de Salida</label>
-                    <input type="date" th:field="*{fechaSalida}" id="fechaSalida" class="form-control" required />
+                    <input type="date" th:field="*{fechaSalida}" id="fechaSalida" class="form-control" required aria-required="true" aria-label="Seleccione la fecha de salida" />
                 </div>
 
-                <!-- Habitación (cambia según hotel) -->
                 <div class="form-group mb-4">
                     <label for="idHabitacion">Habitación</label>
-                    <select th:field="*{idHabitacion}" id="idHabitacion" class="form-control" required>
+                    <select th:field="*{idHabitacion}" id="idHabitacion" class="form-control" required aria-required="true" aria-label="Seleccione una habitación disponible">
                         <option value="" disabled selected>Seleccione habitación</option>
                     </select>
                 </div>
 
-                <!-- Pax -->
+                <div class="form-group">
+                    <label for="idMetodoPagoSeleccionado">Método de Pago:</label>
+                    <select class="form-control" id="idMetodoPagoSeleccionado" th:field="*{idMetodoPagoSeleccionado}" required aria-required="true" aria-label="Seleccione un método de pago">
+                        <option value="">Seleccione un método de pago</option>
+                        <option th:each="metodo : ${reservaDTO.metodoPagos}"
+                                th:value="${metodo.id}"
+                                th:text="${metodo.nombre}">
+                            Tarjeta de Crédito
+                        </option>
+                    </select>
+                </div>
+
                 <div class="form-group mb-4">
                     <label for="pax">Número de huéspedes</label>
-                    <input type="number" min="1" max="10" th:field="*{pax}" id="pax" class="form-control" required />
+                    <input type="number" min="1" max="10" th:field="*{pax}" id="pax" class="form-control" required aria-required="true" aria-label="Introduzca el número de huéspedes, mínimo uno, máximo diez" />
                 </div>
 
-                <!-- Comentarios -->
                 <div class="form-group mb-4">
                     <label for="comentarios">Comentarios</label>
-                    <textarea th:field="*{comentarios}" id="comentarios" class="form-control" rows="3" placeholder="Comentarios adicionales..."></textarea>
+                    <textarea th:field="*{comentarios}" id="comentarios" class="form-control" rows="3" placeholder="Comentarios adicionales..." aria-label="Escriba aquí comentarios adicionales para su reserva"></textarea>
                 </div>
 
-                <!-- Productos opcionales -->
-                <div class="form-group mb-4">
-                    <p class="services-label mb-2">Servicios adicionales:</p>
+                <div class="form-group mb-4" aria-labelledby="services-label">
+                    <p class="services-label mb-2" id="services-label">Servicios adicionales:</p>
 
                     <div th:each="producto, iterStat : ${productos}" class="checkbox-group mb-3">
                         <div class="form-check mb-2">
@@ -204,7 +204,8 @@
                                    th:value="${producto.id}"
                                    th:attr="data-precio=${producto.precioBase}"
                                    class="form-check-input me-2"
-                                   onchange="calcularPrecioTotal()" />
+                                   onchange="calcularPrecioTotal()"
+                                   th:aria-label="'Seleccionar' + ${producto.nombre}" />
 
                             <label th:for="'producto_' + ${iterStat.index}"
                                    th:text="${producto.nombre}"
@@ -215,35 +216,39 @@
                                th:name="'productos[' + ${iterStat.index} + '].cantidad'"
                                placeholder="Cantidad"
                                class="form-control mb-1"
-                               style="max-width: 100px;" min="1"/>
+                               style="max-width: 100px;" min="1"
+                               th:aria-label="'Cantidad para ' + ${producto.nombre}" />
 
                         <input type="date"
                                th:name="'productos[' + ${iterStat.index} + '].fecha'"
                                class="form-control mb-1"
-                               style="max-width: 200px;"/>
+                               style="max-width: 200px;"
+                               th:aria-label="'Fecha para ' + ${producto.nombre}" />
 
                         <input type="number"
                                th:name="'productos[' + ${iterStat.index} + '].descuento'"
                                placeholder="% desc"
                                class="form-control mb-3"
-                               style="max-width: 100px;" min="0" max="100"/>
+                               style="max-width: 100px;" min="0" max="100"
+                               th:aria-label="'Porcentaje de descuento para ' + ${producto.nombre}" />
                     </div>
 
                     <div class="form-group mt-4">
-                        <label>
+                        <label for="precioTotal">
                             <strong>Precio estimado total:</strong>
-                            <span id="precioTotal">0 €</span>
                         </label>
-                        <!-- 🔁 NUEVO ELEMENTO para mostrar el desglose -->
-                        <div id="desglosePrecio" style="font-size: 0.9em; color: #555;"></div>
+                        <span id="precioTotal" aria-label="Precio estimado total: 0 euros"
+                              aria-live="polite" aria-atomic="true" role="status" tabindex="0"> 0 €
+                        </span>
+
+                        <div id="desglosePrecio" style="font-size: 0.9em; color: #555;"
+                             aria-label="Desglose del precio" aria-live="polite" aria-atomic="true" role="status" tabindex="0"
+                        ></div>
                     </div>
 
                 </div>
 
-
-
-                <!-- Botón enviar -->
-                <button type="submit" class="btn btn-grupo5 w-100 mt-3">Reservar Ahora</button>
+                <button type="submit" class="btn btn-grupo5 w-100 mt-3" aria-label="Confirmar y reservar ahora">Reservar Ahora</button>
             </form>
 
             <p class="card-text text-center mt-4">¡Disponibilidad limitada! Reserva en segundos.</p>

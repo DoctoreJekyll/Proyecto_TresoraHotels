@@ -15,4 +15,7 @@ public class ProductoFormularioDTO {
     private Integer descuento;
     private CategoriaProducto categoria;
     private double precioBase;
+
+
+    private String nombreProducto;
 }

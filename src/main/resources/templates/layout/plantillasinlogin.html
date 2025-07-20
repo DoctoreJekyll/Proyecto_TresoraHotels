@@ -19,11 +19,14 @@
     <link th:href="@{/css/Burbujas.css}" rel="stylesheet" />
     <link th:href="@{/css/Voz.css}" rel="stylesheet" />
 </head>
+<script th:src="@{/js/scrollButon.js}"></script>
+
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar border-bottom" style="background-color: #E0E0E0;">
     <div class="container-fluid d-flex justify-content-between align-items-center">
+        <!-- Logo -->
         <a class="navbar-brand" th:href="@{/}">
             <img th:src="@{/images/LogoTresora.png}" alt="Logo Tresora Hotels" style="height: 30px;">
         </a>
@@ -151,5 +154,7 @@
     </div>
 </footer>
 
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

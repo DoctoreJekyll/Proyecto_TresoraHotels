@@ -46,7 +46,7 @@
                             <div class="col-md-6">
                                 <label for="habitacion" class="form-label">Habitación <span aria-hidden="true">*</span></label>
                                 <select class="form-select" id="habitacion" th:field="*{idHabitacion}" required
-                                        aria-required="true" aria-label="Seleccione una habitación">
+                                        aria-required="true" aria-label="Seleccione la habitación limpiada">
                                     <option value="" disabled
                                             th:selected="*{idHabitacion == null}">Seleccione una habitación</option>
                                     <option th:each="habitacion : ${habitaciones}"
@@ -61,46 +61,46 @@
                                 <label for="fecha" class="form-label">Fecha de Limpieza <span aria-hidden="true">*</span></label>
                                 <input type="date" class="form-control" id="fecha"
                                        th:field="*{fechaLimpieza}" required
-                                       aria-required="true" aria-label="Fecha en que se realizó la limpieza"/>
+                                       aria-required="true" aria-label="Seleccione la fecha en que se realizó la limpieza"/>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="hora" class="form-label">Hora de Limpieza <span aria-hidden="true">*</span></label>
                                 <input type="time" class="form-control" id="hora"
                                        th:field="*{horaLimpieza}" required
-                                       aria-required="true" aria-label="Hora en que se realizó la limpieza"/>
+                                       aria-required="true" aria-label="Ingrese la hora en que se realizó la limpieza"/>
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label for="file1" class="form-label">Foto 1</label>
                             <input class="form-control" type="file" id="file1" name="file1"
-                                   accept="image/*" aria-label="Subir primera foto de limpieza" />
+                                   accept="image/*" aria-label="Subir la primera foto de la limpieza, campo opcional" />
 
                             <div th:if="${limpiezaHabitacion.foto1 != null and limpiezaHabitacion.foto1 != ''}" class="mt-2">
-                                <p>Imagen actual:</p>
-                                <img th:src="@{${limpiezaHabitacion.foto1}}" alt="Primera foto actual del informe"
+                                <p>Imagen actual de la Foto 1:</p>
+                                <img th:src="@{${limpiezaHabitacion.foto1}}" alt="Primera foto actual del informe de limpieza"
                                      style="max-width: 200px; height: auto;" />
-                                <input type="hidden" th:field="*{foto1}" />
+                                <input type="hidden" th:field="*{foto1}" aria-hidden="true" />
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label for="file2" class="form-label">Foto 2</label>
                             <input class="form-control" type="file" id="file2" name="file2"
-                                   accept="image/*" aria-label="Subir segunda foto de limpieza" />
+                                   accept="image/*" aria-label="Subir la segunda foto de la limpieza, campo opcional" />
 
                             <div th:if="${limpiezaHabitacion.foto2 != null and limpiezaHabitacion.foto2 != ''}" class="mt-2">
-                                <p>Imagen actual:</p>
-                                <img th:src="@{${limpiezaHabitacion.foto2}}" alt="Segunda foto actual del informe"
+                                <p>Imagen actual de la Foto 2:</p>
+                                <img th:src="@{${limpiezaHabitacion.foto2}}" alt="Segunda foto actual del informe de limpieza"
                                      style="max-width: 200px; height: auto;" />
-                                <input type="hidden" th:field="*{foto2}" />
+                                <input type="hidden" th:field="*{foto2}" aria-hidden="true" />
                             </div>
                         </div>
 
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary"
-                                    aria-label="Enviar formulario para registrar informe de limpieza">
+                                    aria-label="Guardar el informe de limpieza">
                                 Registrar Informe
                             </button>
                         </div>

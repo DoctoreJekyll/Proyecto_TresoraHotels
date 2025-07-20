@@ -22,18 +22,11 @@ import java.util.List;
 
 /**
  * Clase de configuración que se utiliza exclusivamente para el perfil "default" en entornos locales.
- *
- * Su propósito principal es cargar datos de ejemplo en las bases de datos asociadas a las entidades
- * {@code EntidadPadre} y {@code EntidadHija}, permitiendo la inicialización de datos útiles para pruebas
- * y desarrollo en este perfil específico.
- *
  * Esta clase está anotada con:
  * - {@code @Configuration}: Define esta clase como fuente de beans y configuración.
  * - {@code @Log4j2}: Habilita el uso de la biblioteca Log4j2 para registro de mensajes en los logs.
  * - {@code @Profile("default")}: Asegura que esta clase solo se cargue en el perfil "default".
  *
-// * @see EntidadPadreRepository
-// * @see EntidadHijaRepository
  */
 @Configuration
 @Log4j2
@@ -56,51 +49,6 @@ public class LocalDataLoader {
     /** Aquí inyectamos el passwordEncoder para cifrar las contraseñas */
     private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Constructor de la clase {@code LocalDataLoader}.
-     *
-     * Inicializa un objeto {@code LocalDataLoader} configurado con los repositorios de las entidades,
-     * proporcionando la capacidad de interactuar con estas entidades en la base de datos.
-     */
-
-    /**
-     * Método anotado con {@code @PostConstruct} que inicializa datos de prueba en
-     * los repositorios para entornos locales. Este método se ejecuta automáticamente
-     * después de la inicialización del bean y antes de que esté disponible para uso,
-     * permitiendo cargar datos iniciales necesarios para el perfil local.
-     *
-     * Funcionalidad:
-     * - Crea 10 instancias de la entidad `EntidadPadre` con nombres predefinidos.
-     * - Guarda las instancias de `EntidadPadre` en el repositorio correspondiente.
-     * - Para cada instancia de `EntidadPadre`, crea una entidad relacionada de tipo
-     *   `EntidadHija` con un nombre identificativo, y la asocia a la entidad padre
-     *   pertinente.
-     * - Guarda las entidades hijas en el repositorio `entidadHijaRepository`.
-     * - Registra mensajes informativos en el log sobre el inicio y finalización del proceso.
-     *
-     * Proceso:
-     * 1. Se define un número fijo de entidades padre (10).
-     * 2. Se utiliza un array para almacenar las instancias y se inicializa con un nombre
-     *    único para cada entidad padre.
-     * 3. Todas las entidades padre se guardan de forma simultánea utilizando
-     *    {@code repository.saveAll}.
-     * 4. Para cada entidad padre, se crea una instancia de la entidad hija, se establece
-     *    la relación con el padre y se guarda en el repositorio correspondiente.
-     * 5. Se registran logs informativos sobre el estado del proceso.
-     *
-     * Dependencias principales:
-     * - `repository`: {@code EntidadPadreRepository}, usado para almacenar las entidades padre.
-     * - `entidadHijaRepository`: {@code EntidadHijaRepository}, usado para guardar las entidades hijas.
-     *
-     * Importante:
-     * - Este método está diseñado específicamente para ser utilizado en entornos con
-     *   el perfil local activo.
-     * - No debe usarse en entornos de producción, ya que sobrescribirá datos existentes.
-     *
-     * Logs:
-     * - Mensaje al inicio del proceso: "Iniciando la carga de datos para el perfil local".
-     * - Mensaje exitoso al finalizar: "Datos de entidades cargados correctamente."
-     */
     @PostConstruct
     public void loadDataDesarrollo() {
         loadHoteles();
@@ -169,6 +117,7 @@ public class LocalDataLoader {
                         new RedSocial("LinkedIn", "https://www.linkedin.com/in/natalia-garcia-rodriguez/")
                 )
         );
+
         // Asociar las redes sociales con el miembro
         Natalia.getRedesSociales().forEach(redSocial -> redSocial.setMiembro(Natalia));
 
@@ -177,14 +126,10 @@ public class LocalDataLoader {
     }
 
     public void loadHoteles() {
-        log.info("Iniciando carga de hoteles ficticios...");
-
         saveAllHoteles();
         saveAllCategorias();
         saveAllProductos();
         saveAllHabitaciones();
-
-        log.info("Carga completada");
     }
 
     private Hotel hotel1;
@@ -573,7 +518,6 @@ public class LocalDataLoader {
     }
 
     public void loadUsuarios() {
-        log.info("Iniciando carga de usuarios ficticios...");
         List<Usuario> usuarios = new ArrayList<>();
         usuarios.add(crearUsuario(rolCliente, null, "Lucas", "Martínez", "lucas.martinez@mail.com", passwordEncoder.encode("pass1234"), "Calle A, Madrid", "612345678", LocalDate.of(1985, 7, 12), LocalDate.of(2023, 5, 1), true, "12345678A"));
         usuarios.add(crearUsuario(rolCliente, null, "Sophie", "Dupont", "sophie.dupont@mail.fr", passwordEncoder.encode("bonjour2023"), "5 Rue Rivoli, Paris", "3312345678", LocalDate.of(1992, 3, 22), LocalDate.of(2024, 1, 15), true, "FR9876543"));
@@ -587,7 +531,6 @@ public class LocalDataLoader {
         usuarios.add(crearUsuario(rolCliente, null, "Emma", "Lopez", "emma.lopez@mail.com", passwordEncoder.encode("emmalopez"), "Calle Falsa 123, Zaragoza", "611112222", LocalDate.of(1995, 8, 23), LocalDate.of(2024, 4, 3), true, "23456789L"));
 
         usuarioRepo.saveAll(usuarios);
-        log.info("Usuarios cargados: {}", usuarios.size());
     }
 
 
@@ -612,21 +555,21 @@ public class LocalDataLoader {
 
 /*-------------------------------------------------------------------------------------------------------------------*/
 public void loadReservas() {
-    log.info("Loading reservas ficticias...");
     SaveAllReservas();
-
-    log.info("Reservas ficticias loaded");
 }
 
     private Reserva reserva1;
     private Reserva reserva2;
+    private Reserva reserva3;
 
     private void SaveAllReservas() {
         List<Reserva> reservas = new ArrayList<>();
         reserva1 = getReserva1();
         reserva2 = getReserva2();
+        reserva3 = getReserva3();
         reservas.add(reserva1);
         reservas.add(reserva2);
+        reservas.add(reserva3);
         reservaRepo.saveAll(reservas);
     }
 
@@ -650,7 +593,7 @@ public void loadReservas() {
         reserva2.setIdHabitacion(habitacion3);
         reserva2.setFechaEntrada(LocalDate.of(2025, 8, 1));
         reserva2.setFechaSalida(LocalDate.of(2025, 8, 10));
-        reserva2.setEstado(Reserva.ESTADO_RESERVA.PENDIENTE);
+        reserva2.setEstado(Reserva.ESTADO_RESERVA.PAGADA);
         reserva2.setPax(3);
         reserva2.setFechaReserva(Instant.now());
         reserva2.setComentarios("Alergia almendras");
@@ -658,12 +601,23 @@ public void loadReservas() {
         return reserva2;
     }
 
+    private Reserva getReserva3() {
+        Reserva reserva3 = new Reserva();
+        reserva3.setIdUsuario(usuarioRepo.getReferenceById(1));
+        reserva3.setIdHabitacion(habitacion3);
+        reserva3.setFechaEntrada(LocalDate.of(2025, 6, 1));
+        reserva3.setFechaSalida(LocalDate.of(2025, 6, 10));
+        reserva3.setEstado(Reserva.ESTADO_RESERVA.PAGADA);
+        reserva3.setPax(3);
+        reserva3.setFechaReserva(Instant.now());
+        reserva3.setComentarios("Alergia almendras");
+        reserva3.setTotalReserva(100);
+        return reserva3;
+    }
+
     /*---------------------------------------------------------------------------------------------------------------*/
     public void loadLimpiezaHabitaciones() {
-        log.info("Cargando datos de limpieza de habitaciones...");
         SaveAllLimpiezaHabitaciones();
-
-        log.info("Datos de limpieza cargados");
     }
 
     private LimpiezaHabitaciones limpiezaHabitacion1;
@@ -709,10 +663,7 @@ public void loadReservas() {
     private Contacto contacto2;
 
     public void loadContactos(){
-        log.info("Iniciando la carga de contactos ficticios...");
         saveAllContactos();
-
-        log.info("Datos de contactos cargados");
 
     }
 
@@ -764,26 +715,35 @@ public void loadReservas() {
     public void loadFacturas(){
         factura1 = getFactura1();
 
-        log.info("Iniciando la carga de facturas ...");
         facturaRepo.save(factura1);
-        log.info("Datos de facturas cargados");
     }
 
     private MetodoPago metodoPago1;
+    private MetodoPago metodoPago2;
 
     public MetodoPago getMetodoPago1(){
-       MetodoPago metodoPago1 = new MetodoPago();
+        MetodoPago metodoPago1 = new MetodoPago();
         metodoPago1.setNombre("Bizum");
         metodoPago1.setDescripcion("El pago se ha realizado al bizum del hotel");
         return metodoPago1;
     }
 
-    public void loadMetodoPago(){
-        metodoPago1=getMetodoPago1();
+    public MetodoPago getMetodoPago2(){
+        MetodoPago metodoPago2 = new MetodoPago();
+        metodoPago2.setNombre("Tarjeta");
+        metodoPago2.setDescripcion("El pago se ha realizado a la cuenta del hotel");
+        return metodoPago2;
+    }
 
-        log.info("Iniciando la carga de métodos de pago");
-        metodoPagoRepo.save(metodoPago1);
-        log.info("Datos de métodos de pago cargados :)");
+    public void loadMetodoPago(){
+        metodoPago1 = getMetodoPago1();
+        metodoPago2 = getMetodoPago2();
+
+        List<MetodoPago> metodoPagos = new ArrayList<>();
+        metodoPagos.add(metodoPago1);
+        metodoPagos.add(metodoPago2);
+
+        metodoPagoRepo.saveAll(metodoPagos);
     }
 }
 

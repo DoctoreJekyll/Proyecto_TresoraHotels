@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ReservaService extends AbstractTemplateServicesEntities<Reserva, Integer, ReservaRepo> {
@@ -26,6 +25,7 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
     private final ProductoRepo productoRepository;
     private final RolRepo rolRepository;
     private final EmailService emailService;
+    private final MetodoPagoRepo metodoPagoRepository; // Solo necesitamos este repositorio de los nuevos
 
     public ReservaService(
             ReservaRepo reservaRepository,
@@ -33,7 +33,8 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
             HabitacionRepo habitacionRepository,
             ProductoRepo productoRepository,
             RolRepo rolRepository,
-            EmailService emailService
+            EmailService emailService,
+            MetodoPagoRepo metodoPagoRepository // Este se mantiene
     ) {
         super(reservaRepository);
         this.usuarioRepository = usuarioRepository;
@@ -41,6 +42,7 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         this.productoRepository = productoRepository;
         this.rolRepository = rolRepository;
         this.emailService = emailService;
+        this.metodoPagoRepository = metodoPagoRepository;
     }
 
     public List<Reserva> findReservaByUsuario(Integer idUsuario) {
@@ -55,50 +57,71 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         return getRepo().findByIdWithAllRelations(id);
     }
 
+    /**
+     * Crea una nueva reserva con los datos proporcionados en el DTO, incluyendo productos adicionales
+     * y el método de pago seleccionado.
+     * @param dto El DTO con la información de la reserva.
+     * @return La entidad Reserva guardada.
+     */
     @Transactional
     public Reserva crearReservaConProductos(ReservaRapidaDTO dto) {
         Usuario usuario;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // Determinar o crear el usuario de la reserva
         if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails user = (UserDetails) authentication.getPrincipal();
             String userEmail = user.getUsername();
             usuario = usuarioRepository.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-            String userName = usuario.getNombre();
-
             dto.setEmail(userEmail);
-            dto.setNombre(userName);
+            dto.setNombre(usuario.getNombre());
+            dto.setIdUsuario(usuario.getId());
         } else {
-            // El usuario no está autenticado o es anónimo
             if (dto.getIdUsuario() != null) {
-                usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow();
+                usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
             } else {
                 usuario = findOrCreateUser(dto.getNombre(), dto.getEmail());
             }
         }
 
+        // Obtener y validar la habitación
         Habitacion habitacion = getAndValidateRoom(dto.getIdHabitacion());
         dto.setHotel(habitacion.getHotel().getId());
 
+        // Crear la entidad base de la reserva
         Reserva reserva = createBaseReservation(usuario, habitacion, dto);
 
+        // Procesar productos adicionales
         Set<ProductosUsuario> productosUsuarios = processAdditionalProducts(dto.getProductos(), usuario, reserva);
         reserva.setProductosUsuarios(productosUsuarios);
 
+        // Calcular el precio total de la reserva
         long diasEstancia = ChronoUnit.DAYS.between(dto.getFechaEntrada(), dto.getFechaSalida());
         double precioTotalReserva = getPrecioTotalReserva(habitacion, productosUsuarios, diasEstancia);
         reserva.setTotalReserva(precioTotalReserva);
         dto.setTotalReserva(precioTotalReserva);
 
+        // Establecer la habitación como ocupada
         habitacion.setOcupada(true);
         habitacionRepository.save(habitacion);
-        Reserva savedReserva = this.save(reserva);
 
+        // --- Lógica para el método de pago (demo) ---
+        if (dto.getIdMetodoPagoSeleccionado() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Se debe seleccionar un método de pago.");
+        }
+        MetodoPago metodoPagoSeleccionado = metodoPagoRepository.findById(dto.getIdMetodoPagoSeleccionado())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Método de pago no encontrado con ID: " + dto.getIdMetodoPagoSeleccionado()));
+        reserva.setMetodoPagoSeleccionado(metodoPagoSeleccionado);
+        // En una demo, asumimos que el pago es exitoso
+        reserva.setEstado(Reserva.ESTADO_RESERVA.PAGADA);
+        // ---------------------------------------------
+
+        Reserva savedReserva = this.save(reserva);
         return savedReserva;
     }
 
     private static double getPrecioTotalReserva(Habitacion habitacion, Set<ProductosUsuario> productosUsuarios, long diasEstancia) {
-        double precioBase = habitacion.getProducto().getPrecioBase();
+        double precioBaseHabitacion = habitacion.getProducto().getPrecioBase();
         double precioProductosTotal = 0.0;
 
         for (ProductosUsuario pu : productosUsuarios) {
@@ -107,16 +130,20 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
             precioProductosTotal += precioUnitario * cantidad;
         }
 
-        double precioHabitacionTotal = precioBase * diasEstancia;
+        double precioHabitacionTotal = precioBaseHabitacion * diasEstancia;
         return precioProductosTotal + precioHabitacionTotal;
     }
 
+    /**
+     * Prepara un DTO de reserva rápida para un usuario logueado, incluyendo los métodos de pago disponibles.
+     * @param usuarioService Servicio de usuario para obtener detalles del usuario.
+     * @return Un ReservaRapidaDTO con los datos del usuario logueado y métodos de pago.
+     */
     public ReservaRapidaDTO reservaRapidaUsuarioLog(UsuarioService usuarioService) {
         ReservaRapidaDTO dto = new ReservaRapidaDTO();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // **MODIFICACIÓN AQUÍ:** Verifica si el principal es una instancia de UserDetails
         if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails user = (UserDetails) authentication.getPrincipal();
             String userEmail = user.getUsername();
@@ -127,7 +154,11 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
             dto.setEmail(userEmail);
             dto.setIdUsuario(usuario.getId());
         }
-        // Si no está autenticado o el principal no es UserDetails (ej. "anonymousUser"), el DTO se devuelve vacío para el usuario.
+
+        // Cargar y añadir los métodos de pago disponibles al DTO
+        List<MetodoPago> metodosPagoDisponibles = metodoPagoRepository.findAll();
+        dto.setMetodoPagos(metodosPagoDisponibles);
+
         return dto;
     }
 
@@ -164,7 +195,7 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         reserva.setFechaEntrada(dto.getFechaEntrada());
         reserva.setFechaSalida(dto.getFechaSalida());
         reserva.setPax(dto.getPax());
-        reserva.setEstado(Reserva.ESTADO_RESERVA.PENDIENTE);
+        reserva.setEstado(Reserva.ESTADO_RESERVA.PAGADA);
         reserva.setFechaReserva(Instant.now());
         reserva.setComentarios(dto.getComentarios());
         return reserva;
@@ -202,6 +233,12 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         return productosUsuarios;
     }
 
+    /**
+     * Mapea una entidad Reserva a un DTO de ReservaRapidaDTO.
+     * Incluye la lógica para añadir los métodos de pago disponibles al DTO y pre-seleccionar el elegido.
+     * @param reserva La entidad Reserva a mapear.
+     * @return El ReservaRapidaDTO resultante.
+     */
     public ReservaRapidaDTO mapearReservaADto(Reserva reserva) {
         ReservaRapidaDTO dto = new ReservaRapidaDTO();
 
@@ -211,7 +248,7 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
         dto.setFechaSalida(reserva.getFechaSalida());
         dto.setPax(reserva.getPax());
         dto.setComentarios(reserva.getComentarios());
-        dto.setEstado(reserva.getEstado()); // ¡Mapear el estado de la reserva existente al DTO!
+        dto.setEstado(reserva.getEstado());
 
         if (reserva.getIdUsuario() != null) {
             dto.setIdUsuario(reserva.getIdUsuario().getId());
@@ -233,47 +270,62 @@ public class ReservaService extends AbstractTemplateServicesEntities<Reserva, In
 
         dto.setTotalReserva(reserva.getTotalReserva());
 
+        // Cargar y añadir los métodos de pago disponibles al DTO para mostrar en el formulario
+        List<MetodoPago> metodosPagoDisponibles = metodoPagoRepository.findAll();
+        dto.setMetodoPagos(metodosPagoDisponibles);
+
+        // Si la reserva ya tiene un método de pago seleccionado, lo pre-selecciona en el DTO
+        if (reserva.getMetodoPagoSeleccionado() != null) {
+            dto.setIdMetodoPagoSeleccionado(reserva.getMetodoPagoSeleccionado().getId());
+        }
+
         return dto;
     }
 
+    /**
+     * Actualiza una reserva existente con los datos proporcionados en el DTO.
+     * También actualiza el método de pago seleccionado.
+     * @param id El ID de la reserva a actualizar.
+     * @param dto El DTO con la información actualizada de la reserva.
+     * @return La entidad Reserva actualizada.
+     */
     @Transactional
     public Reserva actualizarReservaDesdeDTO(Integer id, ReservaRapidaDTO dto) {
         Reserva reserva = getRepo().findByIdWithAllRelations(id)
                 .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
-        // 1. Usuario
         Usuario usuario = reserva.getIdUsuario();
         if (usuario == null && dto.getIdUsuario() != null) {
-            usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow();
+            usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
             reserva.setIdUsuario(usuario);
+        } else if (usuario == null) {
+            throw new RuntimeException("La reserva no tiene un usuario asociado y no se proporcionó uno en el DTO.");
         }
 
-        // 2. Habitación
         Habitacion nuevaHabitacion = getAndValidateRoom(dto.getIdHabitacion());
         reserva.setIdHabitacion(nuevaHabitacion);
 
-        // 3. Campos simples
         reserva.setFechaEntrada(dto.getFechaEntrada());
         reserva.setFechaSalida(dto.getFechaSalida());
         reserva.setPax(dto.getPax());
         reserva.setComentarios(dto.getComentarios());
-        reserva.setEstado(dto.getEstado()); // ¡Actualizar el estado de la reserva!
+        reserva.setEstado(dto.getEstado());
 
-
-        // 4. Reemplazar productos
-        // Primero, creamos una copia de los productos actuales para evitar ConcurrentModificationException
-        Set<ProductosUsuario> productosAntiguos = new HashSet<>(reserva.getProductosUsuarios());
-        // Luego, limpia los productos de la reserva
         reserva.getProductosUsuarios().clear();
-
-        // Finalmente, añade los nuevos productos. Esto también gestionará los "orphanRemoval" si está configurado.
         Set<ProductosUsuario> nuevosProductos = processAdditionalProducts(dto.getProductos(), usuario, reserva);
         reserva.getProductosUsuarios().addAll(nuevosProductos);
-
 
         long diasEstancia = ChronoUnit.DAYS.between(dto.getFechaEntrada(), dto.getFechaSalida());
         double nuevoTotal = getPrecioTotalReserva(nuevaHabitacion, nuevosProductos, diasEstancia);
         reserva.setTotalReserva(nuevoTotal);
+
+        if (dto.getIdMetodoPagoSeleccionado() != null) {
+            MetodoPago metodoPagoSeleccionado = metodoPagoRepository.findById(dto.getIdMetodoPagoSeleccionado())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Método de pago no encontrado con ID: " + dto.getIdMetodoPagoSeleccionado()));
+            reserva.setMetodoPagoSeleccionado(metodoPagoSeleccionado);
+        } else {
+            reserva.setMetodoPagoSeleccionado(null);
+        }
 
         return getRepo().save(reserva);
     }

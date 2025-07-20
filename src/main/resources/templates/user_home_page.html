@@ -1,119 +1,114 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layout/plantillasinlogin}">
+      layout:decorate="~{/layout/plantilla}">
 <head>
-
-    <title>Mi Usuario - Página principal</title>
-
+    <title>Mi Usuario - Página principal - Tresora Hotels</title>
 </head>
 
 <body>
-<main id="contenido-principal" class="container py-5" layout:fragment="contenido">
-    <!-- ----------------------------------------Reserva Rapida----------------------------------------------------------------------------------------- -->
-    <a th:href="@{/reserva/rapida}" target="_blank" class="d-block-text text-center reserva_rapida" aria-label="Reserva rápida">
-        <p style= "margin: 0; font-size: 0.8rem; color: #FFFFFF; letter-spacing: 2px; font-weight: bold;">RESERVA</p>
-        <i class="bi bi-rocket" style="font-size: 1.75rem; color: #FFFFFF;"></i>
-    </a>
+<main id="contenido-principal" class="container py-5" layout:fragment="contenido" role="main" aria-labelledby="welcome-heading">
+    <section class="text-center mb-5">
+        <h1 class="display-4 fw-bold" id="welcome-heading">¡Bienvenido, <span th:text="${usuario.nombre}">Usuario</span>!</h1>
+        <p class="lead" id="welcome-intro">Disfruta de una experiencia única en Tresora.</p>
+        <button class="btn btn-grupo5 mt-3" data-bs-toggle="modal" data-bs-target="#disponibilidadModal" aria-controls="disponibilidadModal"
+                aria-label="Abrir formulario para buscar disponibilidad de habitaciones">
+            BUSCAR DISPONIBILIDAD
+        </button>
+    </section>
 
-<section class="text-center mb-5">
-    <h1 class="display-4 fw-bold">¡Bienvenido, <span th:text="${usuario.nombre}">Usuario</span>!</h1>
-    <p class="lead">Disfruta de una experiencia única en Tresora</p>
-    <button class="btn btn-grupo5 mt-3" data-bs-toggle="modal" data-bs-target="#disponibilidadModal">
-        BUSCAR DISPONIBILIDAD
-    </button>
-</section>
-<div class="modal fade" id="disponibilidadModal" tabindex="-1" aria-labelledby="disponibilidadModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="disponibilidadModalLabel">Buscar Disponibilidad</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <form method="get" th:action="@{/hotel/buscar-disponibilidad}">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="entrada" class="form-label">Fecha de entrada</label>
-                            <input type="date" class="form-control" id="entrada" name="fechaEntrada" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="salida" class="form-label">Fecha de salida</label>
-                            <input type="date" class="form-control" id="salida" name="fechaSalida" required>
-                        </div>
+    <div class="modal fade" id="disponibilidadModal" tabindex="-1" aria-labelledby="disponibilidadModalLabel" aria-hidden="true" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="disponibilidadModalLabel">Buscar Disponibilidad</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar ventana de búsqueda de disponibilidad"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="get" th:action="@{/hotel/buscar-disponibilidad}" aria-labelledby="disponibilidadModalLabel">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="entrada" class="form-label">Fecha de entrada <span aria-hidden="true">*</span></label>
+                                <input type="date" class="form-control" id="entrada" name="fechaEntrada" required aria-required="true" aria-label="Seleccione la fecha de entrada">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="salida" class="form-label">Fecha de salida <span aria-hidden="true">*</span></label>
+                                <input type="date" class="form-control" id="salida" name="fechaSalida" required aria-required="true" aria-label="Seleccione la fecha de salida">
+                            </div>
 
-                        <div class="col-md-6">
-                            <label for="hotel" class="form-label">Hotel</label>
-                            <select class="form-select" id="hotel" name="hotelNombre">
-                                <option th:each="hotel : ${hoteles}"
-                                        th:value="${hotel.nombre}"
-                                        th:text="${hotel.nombre}">
+                            <div class="col-md-6">
+                                <label for="hotel" class="form-label">Hotel</label>
+                                <select class="form-select" id="hotel" name="hotelNombre" aria-label="Seleccione un hotel para la búsqueda">
+                                    <option value="" disabled selected>Todos los hoteles</option> <option th:each="hotel : ${hoteles}"
+                                                                                                          th:value="${hotel.nombre}"
+                                                                                                          th:text="${hotel.nombre}">
                                 </option>
-                            </select>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="text-end mt-4">
-                        <button type="submit" class="btn btn-outline-grupo5">Buscar</button>
-                    </div>
-                </form>
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn btn-outline-grupo5" aria-label="Buscar habitaciones disponibles">Buscar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<section class="text-center mt-5 mb-4">
-    <h2 class="fw-bold">Tu Estancia Perfecta</h2>
-    <p class="lead">Explota nuestras opciones exclusivas y personaliza tu experiencia en Zen Aura</p>
-</section>
+    <section class="text-center mt-5 mb-4" aria-labelledby="stay-heading">
+        <h2 class="fw-bold" id="stay-heading">Tu Estancia Perfecta</h2>
+        <p class="lead">Explora nuestras opciones exclusivas y personaliza tu experiencia en Tresora.</p>
+    </section>
 
-    <section class="row row-cols-1 row-cols-md-3 g-4">
+    <section class="row row-cols-1 row-cols-md-3 g-4" aria-label="Servicios y características del hotel">
         <div class="col">
             <div class="card h-100">
-                <img src="https://cdn.pixabay.com/photo/2015/11/06/11/45/interior-1026449_1280.jpg" class="card-img-top rounded" alt="Habitación">
+                <img src="https://cdn.pixabay.com/photo/2015/11/06/11/45/interior-1026449_1280.jpg" class="card-img-top rounded" alt="Ilustración de una habitación de hotel con cama y muebles modernos.">
                 <div class="card-body">
                     <h5 class="card-title">Habitaciones</h5>
                     <p class="card-text">Disfruta de nuestras amplias habitaciones con vistas espectaculares y comodidades únicas.</p>
-                    <a href="#" class="btn btn-grupo5" data-bs-toggle="modal" data-bs-target="#modalHabitaciones">Ver Detalles</a>
+                    <button type="button" class="btn btn-grupo5" data-bs-toggle="modal" data-bs-target="#modalHabitaciones"
+                            aria-controls="modalHabitaciones" aria-label="Ver detalles sobre los tipos de habitaciones">Ver Detalles</button>
                 </div>
             </div>
         </div>
 
         <div class="col">
             <div class="card h-100">
-                <img src="https://cdn.pixabay.com/photo/2016/08/22/16/23/massage-therapy-1612308_1280.jpg" class="card-img-top rounded" alt="Spa y Bienestar">
+                <img src="https://cdn.pixabay.com/photo/2016/08/22/16/23/massage-therapy-1612308_1280.jpg" class="card-img-top rounded" alt="Manos realizando un masaje de espalda en una persona acostada.">
                 <div class="card-body">
                     <h5 class="card-title">Spa y Bienestar</h5>
                     <p class="card-text">Relájate con nuestros tratamientos de Spa y servicios de bienestar personalizados.</p>
-                    <a href="#" class="btn btn-grupo5" data-bs-toggle="modal" data-bs-target="#modalSpa">Ver Detalles</a>
+                    <button type="button" class="btn btn-grupo5" data-bs-toggle="modal" data-bs-target="#modalSpa"
+                            aria-controls="modalSpa" aria-label="Ver detalles sobre las instalaciones de Spa y Bienestar">Ver Detalles</button>
                 </div>
             </div>
         </div>
 
         <div class="col">
             <div class="card h-100">
-                <img src="https://cdn.pixabay.com/photo/2015/11/19/10/38/food-1050813_1280.jpg" class="card-img-top rounded" alt="Gastronomía">
+                <img src="https://cdn.pixabay.com/photo/2015/11/19/10/38/food-1050813_1280.jpg" class="card-img-top rounded" alt="Plato gourmet con comida emplatada de forma artística en un restaurante.">
                 <div class="card-body">
                     <h5 class="card-title">Gastronomía Exclusiva</h5>
                     <p class="card-text">Saborea platos exquisitos en nuestro restaurante para todos los gustos.</p>
-                    <a href="#" class="btn btn-grupo5" data-bs-toggle="modal" data-bs-target="#modalGastronomia">Ver Detalles</a>
+                    <button type="button" class="btn btn-grupo5" data-bs-toggle="modal" data-bs-target="#modalGastronomia"
+                            aria-controls="modalGastronomia" aria-label="Ver detalles sobre la experiencia gastronómica">Ver Detalles</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- MODALES -->
-
-    <!-- Modal Habitaciones -->
-    <div class="modal fade" id="modalHabitaciones" tabindex="-1" aria-labelledby="modalHabitacionesLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal fade" id="modalHabitaciones" tabindex="-1" aria-labelledby="modalHabitacionesLabel" aria-hidden="true" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold" id="modalHabitacionesLabel">Tipos de Habitaciones</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar ventana de tipos de habitaciones"></button>
                 </div>
                 <div class="modal-body">
                     <p>En Tresora, te ofrecemos habitaciones cuidadosamente diseñadas para cada tipo de huésped:</p>
-                    <ul>
+                    <ul aria-label="Tipos de habitaciones disponibles">
                         <li><strong>Individual:</strong> Ideal para viajeros solitarios. Compacta y funcional con todo lo esencial.</li>
                         <li><strong>Doble:</strong> Perfecta para parejas. Amplia y acogedora, con cama matrimonial o dos camas individuales.</li>
                         <li><strong>Triple:</strong> Espaciosa para grupos pequeños o familias con un niño. Cama doble + individual.</li>
@@ -125,17 +120,16 @@
         </div>
     </div>
 
-    <!-- Modal Spa -->
-    <div class="modal fade" id="modalSpa" tabindex="-1" aria-labelledby="modalSpaLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal fade" id="modalSpa" tabindex="-1" aria-labelledby="modalSpaLabel" aria-hidden="true" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold" id="modalSpaLabel">Instalaciones de Spa y Bienestar</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar ventana de instalaciones de Spa y Bienestar"></button>
                 </div>
                 <div class="modal-body">
                     <p>Nuestra zona wellness está diseñada para que desconectes y renueves cuerpo y mente:</p>
-                    <ul>
+                    <ul aria-label="Servicios e instalaciones de Spa y Bienestar">
                         <li><strong>Gimnasio:</strong> Totalmente equipado, abierto las 24h, con máquinas de última generación.</li>
                         <li><strong>Jacuzzi y sauna:</strong> Relájate con hidroterapia y vapor después de un día activo.</li>
                         <li><strong>Masajes y tratamientos:</strong> Reserva masajes descontracturantes, faciales o envolturas corporales.</li>
@@ -147,17 +141,16 @@
         </div>
     </div>
 
-    <!-- Modal Gastronomía -->
-    <div class="modal fade" id="modalGastronomia" tabindex="-1" aria-labelledby="modalGastronomiaLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal fade" id="modalGastronomia" tabindex="-1" aria-labelledby="modalGastronomiaLabel" aria-hidden="true" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold" id="modalGastronomiaLabel">Experiencia Gastronómica</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar ventana de experiencia gastronómica"></button>
                 </div>
                 <div class="modal-body">
                     <p>En Tresora cuidamos cada detalle culinario con una oferta gastronómica de primer nivel:</p>
-                    <ul>
+                    <ul aria-label="Opciones gastronómicas disponibles">
                         <li><strong>Restaurante Tresora:</strong> Cocina de autor con ingredientes de proximidad.</li>
                         <li><strong>Bistró Zen:</strong> Platos internacionales con toques mediterráneos. Ideal para almuerzos ligeros.</li>
                         <li><strong>Buffet sensorial:</strong> Desayunos y cenas con estaciones de cocina en vivo.</li>
