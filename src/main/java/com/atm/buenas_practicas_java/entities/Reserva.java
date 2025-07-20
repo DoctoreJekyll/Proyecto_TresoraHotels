@@ -18,11 +18,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reserva {
-
     public enum ESTADO_RESERVA {
-        PENDIENTE,
         PAGADA,
-        FACTURADA
+        CANCELADA,
     }
 
     @Id
@@ -46,7 +44,7 @@ public class Reserva {
 
     @Enumerated(EnumType.STRING) // Se guarda como texto
     @Column(name = "estado", nullable = false, length = 30)
-    private ESTADO_RESERVA estado = ESTADO_RESERVA.PENDIENTE;
+    private ESTADO_RESERVA estado = ESTADO_RESERVA.PAGADA;
 
     @Column(name = "pax", nullable = false)
     private Integer pax;
@@ -58,6 +56,10 @@ public class Reserva {
     private String comentarios;
 
     private double totalReserva;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idMetodoPagoSeleccionado")
+    private MetodoPago metodoPagoSeleccionado;
 
     @OneToMany(mappedBy = "idReserva")
     private Set<DetallesReserva> detallesReservas = new LinkedHashSet<>();

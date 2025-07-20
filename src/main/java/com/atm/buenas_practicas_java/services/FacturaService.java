@@ -24,13 +24,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger; // Importa esto
-import org.slf4j.LoggerFactory; // Importa esto
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class FacturaService extends AbstractTemplateServicesEntities <Factura, Integer,FacturaRepo> {
 
-    // Añade el logger al inicio de la clase
     private static final Logger logger = LoggerFactory.getLogger(FacturaService.class);
 
     private final ReservaRepo reservaRepo;
@@ -60,7 +59,7 @@ public class FacturaService extends AbstractTemplateServicesEntities <Factura, I
      * @throws ResponseStatusException Si la reserva no existe, no está pagada, la fecha de salida no ha pasado, o el usuario no tiene permiso.
      */
     @Transactional(readOnly = true)
-    public FacturaDTO generarFacturaDTO(Integer idReserva, Integer idUsuarioAutenticado) { // Añadido idUsuarioAutenticado
+    public FacturaDTO generarFacturaDTO(Integer idReserva, Integer idUsuarioAutenticado) {
         logger.info("Intentando generar FacturaDTO para reserva ID: {} por usuario ID: {}", idReserva, idUsuarioAutenticado);
 
         // 1. Obtener la reserva con sus relaciones para tener todos los datos.
@@ -71,7 +70,6 @@ public class FacturaService extends AbstractTemplateServicesEntities <Factura, I
                 });
 
         // 2. Validación de seguridad: Asegura que el usuario autenticado es el propietario de la reserva.
-        // Si el usuario autenticado es null (ej. no logueado o error al obtener ID) o no coincide con el dueño de la reserva.
         if (idUsuarioAutenticado == null || !reserva.getIdUsuario().getId().equals(idUsuarioAutenticado)) {
             logger.warn("Acceso no autorizado a factura de reserva {}. Usuario autenticado: {}, Propietario reserva: {}",
                     idReserva, idUsuarioAutenticado, reserva.getIdUsuario().getId());
@@ -83,7 +81,8 @@ public class FacturaService extends AbstractTemplateServicesEntities <Factura, I
             logger.warn("Factura para reserva {} no disponible: Estado no es PAGADA (actual: {})", idReserva, reserva.getEstado());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La factura no está disponible: La reserva no ha sido pagada.");
         }
-        if (reserva.getFechaSalida().isAfter(LocalDate.now())) {
+        // Usamos isBeforeOrEqualTo para ser consistentes con la validación de descarga en HTML que permitiría el mismo día de salida
+        if (reserva.getFechaSalida().isAfter(LocalDate.now())) { // Si la fecha de salida es DESPUÉS de hoy, no se permite
             logger.warn("Factura para reserva {} no disponible: Fecha de salida ({}) aún no ha pasado (hoy: {})",
                     idReserva, reserva.getFechaSalida(), LocalDate.now());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La factura no está disponible: La fecha de salida aún no ha pasado.");
@@ -105,9 +104,7 @@ public class FacturaService extends AbstractTemplateServicesEntities <Factura, I
         if (reserva.getIdHabitacion() != null) {
             dto.setNumHabitacion(reserva.getIdHabitacion().getNumeroHabitacion());
             if (reserva.getIdHabitacion().getHotel() != null) {
-                // Aquí podrías querer el nombre del hotel en lugar del ID
-                // dto.setHotelNombre(reserva.getIdHabitacion().getHotel().getNombre());
-                dto.setHotel(reserva.getIdHabitacion().getHotel().getId());
+                dto.setHotel(reserva.getIdHabitacion().getHotel().getId()); // <-- CAMBIO AQUI: Establece el nombre del hotel
             }
             if (reserva.getIdHabitacion().getProducto() != null) {
                 dto.setPrecioBaseHabitacion(reserva.getIdHabitacion().getProducto().getPrecioBase());
@@ -116,15 +113,24 @@ public class FacturaService extends AbstractTemplateServicesEntities <Factura, I
         dto.setFechaEntrada(reserva.getFechaEntrada());
         dto.setFechaSalida(reserva.getFechaSalida());
 
+        // <-- CAMBIO AQUI: Establece el nombre del método de pago
+        if (reserva.getMetodoPagoSeleccionado() != null) {
+            dto.setMetodoPago(reserva.getMetodoPagoSeleccionado().getNombre());
+        }
+
+
         // Productos adicionales
         if (reserva.getProductosUsuarios() != null && !reserva.getProductosUsuarios().isEmpty()) {
             List<ProductoFormularioDTO> productosDTOs = reserva.getProductosUsuarios().stream()
                     .map(pu -> {
                         ProductoFormularioDTO pDto = new ProductoFormularioDTO();
                         pDto.setIdProducto(pu.getIdProducto().getId());
+                        pDto.setNombreProducto(pu.getIdProducto().getNombre()); // <-- CAMBIO AQUI: Establece el nombre del producto
                         pDto.setCantidad(pu.getCantidad());
-                        pDto.setPrecioBase(pu.getIdProducto().getPrecioBase()); // Asegúrate que sea precioUnitario si así lo tienes en el DTO
+                        pDto.setPrecioBase(pu.getIdProducto().getPrecioBase());
                         pDto.setFecha(pu.getFecha());
+                        // Si aplicas descuento y lo tienes en la entidad ProductoUsuario, puedes añadirlo aquí
+                        // pDto.setDescuento(pu.getDescuento());
                         return pDto;
                     })
                     .collect(Collectors.toList());
@@ -135,7 +141,7 @@ public class FacturaService extends AbstractTemplateServicesEntities <Factura, I
         dto.setPrecioTotal(reserva.getTotalReserva());
 
         logger.info("FacturaDTO generado con éxito para reserva ID: {}", idReserva);
-        logger.debug("Contenido de FacturaDTO: {}", dto); // Para ver el DTO completo en los logs de depuración
+        logger.debug("Contenido de FacturaDTO: {}", dto);
         return dto;
     }
 
@@ -160,10 +166,9 @@ public class FacturaService extends AbstractTemplateServicesEntities <Factura, I
         // 3. Convertir HTML a PDF usando Flying Saucer
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ITextRenderer renderer = new ITextRenderer();
-        // Es crucial que el HTML sea válido XHTML para ITextRenderer
         renderer.setDocumentFromString(htmlContent);
-        renderer.layout(); // Este paso es importante para calcular el diseño
-        renderer.createPDF(outputStream); // Este paso crea el PDF
+        renderer.layout();
+        renderer.createPDF(outputStream);
 
         byte[] pdfBytes = outputStream.toByteArray();
         logger.info("PDF generado correctamente. Tamaño: {} bytes.", pdfBytes.length);

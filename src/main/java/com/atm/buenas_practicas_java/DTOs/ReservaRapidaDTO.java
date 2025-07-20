@@ -1,5 +1,6 @@
 package com.atm.buenas_practicas_java.DTOs;
 
+import com.atm.buenas_practicas_java.entities.MetodoPago;
 import com.atm.buenas_practicas_java.entities.Reserva;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,5 +33,8 @@ public class ReservaRapidaDTO {
 
     // Productos contratados desde el formulario (opcional)
     private List<ProductoFormularioDTO> productos;
+
+    private List<MetodoPago> metodoPagos;
+    private Integer idMetodoPagoSeleccionado;
 
 }

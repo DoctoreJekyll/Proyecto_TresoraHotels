@@ -24,21 +24,24 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="reservas : ${reserva}">
-                <td th:text="${reservas.id}">1</td>
-                <td th:text="${#temporals.format(reservas.fechaEntrada, 'dd/MM/yyyy')}">01/01/2025</td>
-                <td th:text="${#temporals.format(reservas.fechaSalida, 'dd/MM/yyyy')}">01/01/2025</td>
-                <td th:text="${reservas.totalReserva}">100.00</td>
-                <td th:text="${reservas.getEstado()}">Pagada</td>
-                <td th:text="${reservas.getComentarios()}">Comentario</td>
+            <tr th:each="reserva : ${reserva}"> <td th:text="${reserva.id}">1</td>
+                <td th:text="${#temporals.format(reserva.fechaEntrada, 'dd/MM/yyyy')}">01/01/2025</td>
+                <td th:text="${#temporals.format(reserva.fechaSalida, 'dd/MM/yyyy')}">01/01/2025</td>
+                <td th:text="${reserva.totalReserva}">100.00</td>
+                <td th:text="${reserva.getEstado()}">Pagada</td>
+                <td th:text="${reserva.getComentarios()}">Comentario</td>
                 <td>
-                    <a th:if="${reservas.getEstado().name() == 'PAGADA'}"
-                       th:href="@{/facturas/descargar-factura/{id}(id=${reservas.id})}"
+                    <a th:if="${reserva.getEstado().name() == 'PAGADA' and reserva.fechaSalida.isBefore(T(java.time.LocalDate).now())}"
+                       th:href="@{/facturas/descargar-factura/{id}(id=${reserva.id})}"
                        class="btn btn-info btn-sm" target="_blank">
                         Descargar Factura
                     </a>
-                    <span th:if="${reservas.getEstado().name() != 'PAGADA'}">
-                        Factura no disponible </span>
+                    <span th:if="${reserva.getEstado().name() != 'PAGADA'}">
+                        Reserva no pagada
+                    </span>
+                    <span th:if="${reserva.getEstado().name() == 'PAGADA' and !reserva.fechaSalida.isBefore(T(java.time.LocalDate).now())}">
+                        Disponible tras la salida
+                    </span>
                 </td>
             </tr>
             </tbody>

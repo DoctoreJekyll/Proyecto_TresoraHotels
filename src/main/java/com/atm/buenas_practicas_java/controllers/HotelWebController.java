@@ -43,6 +43,7 @@ public class HotelWebController {
     private final ReservaConfirmacionMapper confirmacionReservaDTO;
     private final HabitacionMapper habitacionMapper;
     private final UsuarioService usuarioService;
+    private final MetodoPagoService metodoPagoService;
 
     @GetMapping("/api/habitacionesDisponibles")
     @ResponseBody
@@ -96,7 +97,13 @@ public class HotelWebController {
             model.addAttribute("usuarioLogeadoName", userName);
         }
 
+
+        // Prepara un DTO para la reserva, con los métodos de pago
+        ReservaRapidaDTO reservaDTO = reservaService.reservaRapidaUsuarioLog(usuarioService);
+        model.addAttribute("reservaDTO", reservaDTO);
+
         // 5. Añadir atributos al modelo
+        model.addAttribute("metodoPagosDisponibles", metodoPagoService.findAll());
         model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
         model.addAttribute("hotel", hotel);
         model.addAttribute("habitaciones", habitaciones);

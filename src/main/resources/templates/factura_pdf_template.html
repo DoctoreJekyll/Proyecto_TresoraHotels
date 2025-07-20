@@ -1,62 +1,97 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" /> <title>Factura de Reserva</title>
+    <meta charset="UTF-8" />
+    <title>Factura de Reserva</title>
     <style>
         /* Aquí va el CSS para tu factura. Flying Saucer soporta un subconjunto de CSS 2.1 */
+        /* Recomiendo usar fuentes más comunes para PDFs o incrustarlas si la fuente específica es crucial. */
+        * {
+            box-sizing: border-box;
+            /* font-family: 'Atkinson Hyperlegible', sans-serif; */
+            font-family: Arial, sans-serif; /* Más seguro para PDF */
+            color: #FFFFFF;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            color: #333;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            color: #4CAF50;
+            background-color: #000000;
+            color: #FFFFFF;
+            font-size: 14px;
+            padding: 24px;
             margin: 0;
+            line-height: 1.6;
         }
-        .info-section {
-            margin-bottom: 20px;
-            border: 1px solid #eee;
-            padding: 15px;
-            border-radius: 8px;
+
+        /* Encabezados */
+        h1 {
+            color: #00BFFF;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
         }
-        .info-section h3 {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-            margin-top: 0;
-            color: #555;
+
+        h3 {
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 24px;
+            margin-bottom: 10px;
         }
-        .info-item {
-            margin-bottom: 5px;
+
+        /* Texto */
+        p, .info-item {
+            font-size: 14px;
+            margin: 4px 0;
         }
+
+        strong {
+            color: #00BFFF;
+        }
+
+        /* Secciones */
+        .header, .info-section, .total-section, .footer {
+            margin-bottom: 24px;
+        }
+
+        .total-section p {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00BFFF;
+        }
+
+        /* Tablas */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 12px;
+            font-size: 13px;
         }
+
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 2px solid #00BFFF;
+            padding: 10px;
             text-align: left;
         }
+
         th {
-            background-color: #f2f2f2;
+            background-color: #000000;
+            color: #00BFFF;
         }
-        .total-section {
-            text-align: right;
-            margin-top: 30px;
-            font-size: 1.2em;
-            font-weight: bold;
+
+        td {
+            background-color: #000000;
+            color: #FFFFFF;
         }
+
+        /* Footer */
         .footer {
+            border-top: 2px solid #00BFFF;
+            padding-top: 12px;
+            font-size: 12px;
             text-align: center;
-            margin-top: 50px;
-            font-size: 0.8em;
-            color: #777;
+            color: #FFFFFF;
         }
+
     </style>
 </head>
 <body>
@@ -71,7 +106,8 @@
     <div class="info-item"><strong>Nombre:</strong> <span th:text="${factura.nombre}"></span></div>
     <div class="info-item"><strong>Email:</strong> <span th:text="${factura.email}"></span></div>
     <div class="info-item"><strong>Nº de Factura:</strong> <span th:text="${factura.id}"></span></div>
-</div> <div class="info-section">
+</div>
+<div class="info-section">
     <h3>Detalles de la Reserva</h3>
     <div class="info-item"><strong>ID de Reserva:</strong> <span th:text="${factura.id}"></span></div>
     <div class="info-item"><strong>Hotel:</strong> <span th:text="${factura.hotel}"></span></div>
@@ -80,6 +116,15 @@
     <div class="info-item"><strong>Fecha Salida:</strong> <span th:text="${#temporals.format(factura.fechaSalida, 'dd-MM-yyyy')}"></span></div>
     <div class="info-item"><strong>Precio Base Habitación / Noche:</strong> <span th:text="${#numbers.formatCurrency(factura.precioBaseHabitacion)}"></span></div>
     <div class="info-item"><strong>Noches:</strong> <span th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(factura.fechaEntrada, factura.fechaSalida)}"></span></div>
+
+    <div class="info-item">
+        <strong>Subtotal Habitación:</strong>
+        <span th:with="noches=${T(java.time.temporal.ChronoUnit).DAYS.between(factura.fechaEntrada, factura.fechaSalida)}">
+            <span th:text="${#numbers.formatCurrency(factura.precioBaseHabitacion * noches)}"></span>
+        </span>
+    </div>
+
+    <div class="info-item"><strong>Método de Pago:</strong> <span th:text="${factura.metodoPago}"></span></div>
 </div>
 
 <div th:if="${!#lists.isEmpty(factura.productos)}" class="info-section">
@@ -90,12 +135,15 @@
             <th>Producto</th>
             <th>Cantidad</th>
             <th>Precio Unitario</th>
-        </tr>
+            <th>Subtotal</th> </tr>
         </thead>
         <tbody>
         <tr th:each="producto : ${factura.productos}">
-            <td th:text="${producto.categoria}"></td> <td th:text="${producto.cantidad}"></td>
-            <td th:text="${#numbers.formatCurrency(producto.precioBase)}"></td> </tr>
+            <td th:text="${producto.nombreProducto}"></td>
+            <td th:text="${producto.cantidad}"></td>
+            <td th:text="${#numbers.formatCurrency(producto.precioBase)}"></td>
+            <td th:text="${#numbers.formatCurrency(producto.cantidad * producto.precioBase)}"></td>
+        </tr>
         </tbody>
     </table>
 </div>
