@@ -26,7 +26,7 @@
     color: white;
     text-align: center;
     padding: 20px 40px;
-    background-color: rgba(0, 0, 0, 0.1); /* Fondo oscuro para contraste */
+    background-color: #000000; /* Fondo oscuro para contraste */
     border-radius: 10px;
     z-index: 1;  /* Asegura que el texto quede por encima de la imagen */
 }

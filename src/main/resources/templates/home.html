@@ -32,7 +32,7 @@
                  th:classappend="${iterStat.index == 0} ? 'active'">
                 <img th:src="${hotel.imageURL}" class="d-block w-100" th:alt="'Imagen del hotel ' + ${hotel.nombre}" />
                 <div class="carousel-center-caption">
-                    <h2 th:text="${hotel.nombre}" class="visually-hidden">Nombre del hotel</h2> <p th:text="${hotel.descripcion}" class="visually-hidden">Descripción del hotel</p> </div>
+                    <h2 th:text="${hotel.nombre}">Nombre del hotel</h2> <p th:text="${hotel.descripcion}">Descripción del hotel</p> </div>
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev" aria-label="Diapositiva anterior">
@@ -189,7 +189,6 @@
             </div>
         </div>
     </section>
-
 
 
     <nav id="bookingBar" aria-label="Barra de búsqueda rápida de reservas">
