@@ -46,10 +46,14 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" th:if="${#strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}" th:href="@{/usuarios/userhome}">
+                        <a class="dropdown-item"
+                           th:if="${usuario.idRol != null and #strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}"
+                           th:href="@{/usuarios/userhome}">
                             Inicio
                         </a>
-                        <a class="dropdown-item" th:unless="${#strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}" th:href="@{/panel}">
+                        <a class="dropdown-item"
+                           th:unless="${usuario.idRol != null and #strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}"
+                           th:href="@{/panel}">
                             Inicio
                         </a>
                     </li>
@@ -66,8 +70,6 @@
                     </li>
                 </ul>
             </div>
-        </div>
-    </div>
 
     <!-- Menú lateral offcanvas -->
     <div class="offcanvas offcanvas-start offcanvas-fullscreen" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
@@ -99,7 +101,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------------------------- -->
 
 <!-- CONTENIDO -->
-<main id="contenido-principal" layout:fragment="contenido">
+<main id="contenido-principal" layout:fragment="contenido" class="content-padding-top">
     <!-- Este contenido será reemplazado por cada vista -->
 </main>
 
@@ -112,7 +114,7 @@
     <button id="toggleVoiceBtn" aria-label="Activar lectura en voz alta" aria-checked="false" title="Activar/Desactivar lectura en voz alta">
         <i class="bi bi-volume-up"></i>
     </button>
-</main>
+
 
 <!-- FOOTER -->
 <footer class="mt-5 pt-4 pb-3 rounded">

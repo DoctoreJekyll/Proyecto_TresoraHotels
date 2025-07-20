@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+<head>
+
+    <title>Confirmar reserva</title>
+
+</head>
+
+<body class="bg-gradient-primary">
+<main layout:fragment="contenido" id="contenido-principal" class="main-container" role="main" aria-labelledby="confirmation-title">
+    <div>
+        <h1 id="confirmation-title" class="text-center mb-6">¡Reserva Confirmada!</h1>
+        <p class="text-center mb-8" aria-live="polite">Gracias por elegir nuestro hotel</p>
+
+        <div id="action-buttons" >
+            <a id="home-link" th:href="@{/}" aria-label="Volver a la página principal">Volver al Inicio</a>
+            <a id="modify-link" th:href="@{/reserva}"  aria-label="Modificar la reserva">Modificar Reserva</a>
+        </div>
+
+        <section aria-labelledby="booking-details" class="card form-card d-flex align-items-center">
+            <h4 id="booking-details" class="text mb-4" >Detalles de la Reserva:</h4>
+            <ul id="booking-details-list" class="space-y-3 text mb-5">
+                <li><strong>Hotel:</strong> <span>Hotel Montaña</span></li>
+                <li><strong>Fecha de Entrada:</strong> <span>25 de abril de 2025</span></li>
+                <li><strong>Fecha de Salida:</strong> <span>28 de abril de 2025</span></li>
+                <li><strong>Huéspedes:</strong> <span>2 Huéspedes</span></li>
+                <li><strong>Tipo de Habitación:</strong> <span>Deluxe</span></li>
+                <li><strong>Servicios adicionales:</strong> <span>Spa</span></li>
+                <li><strong>Precio Total:</strong> <span>420€ (3 noches + Spa)</span></li>
+                <li><strong>Número de Confirmación:</strong> <span>HX123456</span></li>
+            </ul>
+        </section>
+
+        <div class="text-center mb-5" >
+            <p class="text-center mb-3 ">Recibirás un correo con los detalles de tu reserva</p>
+            <p  id="reenvio-link" class="btn btn-grupo5" aria-label="Reenviar a un amigo">Reenviar reserva </p>
+        </div>
+
+
+        <p class="text-center mt-8">¿Necesitas ayuda? <a id="contact-link" th:href="@{/contact}" aria-label="Enlace a la página de contactos">Contáctanos</a></p>
+    </div>
+</main>
+
+</body>
+</html>

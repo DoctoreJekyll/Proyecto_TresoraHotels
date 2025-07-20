@@ -3,48 +3,71 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/plantilla}">
 <head>
-  <title>Formulario Usuario</title>
+  <title th:text="${usuario.id != null ? 'Editar Usuario' : 'Nuevo Usuario'} + ' - Tresora Hotels'"></title>
 </head>
 <body>
-<main layout:fragment="contenido" class="container mt-5">
-  <h2 class="mb-4 text-center" th:text="${usuario.id != null ? 'Editar Usuario' : 'Nuevo Usuario'}"></h2>
+<main layout:fragment="contenido" class="container mt-5" role="main" aria-labelledby="form-title">
+  <h2 class="mb-4 text-center" id="form-title" th:text="${usuario.id != null ? 'Editar Usuario' : 'Nuevo Usuario'}">
+    Formulario de Usuario
+  </h2>
+  <p class="lead text-center" id="form-description">
+    Completa los campos para crear o actualizar un usuario. Los campos marcados con <span aria-hidden="true">*</span> son obligatorios.
+  </p>
 
-  <form th:action="@{/usuarios/guardar}" th:object="${usuario}" method="post">
-    <input type="hidden" th:field="*{id}" />
+  <form th:action="@{/usuarios/guardar}" th:object="${usuario}" method="post"
+        aria-labelledby="form-title" aria-describedby="form-description">
+    <input type="hidden" th:field="*{id}" aria-hidden="true" />
 
     <div class="mb-3">
-      <label th:for="*{nombre}" class="form-label">Nombre</label>
-      <input type="text" th:field="*{nombre}" class="form-control" required />
+      <label th:for="*{nombre}" class="form-label">Nombre <span aria-hidden="true">*</span></label>
+      <input type="text" th:field="*{nombre}" class="form-control" required
+             aria-required="true" aria-label="Introduce el nombre del usuario"
+             maxlength="50"/>
     </div>
 
     <div class="mb-3">
-      <label th:for="*{apellidos}" class="form-label">Apellidos</label>
-      <input type="text" th:field="*{apellidos}" class="form-control" required />
+      <label th:for="*{apellidos}" class="form-label">Apellidos <span aria-hidden="true">*</span></label>
+      <input type="text" th:field="*{apellidos}" class="form-control" required
+             aria-required="true" aria-label="Introduce los apellidos del usuario"
+             maxlength="100"/>
     </div>
 
     <div class="mb-3">
-      <label th:for="*{email}" class="form-label">Correo Electrónico</label>
-      <input type="email" th:field="*{email}" class="form-control" required />
+      <label th:for="*{email}" class="form-label">Correo Electrónico <span aria-hidden="true">*</span></label>
+      <input type="email" th:field="*{email}" class="form-control" required
+             aria-required="true" aria-label="Introduce el correo electrónico del usuario"
+             autocomplete="email" maxlength="100"/>
     </div>
 
     <div class="mb-3">
-      <label th:for="*{password}" class="form-label">Contraseña</label>
-      <input type="password" th:field="*{password}" class="form-control" required />
+      <label th:for="*{password}" class="form-label">Contraseña <span aria-hidden="true">*</span></label>
+      <input type="password" th:field="*{password}" class="form-control"
+             th:attr="required=${usuario.id == null}"
+             th:placeholder="${usuario.id != null ? 'Mantener vacío para no cambiar' : 'Introduce una contraseña'}"
+             aria-label="Introduce la contraseña del usuario. Deja vacío para no cambiar si editas."
+             th:aria-required="${usuario.id == null ? 'true' : 'false'}"/>
+      <small th:if="${usuario.id != null}" class="form-text text-muted mt-1">
+        Deja este campo vacío si no deseas cambiar la contraseña actual.
+      </small>
     </div>
 
     <div class="mb-3">
       <label th:for="*{telefono}" class="form-label">Teléfono</label>
-      <input type="text" th:field="*{telefono}" class="form-control" />
+      <input type="text" th:field="*{telefono}" class="form-control"
+             aria-label="Introduce el número de teléfono del usuario, campo opcional"
+             maxlength="15"/>
+    </div>
+
+    <div class="mb-3 form-check"> <input type="checkbox" th:field="*{activo}" class="form-check-input" id="activo"
+                                         aria-label="Marcar si el usuario está activo"/>
+      <label th:for="*{activo}" class="form-check-label">Activo</label>
     </div>
 
     <div class="mb-3">
-      <label th:for="*{activo}" class="form-label">Activo</label>
-      <input type="checkbox" th:field="*{activo}" class="form-check-input" />
-    </div>
-
-    <div class="mb-3">
-      <label for="rolId" class="form-label">Rol</label>
-      <select class="form-select" name="rolId" id="rolId" required>
+      <label for="rolId" class="form-label">Rol <span aria-hidden="true">*</span></label>
+      <select class="form-select" name="rolId" id="rolId" required
+              aria-required="true" aria-label="Selecciona el rol del usuario">
+        <option value="" disabled th:selected="${usuario.idRol == null}">Selecciona un rol</option>
         <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombreRol}"
                 th:selected="${usuario.idRol != null and rol.id == usuario.idRol.id}">
         </option>
@@ -52,7 +75,10 @@
     </div>
 
     <div class="text-center">
-      <button type="submit" class="btn btn-grupo5">Guardar</button>
+      <button type="submit" class="btn btn-grupo5"
+              th:aria-label="${usuario.id != null ? 'Guardar cambios del usuario' : 'Registrar nuevo usuario'}">
+        Guardar
+      </button>
     </div>
   </form>
 </main>

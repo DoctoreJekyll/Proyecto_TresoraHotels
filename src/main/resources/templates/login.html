@@ -1,76 +1,82 @@
-<html xmlns:th="http://www.thymeleaf.org"
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/plantilla}">
 <head>
-
     <title>Acceso</title>
-
 </head>
-
 <body>
-<main class="container-fluid" layout:fragment="contenido">
+<main class="container-fluid" layout:fragment="contenido" role="main">
     <div class="row login-container flex-column-reverse flex-md-row">
         <div class="col-md-6 p-0 login-image mb-4 mb-md-0">
-            <img src="https://cdn.pixabay.com/photo/2021/11/28/11/54/bed-6830011_1280.jpg" alt="Inicio de sesión"
+            <img src="https://cdn.pixabay.com/photo/2021/11/28/11/54/bed-6830011_1280.jpg" alt="Imagen decorativa de una cama de hotel, que representa el acceso a la plataforma de reservas."
                  style="border-radius: 5px;">
         </div>
         <div class="col-md-6 d-flex align-items-center justify-content-center">
             <div class="w-75 ">
                 <h2 class="mb-4 mt-4 text-center">INICIO DE SESIÓN</h2>
-                <form id="loginForm1" th:action="@{/login}" th:object="${datoslogin}" method="post">
+                <form id="loginForm1" th:action="@{/login}" th:object="${datoslogin}" method="post"
+                      aria-labelledby="login-heading" aria-describedby="login-intro">
+                    <p id="login-intro" class="visually-hidden">Introduce tus credenciales para acceder a tu cuenta.</p>
                     <div class="mb-3">
                         <label for="loginEmail" class="form-label">CORREO ELECTRÓNICO</label>
                         <input type="email" class="form-control border-dark" id="loginEmail"
-                               th:field="${datoslogin.email}" required>
+                               th:field="${datoslogin.email}" required autocomplete="username"
+                               aria-required="true" aria-label="Introduce tu correo electrónico">
                     </div>
                     <div class="mb-3">
                         <label for="loginPassword" class="form-label">CONTRASEÑA</label>
                         <input type="password" class="form-control border-dark" id="loginPassword"
-                               th:field="${datoslogin.password}" placeholder="Contraseña" required>
+                               th:field="${datoslogin.password}" placeholder="Contraseña" required autocomplete="current-password"
+                               aria-required="true" aria-label="Introduce tu contraseña">
                     </div>
 
                     <div class="d-grid gap-2 mb-4">
-                        <button type="submit" th:formaction="@{/login}" class="btn btn-grupo5">ENTRAR</button>
+                        <button type="submit" th:formaction="@{/login}" class="btn btn-grupo5"
+                                aria-label="Iniciar sesión">ENTRAR</button>
                     </div>
-                    <div id="loginError" class="alert alert-danger d-none mt-2 text-white" role="alert">
+                    <div id="loginError" class="alert alert-danger d-none mt-2 text-white" role="alert" aria-live="assertive">
                         Correo o contraseña no válidos.
                     </div>
                     <div class="text-center mb-4">
                         <p>¿No tienes cuenta todavía?</p>
-                        <a th:href="@{/usuarios/crear-cuenta}" class="btn btn-outline-grupo5">CREAR NUEVA CUENTA</a>
+                        <a th:href="@{/usuarios/crear-cuenta}" class="btn btn-outline-grupo5"
+                           aria-label="Crear una nueva cuenta">CREAR NUEVA CUENTA</a>
                     </div>
                 </form>
                 <p class="mt-3">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalRecuperar">¿Has olvidado tu contraseña?</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalRecuperar"
+                       aria-controls="modalRecuperar" aria-expanded="false" aria-label="Abrir ventana para recuperar contraseña">¿Has olvidado tu contraseña?</a>
                 </p>
                 <div class="modal fade" id="modalRecuperar" tabindex="-1" aria-labelledby="modalRecuperarLabel"
-                     aria-hidden="true">
+                     aria-hidden="true" role="dialog">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="modalRecuperarLabel">Recuperar contraseña</h5>
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                        aria-label="Cerrar"></button>
+                                        aria-label="Cerrar ventana de recuperar contraseña"></button>
                             </div>
                             <div class="modal-body">
                                 <script>
+                                    // It's generally better to put scripts in external files or at the end of the body.
+                                    // For this example, keeping it here as per your original structure.
                                     function checkEmail() {
-                                        const itmemail2 = document.getElementById("email2")
-                                        const itmemail1 = document.getElementById("email1")
+                                        const itmemail2 = document.getElementById("email2");
+                                        const itmemail1 = document.getElementById("email1");
                                         var itmemail2txt = itmemail2.value.trim();
                                         var itmemail1txt = itmemail1.value.trim();
 
-                                        if (itmemail1txt.length == 0 || itmemail2txt.length == 0) {
-                                            alert("Por favor, completa ambos campos.");
-
-                                        } else if (itmemail1txt !== itmemail2txt) {
-                                            alert("Los correos electrónicos no coinciden.");
+                                        if (itmemail1txt.length === 0 || itmemail2txt.length === 0) {
+                                            alert("Por favor, completa ambos campos."); // Consider replacing alert with a more accessible message within the page
                                             return;
-
+                                        } else if (itmemail1txt !== itmemail2txt) {
+                                            alert("Los correos electrónicos no coinciden."); // Consider replacing alert with a more accessible message within the page
+                                            return;
                                         } else {
                                             const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                                             if (!emailValido.test(itmemail1txt)) {
-                                                alert("Introduce un correo electrónico válido.");
+                                                alert("Introduce un correo electrónico válido."); // Consider replacing alert with a more accessible message within the page
                                                 return;
                                             }
                                         }
@@ -79,19 +85,18 @@
                                 <div class="mb-3">
                                     <label for="email1" class="form-label">Correo electrónico</label>
                                     <input type="email" class="form-control" id="email1" onchange="checkEmail()"
-                                           required>
+                                           required aria-required="true" aria-label="Introduce tu correo electrónico para recuperación">
                                 </div>
                                 <div class="mb-3">
                                     <label for="email2" class="form-label">Repite el correo electrónico</label>
                                     <input type="email" class="form-control" id="email2" onchange="checkEmail()"
-                                           required>
+                                           required aria-required="true" aria-label="Repite tu correo electrónico para confirmación">
                                 </div>
-                                <div id="mensajeConfirmacion" class="alert alert-success d-none">
+                                <div id="mensajeConfirmacion" class="alert alert-success d-none" role="status" aria-live="polite">
                                     Hemos enviado a su correo un reseteo de contraseña.
                                 </div>
                                 <a th:href="@{/recuperarContrasena}" type="button" class="btn btn-grupo5"
-                                   id="agreeButton">Aceptar</a>
-
+                                   id="agreeButton" aria-label="Enviar solicitud de recuperación de contraseña">Aceptar</a>
                             </div>
                         </div>
                     </div>
@@ -101,5 +106,4 @@
     </div>
 </main>
 </body>
-
 </html>

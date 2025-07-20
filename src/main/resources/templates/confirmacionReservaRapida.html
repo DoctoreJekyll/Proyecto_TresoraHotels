@@ -16,67 +16,67 @@
 
             <p class="card-text text-center mt-3 mb-4">Gracias por reservar con nosotros. Aquí tienes los detalles:</p>
 
-            <div class="mb-4">
-                <h4 class="mb-2">Datos del huésped</h4>
-                <p><strong>ID de reserva:</strong> <span th:text="${reservaConfirmada.idReserva}">#</span></p>
-                <p><strong>Nombre:</strong> <span th:text="${reservaConfirmada.nombre}">Nombre</span></p>
-                <p><strong>Email:</strong> <span th:text="${reservaConfirmada.email}">Email</span></p>
-                <p><strong>Número de huéspedes:</strong> <span th:text="${reservaConfirmada.pax}">2</span></p>
-                <p><strong>Comentarios:</strong> <span th:text="${reservaConfirmada.comentarios} ?: 'Sin comentarios'">-</span></p>
+            <div class="mb-4" aria-labelledby="guest-data-heading">
+                <h4 class="mb-2" id="guest-data-heading">Datos del huésped</h4>
+                <p><strong>ID de reserva:</strong> <span th:text="${reservaConfirmada.idReserva}" aria-label="ID de la reserva">#</span></p>
+                <p><strong>Nombre:</strong> <span th:text="${reservaConfirmada.nombre}" aria-label="Nombre del huésped">Nombre</span></p>
+                <p><strong>Email:</strong> <span th:text="${reservaConfirmada.email}" aria-label="Correo electrónico del huésped">Email</span></p>
+                <p><strong>Número de huéspedes:</strong> <span th:text="${reservaConfirmada.pax}" aria-label="Número de personas">2</span></p>
+                <p><strong>Comentarios:</strong> <span th:text="${reservaConfirmada.comentarios} ?: 'Sin comentarios'" aria-label="Comentarios adicionales"></span></p>
             </div>
 
-            <div class="mb-4">
-                <h4 class="mb-2">Detalles de la estancia</h4>
-                <p><strong>Hotel:</strong> <span th:text="${reservaConfirmada.nombreHotel}">Hotel Demo</span></p>
-                <p><strong>Habitación:</strong> <span th:text="${reservaConfirmada.habitacion}">Doble</span></p>
-                <p><strong>Fecha de entrada:</strong> <span th:text="${reservaConfirmada.fechaEntrada}">2025-07-10</span></p>
-                <p><strong>Fecha de salida:</strong> <span th:text="${reservaConfirmada.fechaSalida}">2025-07-12</span></p>
+            <div class="mb-4" aria-labelledby="stay-details-heading">
+                <h4 class="mb-2" id="stay-details-heading">Detalles de la estancia</h4>
+                <p><strong>Hotel:</strong> <span th:text="${reservaConfirmada.nombreHotel}" aria-label="Nombre del hotel">Hotel Demo</span></p>
+                <p><strong>Habitación:</strong> <span th:text="${reservaConfirmada.habitacion}" aria-label="Tipo de habitación">Doble</span></p>
+                <p><strong>Fecha de entrada:</strong> <span th:text="${reservaConfirmada.fechaEntrada}" aria-label="Fecha de inicio de la estancia">2025-07-10</span></p>
+                <p><strong>Fecha de salida:</strong> <span th:text="${reservaConfirmada.fechaSalida}" aria-label="Fecha de fin de la estancia">2025-07-12</span></p>
             </div>
 
-            <div class="mb-4">
-                <h4 class="mb-2">Detalles de Pago</h4>
+            <div class="mb-4" aria-labelledby="payment-details-heading">
+                <h4 class="mb-2" id="payment-details-heading">Detalles de Pago</h4>
                 <p>
                     <strong>Método de pago:</strong>
-                    <span th:text="${reservaConfirmada.metodoPagoNombre}"></span>
+                    <span th:text="${reservaConfirmada.metodoPagoNombre}" aria-label="Método de pago seleccionado"></span>
                 </p>
             </div>
-            <div class="mb-4">
-                <h4 class="mb-2">Desglose de precios</h4>
-                <table class="table table-sm table-striped">
+            <div class="mb-4" aria-labelledby="price-breakdown-heading">
+                <h4 class="mb-2" id="price-breakdown-heading">Desglose de precios</h4>
+                <table class="table table-sm table-striped" summary="Detalles completos del desglose de precios de la reserva.">
                     <thead>
                     <tr>
-                        <th>Concepto</th>
-                        <th>Cantidad</th>
-                        <th>Precio Unitario</th>
-                        <th>Subtotal</th>
+                        <th scope="col">Concepto</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Precio Unitario</th>
+                        <th scope="col">Subtotal</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td>Habitación</td>
-                        <td th:text="${diasEstancia}"></td>
-                        <td th:text="${#numbers.formatDecimal(reservaConfirmada.precioBase, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
-                        <td th:text="${#numbers.formatDecimal(reservaConfirmada.precioBase * diasEstancia, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
+                        <td aria-label="Concepto de habitación">Habitación</td>
+                        <td th:text="${diasEstancia}" aria-label="Cantidad de noches"></td>
+                        <td th:text="${#numbers.formatDecimal(reservaConfirmada.precioBase, 1, 'COMMA', 2, 'POINT')} + ' €'" aria-label="Precio base por noche"></td>
+                        <td th:text="${#numbers.formatDecimal(reservaConfirmada.precioBase * diasEstancia, 1, 'COMMA', 2, 'POINT')} + ' €'" aria-label="Subtotal de habitación"></td>
                     </tr>
 
                     <tr th:each="prod : ${reservaConfirmada.productos}">
-                        <td th:text="${prod.nombre}">Producto</td>
-                        <td th:text="${prod.cantidad}"></td>
-                        <td th:text="${#numbers.formatDecimal(prod.precioBase, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
-                        <td th:text="${#numbers.formatDecimal(prod.precioBase * prod.cantidad, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
+                        <td th:text="${prod.nombre}" th:aria-label="'Concepto de producto: ' + ${prod.nombre}">Producto</td>
+                        <td th:text="${prod.cantidad}" th:aria-label="'Cantidad del producto ' + ${prod.nombre}"></td>
+                        <td th:text="${#numbers.formatDecimal(prod.precioBase, 1, 'COMMA', 2, 'POINT')} + ' €'" th:aria-label="'Precio unitario del producto ' + ${prod.nombre}"></td>
+                        <td th:text="${#numbers.formatDecimal(prod.precioBase * prod.cantidad, 1, 'COMMA', 2, 'POINT')} + ' €'" th:aria-label="'Subtotal del producto ' + ${prod.nombre}"></td>
                     </tr>
                     </tbody>
                     <tfoot>
                     <tr>
-                        <th colspan="3" class="text-end">Precio Total</th>
-                        <th th:text="${#numbers.formatDecimal(reservaConfirmada.precioFinal, 1, 'COMMA', 2, 'POINT')} + ' €'"></th>
+                        <th colspan="3" class="text-end" aria-label="Precio Total de la reserva">Precio Total</th>
+                        <th th:text="${#numbers.formatDecimal(reservaConfirmada.precioFinal, 1, 'COMMA', 2, 'POINT')} + ' €'" aria-label="Monto total a pagar"></th>
                     </tr>
                     </tfoot>
                 </table>
             </div>
 
             <div class="text-center mt-4">
-                <a th:href="@{/}" class="btn btn-outline-light">Volver al inicio</a>
+                <a th:href="@{/}" class="btn btn-outline-light" aria-label="Volver a la página de inicio">Volver al inicio</a>
             </div>
         </div>
     </div>
