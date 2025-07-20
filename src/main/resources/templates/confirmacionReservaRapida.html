@@ -16,7 +16,6 @@
 
             <p class="card-text text-center mt-3 mb-4">Gracias por reservar con nosotros. Aquí tienes los detalles:</p>
 
-            <!-- Datos del huésped -->
             <div class="mb-4">
                 <h4 class="mb-2">Datos del huésped</h4>
                 <p><strong>ID de reserva:</strong> <span th:text="${reservaConfirmada.idReserva}">#</span></p>
@@ -35,6 +34,13 @@
             </div>
 
             <div class="mb-4">
+                <h4 class="mb-2">Detalles de Pago</h4>
+                <p>
+                    <strong>Método de pago:</strong>
+                    <span th:text="${reservaConfirmada.metodoPagoNombre}"></span>
+                </p>
+            </div>
+            <div class="mb-4">
                 <h4 class="mb-2">Desglose de precios</h4>
                 <table class="table table-sm table-striped">
                     <thead>
@@ -46,7 +52,6 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- Precio habitación según noches -->
                     <tr>
                         <td>Habitación</td>
                         <td th:text="${diasEstancia}"></td>
@@ -54,7 +59,6 @@
                         <td th:text="${#numbers.formatDecimal(reservaConfirmada.precioBase * diasEstancia, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
                     </tr>
 
-                    <!-- Servicios adicionales -->
                     <tr th:each="prod : ${reservaConfirmada.productos}">
                         <td th:text="${prod.nombre}">Producto</td>
                         <td th:text="${prod.cantidad}"></td>

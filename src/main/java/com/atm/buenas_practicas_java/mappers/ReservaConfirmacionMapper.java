@@ -1,8 +1,5 @@
 package com.atm.buenas_practicas_java.mappers;
 
-
-
-
 import com.atm.buenas_practicas_java.DTOs.ConfirmacionReservaDTO;
 import com.atm.buenas_practicas_java.DTOs.ProductoConfirmadoDTO;
 import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
@@ -15,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-
 public class ReservaConfirmacionMapper {
 
     @Transactional(readOnly = true)
@@ -35,6 +31,7 @@ public class ReservaConfirmacionMapper {
         dto.setPax(reserva.getPax());
         dto.setComentarios(reserva.getComentarios());
         dto.setPrecioBase(reserva.getIdHabitacion().getProducto().getPrecioBase());
+        dto.setMetodoPagoNombre(reserva.getMetodoPagoSeleccionado().getNombre());
 
 
         // Convertir productos contratados

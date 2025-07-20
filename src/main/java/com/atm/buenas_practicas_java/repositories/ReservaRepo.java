@@ -18,10 +18,10 @@ public interface ReservaRepo extends JpaRepository<Reserva, Integer> {
             "JOIN FETCH r.idHabitacion h " +
             "JOIN FETCH h.hotel " +
             "JOIN FETCH r.idUsuario u " +
-            "LEFT JOIN FETCH r.productosUsuarios pc " +
-            "LEFT JOIN FETCH pc.idProducto " +
+            "LEFT JOIN FETCH r.productosUsuarios pu " +
+            "LEFT JOIN FETCH pu.idProducto " +
+            "LEFT JOIN FETCH r.metodoPagoSeleccionado " +
             "WHERE r.id = :id")
     Optional<Reserva> findByIdWithAllRelations(@Param("id") Integer id);
 
 }
-
