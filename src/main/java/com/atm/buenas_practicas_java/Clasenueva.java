@@ -12,4 +12,9 @@ public class Clasenueva {
         System.out.println("test2");
     }
 
+    private void test3()
+    {
+        System.out.println("test3");
+    }
+
 }
