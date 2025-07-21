@@ -33,4 +33,14 @@ public class UsuarioService extends AbstractTemplateServicesEntitiesDTOs<
         }
         return super.saveEntity(usuario);
     }
+
+    public boolean verificarPassword(Usuario usuario, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, usuario.getPassword());
+    }
+
+    public void actualizarPassword(Usuario usuario, String nuevaPassword) {
+        usuario.setPassword(passwordEncoder.encode(nuevaPassword));
+        saveEntity(usuario);
+    }
+
 }
