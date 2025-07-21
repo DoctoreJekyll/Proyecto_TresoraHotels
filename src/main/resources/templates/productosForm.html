@@ -3,30 +3,36 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/plantilla}">
 <head>
-    <title>Formulario de Producto</title>
+    <title>Formulario de Producto - Tresora Hotels</title>
     <link th:href="@{/css/forms.css}" rel="stylesheet" />
 </head>
 <body class="bg-gradient-primary">
-<main layout:fragment="contenido">
-    <section class="contact-form-section" tabindex="0" aria-labelledby="titulo-producto">
+<main layout:fragment="contenido" role="main">
+    <section class="contact-form-section" tabindex="0" aria-labelledby="titulo-producto" aria-describedby="descripcion-form-producto">
         <div class="container">
             <h1 class="mb-4 text-center" id="titulo-producto">Formulario de Producto</h1>
+            <p class="lead text-center" id="descripcion-form-producto">
+                Completa los detalles para crear o editar un producto.
+            </p>
 
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <form class="contact-form" role="form"
+                          aria-labelledby="titulo-producto" aria-describedby="instrucciones-form"
                           th:action="@{/productos/guardar}" method="post"
-                          th:object="${producto}">
+                          th:object="${producto}" novalidate> <input type="hidden" th:field="*{id}" aria-hidden="true" />
 
-                        <!-- Campo oculto para edición -->
-                        <input type="hidden" th:field="*{id}" />
+                        <p id="instrucciones-form" class="text-muted text-center">
+                            Los campos marcados con <span aria-hidden="true">*</span> son obligatorios.
+                        </p>
 
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3 mb-md-0">
-                                <label for="categoria" class="form-label">Categoria</label>
-                                <select class="form-select" id="categoria" th:field="*{idCategoria}" required aria-required="true">
+                                <label for="categoria" class="form-label">Categoría <span aria-hidden="true">*</span></label>
+                                <select class="form-select" id="categoria" th:field="*{idCategoria}" required aria-required="true"
+                                        aria-label="Selecciona la categoría del producto">
                                     <option value="" disabled
-                                            th:selected="*{idCategoria == null}">Seleccione un empleado</option>
+                                            th:selected="*{idCategoria == null}">Seleccione una categoría</option>
                                     <option th:each="cat : ${categorias}"
                                             th:value="${cat.id}"
                                             th:text="${cat.nombre}"></option>
@@ -34,59 +40,65 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="hotel" class="form-label">Hotel*</label>
-                                <select class="form-select" id="hotel" th:field="*{idHotel}" required aria-required="true">
+                                <label for="hotel" class="form-label">Hotel <span aria-hidden="true">*</span></label>
+                                <select class="form-select" id="hotel" th:field="*{idHotel}" required aria-required="true"
+                                        aria-label="Selecciona el hotel al que pertenece el producto">
                                     <option value="" disabled
-                                            th:selected="*{idHotel == null}">Seleccione una habitación</option>
+                                            th:selected="*{idHotel == null}">Seleccione un hotel</option>
                                     <option th:each="hotel : ${hoteles}"
                                             th:value="${hotel.id}"
-                                            th:text="'Hot. ' + ${hotel.getNombre} + ' - Tlf ' + ${hotel.telefono}">Hotel</option>
+                                            th:text="'Hot. ' + ${hotel.nombre} + ' - Tlf ' + ${hotel.telefono}">Hotel</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="nombre" class="form-label">Nombre *</label>
-                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required maxlength="30" />
+                            <label for="nombre" class="form-label">Nombre <span aria-hidden="true">*</span></label>
+                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required maxlength="30"
+                                   placeholder="Introduce el nombre del producto" aria-required="true" aria-label="Nombre del producto"/>
                         </div>
 
                         <div class="mb-4">
-                            <label for="descripcion" class="form-label">Descripción *</label>
-                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" required maxlength="80"></textarea>
+                            <label for="descripcion" class="form-label">Descripción <span aria-hidden="true">*</span></label>
+                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" required maxlength="80"
+                                      placeholder="Introduce una breve descripción del producto" aria-required="true" aria-label="Descripción del producto"></textarea>
                         </div>
 
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label for="precioBase" class="form-label">Precio Base *</label>
-                                <input type="number" step="0.01" class="form-control" id="precioBase" th:field="*{precioBase}" required />
+                                <label for="precioBase" class="form-label">Precio Base <span aria-hidden="true">*</span></label>
+                                <input type="number" step="0.01" class="form-control" id="precioBase" th:field="*{precioBase}" required
+                                       placeholder="Ej: 10.50" aria-required="true" aria-label="Precio base del producto"/>
                             </div>
 
                             <div class="col-md-6">
-                                <label for="activo" class="form-label d-block">Activo</label>
-                                <input type="checkbox" id="activo" th:field="*{activo}" />
+                                <div class="form-check pt-4"> <input type="checkbox" class="form-check-input" id="activo" th:field="*{activo}"
+                                                                     aria-label="Marcar si el producto está activo"/>
+                                    <label class="form-check-label" for="activo">Producto Activo</label>
+                                </div>
                             </div>
                         </div>
 
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label for="fechaDesde" class="form-label">Fecha Desde</label>
+                                <label for="fechaDesde" class="form-label">Fecha Desde <span aria-hidden="true">*</span></label>
                                 <input type="date" class="form-control" id="fechaDesde"
                                        name="fechaDesde"
-                                       th:value="${#temporals.format(producto.fechaDesde, 'yyyy-MM-dd')}"
-                                       required aria-required="true" />
+                                       th:value="${producto.fechaDesde != null ? #temporals.format(producto.fechaDesde, 'yyyy-MM-dd') : ''}"
+                                       required aria-required="true" aria-label="Fecha de inicio de validez del producto"/>
                             </div>
 
                             <div class="col-md-6">
-                                <label for="fechaHasta" class="form-label">Fecha Hasta</label>
+                                <label for="fechaHasta" class="form-label">Fecha Hasta <span aria-hidden="true">*</span></label>
                                 <input type="date" class="form-control" id="fechaHasta"
                                        name="fechaHasta"
-                                       th:value="${#temporals.format(producto.fechaHasta, 'yyyy-MM-dd')}"
-                                       required aria-required="true" />
+                                       th:value="${producto.fechaHasta != null ? #temporals.format(producto.fechaHasta, 'yyyy-MM-dd') : ''}"
+                                       required aria-required="true" aria-label="Fecha de fin de validez del producto"/>
                             </div>
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary">Registrar Producto</button>
+                            <button type="submit" class="btn btn-primary" aria-label="Guardar la información del producto">Registrar Producto</button>
                         </div>
 
                     </form>

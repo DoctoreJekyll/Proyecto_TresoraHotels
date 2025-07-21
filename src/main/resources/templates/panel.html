@@ -1,56 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{/layout/plantillasinlogin}">
+      layout:decorate="~{/layout/plantilla}">
 <head>
-    <title>Página de Inicio</title>
+    <title>Página de Inicio - Tresora Hotels</title>
 </head>
 <body>
-<main layout:fragment="contenido">
+<main layout:fragment="contenido" role="main" aria-labelledby="welcome-heading">
     <div class="container mt-5">
-        <h1 class="text-center mb-4" th:text="${tituloPanel}">Bienvenido</h1>
+        <h1 class="text-center mb-4" th:text="${tituloPanel}" id="welcome-heading">Bienvenido</h1>
 
         <div class="row justify-content-center g-3">
 
-            <!-- Botón Usuarios -->
             <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'EMPLEADO')">
-                <a href="/lista/usuarios" class="btn btn-grupo5 w-100">Gestionar Usuarios</a>
+                <a href="/lista/usuarios" class="btn btn-grupo5 w-100" aria-label="Acceder a la gestión de usuarios">Gestionar Usuarios</a>
             </div>
 
-            <!-- Botón Facturas -->
             <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'EMPLEADO')">
-                <a href="/lista/facturas" class="btn btn-grupo5 w-100">Ver Facturas</a>
+                <a href="/lista/facturas" class="btn btn-grupo5 w-100" aria-label="Acceder a la lista de facturas">Ver Facturas</a>
             </div>
 
-            <!-- Botón Reservas -->
             <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'EMPLEADO')">
-                <a href="/lista/reservas" class="btn btn-grupo5 w-100">Ver Reservas</a>
+                <a href="/lista/reservas" class="btn btn-grupo5 w-100" aria-label="Acceder a la lista de reservas">Ver Reservas</a>
             </div>
 
-            <!-- Botón Informes de Limpieza -->
             <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'EMPLEADO', 'LIMPIEZA')">
-                <a href="/lista/informes" class="btn btn-grupo5 w-100">Informes de Limpieza</a>
+                <a href="/lista/informes" class="btn btn-grupo5 w-100" aria-label="Acceder a los informes de limpieza">Informes de Limpieza</a>
             </div>
 
-            <!-- Botón Productos -->
             <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
-                <a href="/lista/productos" class="btn btn-grupo5 w-100">Ver Productos</a>
+                <a href="/lista/productos" class="btn btn-grupo5 w-100" aria-label="Acceder a la gestión de productos">Ver Productos</a>
             </div>
 
-            <!-- Botón Habitaciones -->
             <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
-                <a href="/lista/habitaciones" class="btn btn-grupo5 w-100">Ver Habitaciones</a>
+                <a href="/lista/habitaciones" class="btn btn-grupo5 w-100" aria-label="Acceder a la gestión de habitaciones">Ver Habitaciones</a>
             </div>
 
-            <!-- Botón Métodos de Pago -->
             <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
-                <a href="/lista/metodopago" class="btn btn-grupo5 w-100">Métodos de Pago</a>
+                <a href="/lista/metodopago" class="btn btn-grupo5 w-100" aria-label="Acceder a la gestión de métodos de pago">Métodos de Pago</a>
             </div>
 
-            <!-- Botón Categorías de Producto -->
             <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
-                <a href="lista/categorias" class="btn btn-grupo5 w-100">Categorías de Producto</a>
+                <a href="lista/categorias" class="btn btn-grupo5 w-100" aria-label="Acceder a la gestión de categorías de producto">Categorías de Producto</a>
             </div>
 
         </div>
