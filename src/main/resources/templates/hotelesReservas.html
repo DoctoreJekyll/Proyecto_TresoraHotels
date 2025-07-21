@@ -28,7 +28,14 @@
             border: 0;
         }
 
-        .card{
+        .card-reserva {
+            width: 100% !important;
+            max-width: none !important;
+            margin-left: 1rem !important;
+            margin-right: 1rem !important;
+            background: #000000 !important;
+            color: white !important;
+            border: 2px solid #00BFFF !important;
 
         }
     </style>
@@ -276,7 +283,7 @@
             <h2 class="text-center display-5 mb-5" style="font-weight: 600;" id="habitaciones-disponibles-heading">Habitaciones Disponibles</h2>
 
             <div th:each="habitacion, iterStat : ${habitaciones}"
-                 class="card mb-4 shadow-lg border-0 rounded-4 oculta"
+                 class="card mb-4 shadow-lg border-0 rounded-4 oculta card-reserva"
                  th:attr="data-index=${iterStat.index}, data-precio-base=${habitacion.producto.precioBase}, data-id-habitacion=${habitacion.id}"
                  th:aria-label="'Detalles de la habitación tipo ' + ${habitacion.tipo}">
                 <div class="row g-0">
@@ -285,7 +292,7 @@
                              th:alt="'Imagen de la habitación tipo ' + ${habitacion.tipo} + ' con capacidad para ' + ${habitacion.capacidad} + ' personas'">
                     </div>
 
-                    <div class="col-md-7 d-flex flex-column justify-content-center p-4 bg-white text-dark">
+                    <div class="col-md-7 d-flex flex-column justify-content-center p-4">
                         <h5 class="mb-2" th:text="${habitacion.tipo}">Tipo de habitación</h5>
                         <p class="mb-1"><strong>Capacidad:</strong> <span th:text="${habitacion.capacidad}">2</span> pax</p>
                         <p class="mb-1"><strong>Precio desde:</strong> <span th:text="${habitacion.producto.precioBase} + ' €/noche'" aria-label="'Precio desde ' + ${habitacion.producto.precioBase} + ' euros por noche'"> 50€ / noche</span></p>
@@ -394,7 +401,7 @@
                                         <label><strong>Precio estimado:</strong>
                                             <span th:id="'precioTotal__' + ${iterStat.index}" aria-live="polite">0 €</span>
                                         </label>
-                                        <div th:id="'desglosePrecio__' + ${iterStat.index}" style="font-size: 0.9em; color: #555;" aria-live="polite"></div>
+                                        <div th:id="'desglosePrecio__' + ${iterStat.index}" style="font-size: 0.9em; color:white;" aria-live="polite"></div>
                                     </div>
 
                                     <div class="mt-4 text-end">

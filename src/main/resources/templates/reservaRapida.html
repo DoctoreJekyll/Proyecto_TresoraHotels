@@ -34,6 +34,9 @@
                     const fechaSalida = fechaSalidaEl.value;
 
                     if (!hotelId || !fechaEntrada || !fechaSalida) {
+                        // Clear habitaciones if dates/hotel are not selected
+                        habitacionSelect.innerHTML = '<option value="" disabled selected>Seleccione habitación</option>';
+                        calcularPrecioTotal(); // Recalculate to show 0 if no room selected
                         return;
                     }
 
@@ -42,20 +45,36 @@
 
                     const url = `/reserva/api/habitaciones?hotelId=${hotelId}&fechaEntrada=${fechaEntrada}&fechaSalida=${fechaSalida}`;
                     fetch(url)
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
                         .then(data => {
                             console.log("🛏 Habitaciones disponibles:", data);
-                            data.forEach(habitacion => {
+                            if (data.length === 0) {
                                 const option = document.createElement('option');
-                                option.value = habitacion.id;
-                                option.textContent = habitacion.tipo + ' - Nº ' + habitacion.numeroHabitacion;
-                                option.dataset.precio = habitacion.precioBase;
+                                option.value = "";
+                                option.disabled = true;
+                                option.selected = true;
+                                option.textContent = "No hay habitaciones disponibles para estas fechas.";
                                 habitacionSelect.appendChild(option);
-                            });
+                            } else {
+                                data.forEach(habitacion => {
+                                    const option = document.createElement('option');
+                                    option.value = habitacion.id;
+                                    option.textContent = habitacion.tipo + ' - Nº ' + habitacion.numeroHabitacion;
+                                    option.dataset.precio = habitacion.precioBase;
+                                    habitacionSelect.appendChild(option);
+                                });
+                            }
                             calcularPrecioTotal();
                         })
                         .catch(err => {
                             console.error('Error cargando habitaciones disponibles:', err);
+                            habitacionSelect.innerHTML = '<option value="" disabled selected>Error al cargar habitaciones</option>';
+                            calcularPrecioTotal();
                         });
                 }
 
@@ -71,7 +90,14 @@
                     const fechaSalida = new Date(fechaSalidaEl.value);
 
                     const msPorDia = 1000 * 60 * 60 * 24;
-                    const noches = Math.max(1, Math.round((fechaSalida - fechaEntrada) / msPorDia));
+                    // Calculate nights, ensuring at least 1 if dates are valid and same day
+                    let noches = 0;
+                    if (fechaEntradaEl.value && fechaSalidaEl.value && fechaSalida > fechaEntrada) {
+                        noches = Math.round((fechaSalida - fechaEntrada) / msPorDia);
+                    } else if (fechaEntradaEl.value && fechaSalidaEl.value && fechaSalida.getTime() === fechaEntrada.getTime()) {
+                        noches = 1; // At least one night if check-in and check-out are the same day
+                    }
+
 
                     total += precioHabitacion * noches;
 
@@ -82,18 +108,29 @@
                         }
                     });
 
-                    precioTotalEl.innerText = total.toFixed(2) + ' €';
+                    const formattedTotal = total.toFixed(2) + ' €';
+                    precioTotalEl.innerText = formattedTotal;
+                    // *** UPDATED: Set aria-label for total price ***
+                    precioTotalEl.setAttribute('aria-label', `Precio estimado total: ${formattedTotal}`);
+
 
                     const desglose = document.getElementById("desglosePrecio");
-                    if (desglose && precioHabitacion > 0) {
-                        desglose.innerText =
-                            `(${precioHabitacion.toFixed(2)} € x ${noches} noche${noches > 1 ? 's' : ''})`;
-                    } else if (desglose) {
-                        desglose.innerText = '';
+                    if (desglose) {
+                        if (precioHabitacion > 0 && noches > 0) {
+                            const desgloseText = `(${precioHabitacion.toFixed(2)} € x ${noches} noche${noches > 1 ? 's' : ''})`;
+                            desglose.innerText = desgloseText;
+                            // *** UPDATED: Set aria-label for price breakdown ***
+                            desglose.setAttribute('aria-label', `Desglose del precio: ${desgloseText}`);
+                        } else {
+                            desglose.innerText = '';
+                            // *** UPDATED: Set aria-label for price breakdown when empty ***
+                            desglose.setAttribute('aria-label', 'Desglose del precio: no disponible');
+                        }
                     }
                 }
 
                 habitacionSelect.addEventListener('change', calcularPrecioTotal);
+                // Attach event listeners to all product checkboxes
                 document.querySelectorAll('input[type="checkbox"][name^="productos"]').forEach(cb => {
                     cb.addEventListener('change', calcularPrecioTotal);
                 });
@@ -119,13 +156,13 @@
                     }
                 });
 
-                calcularPrecioTotal(); // Inicial
+                calcularPrecioTotal(); // Initial calculation on page load
             });
         </script>
 
 
         <div class="card form-card">
-        <h1 id="booking-title" class="card-title text-center">Reserva Rápida</h1>
+            <h1 id="booking-title" class="card-title text-center">Reserva Rápida</h1>
 
             <form th:action="@{/reserva/rapida}" th:object="${reservaDTO}" method="post" id="booking-form" aria-describedby="form-instructions">
 
@@ -209,7 +246,7 @@
                                    th:attr="data-precio=${producto.precioBase}"
                                    class="form-check-input me-2"
                                    onchange="calcularPrecioTotal()"
-                                   th:aria-label="'Seleccionar' + ${producto.nombre}" />
+                                   th:aria-label="'Seleccionar ' + ${producto.nombre}" />
 
                             <label th:for="'producto_' + ${iterStat.index}"
                                    th:text="${producto.nombre}"
@@ -241,12 +278,13 @@
                         <label for="precioTotal">
                             <strong>Precio estimado total:</strong>
                         </label>
-                        <span id="precioTotal" aria-label="Precio estimado total: 0 euros"
+                        <span id="precioTotal"
+                              aria-label="Precio estimado total: 0 €"
                               aria-live="polite" aria-atomic="true" role="status" tabindex="0"> 0 €
                         </span>
 
                         <div id="desglosePrecio" style="font-size: 0.9em; color: #555;"
-                             aria-label="Desglose del precio" aria-live="polite" aria-atomic="true" role="status" tabindex="0"
+                             aria-label="Desglose del precio: no disponible" aria-live="polite" aria-atomic="true" role="status" tabindex="0"
                         ></div>
                     </div>
 
