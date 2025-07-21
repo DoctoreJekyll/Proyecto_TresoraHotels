@@ -1,0 +1,73 @@
+.customTooltip {
+    color: #ff0000;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-size: 1.1em;
+    /* Asegurar que el ancho máximo no sea excesivo */
+    max-width: 350px !important;
+    padding: 20px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+}
+
+/* Estilos para el título dentro del tooltip */
+.customTooltip .introjs-title {
+    color: #000000;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #00BFFF; /* Línea debajo del título */
+    padding-bottom: 5px;
+}
+
+/* Estilos para el cuerpo del texto*/
+.customTooltip .introjs-tooltiptext {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Estilos para los botones (Siguiente, Anterior, Listo) */
+.customTooltip .introjs-button {
+    background-color: #ffffff;
+    color: #00BFFF;
+    border: 2px solid #00BFFF;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    text-shadow: none; /* Eliminar sombra de texto si Intro.js la añade por defecto */
+}
+
+.customTooltip .introjs-button:hover {
+    background-color: #00BFFF;
+}
+
+/* Estilo específico para el botón "Listo" */
+.customTooltip .introjs-skipbutton {
+    background-color: #ff0000; /* Rojo para "Saltar" o "Listo" si se usa así */
+    color: #000000;
+    /* Asegurarse de que "Saltar" no tenga estilos raros si lo habilitas */
+}
+
+/* Estilos para la barra de progreso */
+.customTooltip .introjs-progressbar {
+    background-color: #f1c40f; /* Amarillo para la barra de progreso */
+    height: 6px;
+    border-radius: 3px;
+    margin-top: 10px;
+}
+
+/* Estilos para el punto de anclaje (la "cola" del tooltip) */
+.introjs-arrow.bottom {
+    border-bottom-color: #3498db !important; /* Mismo color que el fondo del tooltip */
+}
+/* Repetir para otras posiciones si es necesario: top, left, right */
+.introjs-arrow.top {
+    border-top-color: #3498db !important;
+}
+.introjs-arrow.right {
+    border-right-color: #3498db !important;
+}
+.introjs-arrow.left {
+    border-left-color: #3498db !important;
+}
