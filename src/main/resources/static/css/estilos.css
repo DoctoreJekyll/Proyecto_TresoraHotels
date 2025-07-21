@@ -3,7 +3,6 @@
   box-sizing: border-box;
 }
 
-
 header {
   position: relative;
   margin-top: 80px; /* Ajusta el espacio superior del header para que no sobrepase el navbar */
@@ -16,6 +15,7 @@ html, body {
   display: flex;
   flex-direction: column;
   font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 18px; /* Tamaño de fuente base para accesibilidad (18 puntos) */
 }
 
 /* Offcanvas personalizado */
@@ -25,13 +25,13 @@ body, .offcanvas {
   color: #E0E0E0;
 }
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
   background-color: #000000 !important;
+  /* Eliminado: margin: 0 15px; para que el nav y footer no lo tengan */
 }
 
-main#contenido-principal {
-  flex: 1 0 auto; /* Crece para ocupar el espacio disponible */
-  padding-top: 80px; /* para no solaparse con el navbar fijo */
-}
 
 .offcanvas {
   background-color: rgba(0, 0, 0, 0.8);
@@ -60,7 +60,7 @@ main#contenido-principal {
   border: none;
 }
 .offcanvas-body a.nav-link {
-  font-size: 1.5rem;
+  font-size: 1.5rem; /* Se mantiene este tamaño para enlaces del offcanvas */
   padding: 0.75rem 0;
 }
 
@@ -90,15 +90,23 @@ main#contenido-principal {
 
 /* Navbar */
 .navbar {
-  /*position: relative;*/
-  position: relative; /* Fija el navbar en la parte superior */
-  top: 0; /* Asegura que esté en la parte superior de la ventana */
-  left: 0; /* Asegura que se extienda de lado a lado */
-  width: 100%; /* Ocupa todo el ancho de la pantalla */
-  z-index: 100; /* Asegura que el navbar quede por encima de otros elementos */
+  position: fixed; /* Asegura que el navbar esté fijo */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
   background-color: #E0E0E0;
+  /* Nuevo: Reborde azul del navbar al enfocar */
+  border: 1px solid transparent; /* Asegura que el borde no mueva el contenido */
+  transition: border-color 0.3s ease; /* Suaviza la transición del borde */
 }
 
+/* Aplica el borde azul cuando el navbar o sus elementos internos están enfocados o activos */
+.navbar:focus-within,
+.navbar.active { /* Puedes añadir una clase 'active' con JS si lo necesitas para un estado persistente */
+  border-color: #00BFFF;
+  box-shadow: 0 0 0 0.2rem rgba(0, 191, 255, 0.25); /* Opcional: añade una sombra para un efecto más pronunciado */
+}
 
 .navbar-brand {
   color: #000000;
@@ -118,11 +126,24 @@ main#contenido-principal {
   color:white;
 }
 
-/* Buscador */
+/* Buscador y Formularios */
 .form-control {
   background-color: #FFFFFF;
   color: #000000;
+  margin-bottom: 10px; /* Margen inferior para separar los campos del formulario */
+  border: 1px solid #00BFFF; /* Added border for forms */
 }
+/* Mantenemos el estilo de borde azul para form-control:focus y form-select:focus aquí */
+.form-control:focus,
+.form-select:focus {
+  border-color: #00BFFF;
+  box-shadow: 0 0 0 0.2rem rgba(0, 191, 255, 0.25);
+}
+
+.form-select {
+  border: 1px solid #00BFFF; /* Added border for selects */
+}
+
 .btn-outline-dark {
   color: #000000;
   border-color: #000000;
@@ -231,24 +252,45 @@ main#contenido-principal {
   gap: 5px;
 }
 
+/* estilos.css (o dentro de <style> en plantilla.html) */
+
+/* Clase para aplicar un padding al contenido principal debajo del navbar */
+.content-padding-top {
+  padding-top: 80px; /* Ajusta este valor según la altura de tu navbar y el espacio deseado */
+  /* Puedes usar un poco más si tu navbar es alto o si quieres más espacio */
+}
+
+/* Si usas la opción de sombra y redondeo del filtro, puedes añadirlo aquí también */
+.filtro-habitaciones-estilos {
+  border-radius: 10px; /* Esquinas redondeadas */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra suave */
+}
+
 /* Cards */
 .card {
-  background-color: gray;
-  border: 2px solid #ddd;
-  color: #000000;
+  margin-top: 2rem;
+  padding: 0.5rem;
+  max-width: 512px;
+  width: 100%;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) ;
+  background-color: #000000;
+  border: 2px solid #00BFFF; /* Existing border */
+  color: white;
 }
 .card-title {
   color: #00BFFF;
   font-weight: 600;
 }
 .card-text {
-  color: black;
+  color: white;
 }
 
 /* Modales */
 .modal-content {
   background-color: #000000;
   color: white;
+  border: 2px solid #00BFFF; /* Added border for modals */
 }
 .modal-dialog {
   margin-top: 50px;
@@ -278,11 +320,13 @@ main#contenido-principal {
 h1,h2{
   color: #00BFFF;
   font-weight: 800;
+  font-size: 30px; /* Asegura que h1 y h2 sean de 24px o más grandes */
 }
 
 h3, h4 {
   color: #E0E0E0;
   font-weight: 600;
+  font-size: 24px;
 }
 h5 {
   color:#00BFFF;
@@ -311,7 +355,8 @@ h6 {
 
 /* Footer y iconos */
 footer {
-  flex-shrink: 0; /* No se encoge */
+  flex-shrink: 0; /* Mantiene el tamaño del footer */
+  margin-top: auto; /* NUEVO: Empuja el footer hacia la parte inferior */
   background-color: #E0E0E0;
   color: #000000;
   padding-top: 1rem;
@@ -368,5 +413,10 @@ footer i:hover,
     width: 100%;
     height: 30vh; /* Hace que la imagen ocupe toda la altura de la pantalla */
     z-index: -1; /* Hace que la imagen quede detrás del contenido */
+  }
+
+  /* Cambiar el color de la cruz del botón de cierre */
+  .btn-close {
+    filter: invert(100%); /* Invierte el color a blanco */
   }
 }
