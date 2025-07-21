@@ -4,7 +4,7 @@
       layout:decorate="~{/layout/plantilla}">
 <head>
     <title>Lista de Informes - Hotel Gominola</title>
-    <link th:href="@{/css/contact.css}" rel="stylesheet" />
+    <link th:href="@{/css/forms.css}" rel="stylesheet" />
     <style>
         /* Tabla responsiva con diseño limpio */
         table {
@@ -37,45 +37,45 @@
             <h1 class="mb-4 text-center" id="titulo-informes">Lista de Informes de Limpieza</h1>
 
             <table aria-describedby="titulo-informes">
+                <caption>Información detallada de todos los informes de limpieza registrados.</caption>
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Empleado</th>
-                    <th>Habitación</th>
-                    <th>Fecha Limpieza</th>
-                    <th>Hora Limpieza</th>
-                    <th>Foto 1</th>
-                    <th>Foto 2</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Empleado</th>
+                    <th scope="col">Habitación</th>
+                    <th scope="col">Fecha Limpieza</th>
+                    <th scope="col">Hora Limpieza</th>
+                    <th scope="col">Foto 1</th>
+                    <th scope="col">Foto 2</th>
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Datos dummy para probar sin backend -->
                 <tr>
-                    <td>1</td>
-                    <td>Juan Pérez</td>
-                    <td>Hab. 101 - Piso 1</td>
-                    <td>2025-06-15</td>
-                    <td>10:30</td>
-                    <td><img src="/images/foto1.jpg" alt="Foto 1 Informe 1"></td>
-                    <td><img src="/images/foto2.jpg" alt="Foto 2 Informe 1"></td>
+                    <td data-label="ID">1</td>
+                    <td data-label="Empleado">Juan Pérez</td>
+                    <td data-label="Habitación">Hab. 101 - Piso 1</td>
+                    <td data-label="Fecha Limpieza">2025-06-15</td>
+                    <td data-label="Hora Limpieza">10:30</td>
+                    <td data-label="Foto 1"><img src="/images/foto1.jpg" alt="Primera foto del informe de limpieza ID 1"></td>
+                    <td data-label="Foto 2"><img src="/images/foto2.jpg" alt="Segunda foto del informe de limpieza ID 1"></td>
                 </tr>
                 <tr>
-                    <td>2</td>
-                    <td>María Gómez</td>
-                    <td>Hab. 102 - Piso 1</td>
-                    <td>2025-06-14</td>
-                    <td>09:45</td>
-                    <td><span>No hay foto</span></td>
-                    <td><img src="/images/foto4.jpg" alt="Foto 2 Informe 2"></td>
+                    <td data-label="ID">2</td>
+                    <td data-label="Empleado">María Gómez</td>
+                    <td data-label="Habitación">Hab. 102 - Piso 1</td>
+                    <td data-label="Fecha Limpieza">2025-06-14</td>
+                    <td data-label="Hora Limpieza">09:45</td>
+                    <td data-label="Foto 1"><span>No hay foto disponible para la foto 1 del informe ID 2</span></td>
+                    <td data-label="Foto 2"><img src="/images/foto4.jpg" alt="Segunda foto del informe de limpieza ID 2"></td>
                 </tr>
                 <tr>
-                    <td>3</td>
-                    <td>Carlos Díaz</td>
-                    <td>Hab. 201 - Piso 2</td>
-                    <td>2025-06-13</td>
-                    <td>14:00</td>
-                    <td><img src="/images/foto5.jpg" alt="Foto 1 Informe 3"></td>
-                    <td><span>No hay foto</span></td>
+                    <td data-label="ID">3</td>
+                    <td data-label="Empleado">Carlos Díaz</td>
+                    <td data-label="Habitación">Hab. 201 - Piso 2</td>
+                    <td data-label="Fecha Limpieza">2025-06-13</td>
+                    <td data-label="Hora Limpieza">14:00</td>
+                    <td data-label="Foto 1"><img src="/images/foto5.jpg" alt="Primera foto del informe de limpieza ID 3"></td>
+                    <td data-label="Foto 2"><span>No hay foto disponible para la foto 2 del informe ID 3</span></td>
                 </tr>
                 </tbody>
             </table>

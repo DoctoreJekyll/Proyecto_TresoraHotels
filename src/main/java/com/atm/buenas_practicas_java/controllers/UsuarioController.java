@@ -4,17 +4,21 @@ import com.atm.buenas_practicas_java.DTOs.UsuarioDTO;
 import com.atm.buenas_practicas_java.entities.Rol;
 import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.services.HotelService;
+import com.atm.buenas_practicas_java.services.ReservaService;
 import com.atm.buenas_practicas_java.services.RolService;
 import com.atm.buenas_practicas_java.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Controller
@@ -25,6 +29,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final RolService rolService;
     private final HotelService hotelService;
+    private final ReservaService reservaService;
 
     @GetMapping("/crear-cuenta")
     @PreAuthorize("permitAll()")
@@ -161,6 +166,39 @@ public class UsuarioController {
         return "redirect:/home";
     }
 
+    @GetMapping("/cambiar-contrasena")
+    @PreAuthorize("isAuthenticated()")
+    public String mostrarFormularioCambioContrasena() {
+        return "cambiarContrasena";
+    }
+
+    @PostMapping("/cambiar-contrasena")
+    @PreAuthorize("isAuthenticated()")
+    public String cambiarContrasena(@RequestParam String actual,
+                                    @RequestParam String nueva,
+                                    @RequestParam String confirmacion,
+                                    Model model,
+                                    Authentication auth) {
+        String email = auth.getName();
+        Usuario usuario = usuarioService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!usuarioService.verificarPassword(usuario, actual)) {
+            model.addAttribute("errorMessage", "La contraseña actual no es correcta.");
+            return "cambiarContrasena";
+        }
+
+        if (!nueva.equals(confirmacion)) {
+            model.addAttribute("errorMessage", "La nueva contraseña no coincide con la confirmación.");
+            return "cambiarContrasena";
+        }
+
+        usuarioService.actualizarPassword(usuario, nueva);
+        model.addAttribute("successMessage", "La contraseña se actualizó correctamente.");
+        return "cambiarContrasena";
+    }
+
+
     //--------------------------------CONTROLLER DE VISTAS DE EMPLEADO----------------------------------------------//
 
     @GetMapping("/nuevo")
@@ -168,7 +206,7 @@ public class UsuarioController {
     public String nuevoUsuarioForm(Model model) {
         model.addAttribute("usuario", new Usuario());
         model.addAttribute("roles", rolService.findAll()); // para el desplegable de roles
-        return "formUsuario";
+        return "usuarioForm";
     }
 
     @GetMapping("/editar/{id}")
@@ -178,7 +216,7 @@ public class UsuarioController {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         model.addAttribute("usuario", usuario);
         model.addAttribute("roles", rolService.findAll());
-        return "formUsuario";
+        return "usuarioForm";
     }
 
     @PostMapping("/guardar")
@@ -197,6 +235,30 @@ public class UsuarioController {
         usuarioService.deleteById(id);
         return "redirect:/lista/usuarios";
     }
+
+    //--------------------------------CONTROLLER DE VISTAS USUARIOS LOG/RESERVAS----------------------------------------------//
+
+    @GetMapping("/reserva/{id}")
+    public String usuarioListaReservas(@PathVariable("id") Integer id, Model model)
+    {
+        Usuario usuario;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()){
+            UserDetails user = (UserDetails) authentication.getPrincipal();
+            String userEmail = user.getUsername();
+
+            usuario = usuarioService.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+            model.addAttribute("reserva", reservaService.findReservaByUsuario(usuario.getId()));
+            return "usuarioListaReservas";
+        }
+        else
+        {
+            return "redirect:/user_home_page";
+        }
+
+    }
+
 }
 
 

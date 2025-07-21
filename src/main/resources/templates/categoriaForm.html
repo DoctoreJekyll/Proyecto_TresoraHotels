@@ -4,7 +4,7 @@
       layout:decorate="~{/layout/plantilla}">
 <head>
     <title>Nueva Categoría de Producto - Hotel Gominola</title>
-    <link th:href="@{/css/contact.css}" rel="stylesheet" />
+    <link th:href="@{/css/forms.css}" rel="stylesheet" />
 </head>
 <body class="bg-gradient-primary">
 <main layout:fragment="contenido">
@@ -33,18 +33,20 @@
                             <label for="nombre" class="form-label">Nombre *</label>
                             <input type="text" class="form-control" id="nombre"
                                    th:field="*{nombre}" required aria-required="true"
-                                   placeholder="Introduce el nombre de la categoría" maxlength="30"/>
+                                   placeholder="Introduce el nombre de la categoría" maxlength="30"
+                                   aria-label="Introduce el nombre de la categoría de producto, campo obligatorio"/>
                         </div>
 
                         <div class="mb-4">
                             <label for="descripcion" class="form-label">Descripción</label>
                             <textarea class="form-control" id="descripcion"
                                       th:field="*{descripcion}" rows="3" maxlength="80"
-                                      placeholder="Introduce una breve descripción (opcional)"></textarea>
+                                      placeholder="Introduce una breve descripción (opcional)"
+                                      aria-label="Introduce una breve descripción de la categoría, campo opcional"></textarea>
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" class="btn" aria-label="Registrar categoría">Registrar Categoría</button>
+                            <button type="submit" class="btn" aria-label="Registrar categoría de producto">Registrar Categoría</button>
                         </div>
 
                     </form>

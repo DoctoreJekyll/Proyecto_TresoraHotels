@@ -4,24 +4,27 @@
       layout:decorate="~{/layout/plantilla}">
 <head>
     <title>Informe de Limpieza - Hotel Gominola</title>
-    <link th:href="@{/css/contact.css}" rel="stylesheet" />
+    <link th:href="@{/css/forms.css}" rel="stylesheet" />
 </head>
 <body class="bg-gradient-primary">
-<main layout:fragment="contenido">
+<main layout:fragment="contenido" role="main">
     <section id="informe-limpieza" class="contact-form-section" tabindex="0" aria-labelledby="titulo-informe">
         <div class="container">
             <h1 class="mb-4 text-center" id="titulo-informe">Informe de Limpieza</h1>
-            <p class="lead text-center">
+            <p class="lead text-center" id="descripcion-formulario">
                 Completa este formulario para registrar la limpieza de una habitación.
             </p>
 
             <div class="row justify-content-center">
                 <div class="col-lg-10">
-                    <h2 class="mb-4 text-center">Registrar Informe</h2>
+                    <h2 class="mb-4 text-center" id="subtitulo-formulario">Registrar Informe</h2>
 
-                    <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
+                    <form class="contact-form" role="form" aria-labelledby="subtitulo-formulario descripcion-formulario"
+                          aria-describedby="instrucciones-formulario"
                           th:action="@{/informes/guardar}" method="post"
-                          th:object="${limpiezaHabitacion}">
+                          th:object="${limpiezaHabitacion}" enctype="multipart/form-data" novalidate>
+
+                        <input type="hidden" th:field="*{id}" aria-hidden="true"/>
 
                         <p id="instrucciones-formulario" class="text-muted text-center">
                             Todos los campos marcados con * son obligatorios.
@@ -29,8 +32,9 @@
 
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3 mb-md-0">
-                                <label for="usuario" class="form-label">Empleado *</label>
-                                <select class="form-select" id="usuario" th:field="*{idUsuario}" required aria-required="true">
+                                <label for="usuario" class="form-label">Empleado <span aria-hidden="true">*</span></label>
+                                <select class="form-select" id="usuario" th:field="*{idUsuario}" required
+                                        aria-required="true" aria-label="Seleccione un empleado para el informe de limpieza">
                                     <option value="" disabled
                                             th:selected="*{idUsuario == null}">Seleccione un empleado</option>
                                     <option th:each="usuario : ${usuarios}"
@@ -40,41 +44,65 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="habitacion" class="form-label">Habitación *</label>
-                                <select class="form-select" id="habitacion" th:field="*{idHabitacion}" required aria-required="true">
+                                <label for="habitacion" class="form-label">Habitación <span aria-hidden="true">*</span></label>
+                                <select class="form-select" id="habitacion" th:field="*{idHabitacion}" required
+                                        aria-required="true" aria-label="Seleccione la habitación limpiada">
                                     <option value="" disabled
                                             th:selected="*{idHabitacion == null}">Seleccione una habitación</option>
                                     <option th:each="habitacion : ${habitaciones}"
                                             th:value="${habitacion.id}"
-                                            th:text="'Hab. ' + ${habitacion.getTipo()} + ' - Piso ' + ${habitacion.piso}">Habitación</option>
+                                            th:text="'Hab. ' + ${habitacion.getTipo()} + ' - Piso ' + ${habitacion.piso} + ' - Hotel ' + ${habitacion.hotel.nombre}">Habitación</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3 mb-md-0">
-                                <label for="fecha" class="form-label">Fecha de Limpieza *</label>
-                                <input type="date" class="form-control" id="fecha" th:field="*{fechaLimpieza}" required />
+                                <label for="fecha" class="form-label">Fecha de Limpieza <span aria-hidden="true">*</span></label>
+                                <input type="date" class="form-control" id="fecha"
+                                       th:field="*{fechaLimpieza}" required
+                                       aria-required="true" aria-label="Seleccione la fecha en que se realizó la limpieza"/>
                             </div>
 
                             <div class="col-md-6">
-                                <label for="hora" class="form-label">Hora de Limpieza *</label>
-                                <input type="time" class="form-control" id="hora" th:field="*{horaLimpieza}" required />
+                                <label for="hora" class="form-label">Hora de Limpieza <span aria-hidden="true">*</span></label>
+                                <input type="time" class="form-control" id="hora"
+                                       th:field="*{horaLimpieza}" required
+                                       aria-required="true" aria-label="Ingrese la hora en que se realizó la limpieza"/>
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="foto1" class="form-label">Foto 1 (URL o texto)</label>
-                            <input class="form-control" type="text" id="foto1" th:field="*{foto1}" placeholder="Introduce URL o texto" />
+                            <label for="file1" class="form-label">Foto 1</label>
+                            <input class="form-control" type="file" id="file1" name="file1"
+                                   accept="image/*" aria-label="Subir la primera foto de la limpieza, campo opcional" />
+
+                            <div th:if="${limpiezaHabitacion.foto1 != null and limpiezaHabitacion.foto1 != ''}" class="mt-2">
+                                <p>Imagen actual de la Foto 1:</p>
+                                <img th:src="@{${limpiezaHabitacion.foto1}}" alt="Primera foto actual del informe de limpieza"
+                                     style="max-width: 200px; height: auto;" />
+                                <input type="hidden" th:field="*{foto1}" aria-hidden="true" />
+                            </div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="foto2" class="form-label">Foto 2 (URL o texto)</label>
-                            <input class="form-control" type="text" id="foto2" th:field="*{foto2}" placeholder="Introduce URL o texto" />
+                            <label for="file2" class="form-label">Foto 2</label>
+                            <input class="form-control" type="file" id="file2" name="file2"
+                                   accept="image/*" aria-label="Subir la segunda foto de la limpieza, campo opcional" />
+
+                            <div th:if="${limpiezaHabitacion.foto2 != null and limpiezaHabitacion.foto2 != ''}" class="mt-2">
+                                <p>Imagen actual de la Foto 2:</p>
+                                <img th:src="@{${limpiezaHabitacion.foto2}}" alt="Segunda foto actual del informe de limpieza"
+                                     style="max-width: 200px; height: auto;" />
+                                <input type="hidden" th:field="*{foto2}" aria-hidden="true" />
+                            </div>
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" class="btn" aria-label="Registrar informe de limpieza">Registrar Informe</button>
+                            <button type="submit" class="btn btn-primary"
+                                    aria-label="Guardar el informe de limpieza">
+                                Registrar Informe
+                            </button>
                         </div>
 
                     </form>

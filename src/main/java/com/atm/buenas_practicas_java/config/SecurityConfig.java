@@ -113,6 +113,9 @@ public class SecurityConfig {
                         // Recursos públicos
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/", "/home", "/login", "/login-error", "/logout-exito", "/usuarios/crear-cuenta").permitAll()
+                        .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/reserva/rapida").permitAll()
+                        .requestMatchers("/contactos/nuevo").permitAll()
 
                         // Rutas específicas por rol
                         .requestMatchers("/panel").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")
@@ -120,6 +123,7 @@ public class SecurityConfig {
                         .requestMatchers("/lista/facturas").hasAnyRole("ADMIN", "EMPLEADO")
                         .requestMatchers("/lista/reservas").hasAnyRole("ADMIN", "EMPLEADO")
                         .requestMatchers("/lista/informes").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")
+                        .requestMatchers("/informes/nuevo").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")
                         .requestMatchers("/lista/habitaciones", "/lista/productos", "/lista/metodopago", "/lista/categorias").hasRole("ADMIN")
 
 

@@ -20,7 +20,6 @@
     <link th:href="@{/css/Voz.css}" rel="stylesheet" />
 </head>
 <script th:src="@{/js/scrollButon.js}"></script>
-
 <body>
 
 <!-- NAVBAR -->
@@ -47,10 +46,14 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" th:if="${#strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}" th:href="@{/usuarios/userhome}">
+                        <a class="dropdown-item"
+                           th:if="${usuario.idRol != null and #strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}"
+                           th:href="@{/usuarios/userhome}">
                             Inicio
                         </a>
-                        <a class="dropdown-item" th:unless="${#strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}" th:href="@{/panel}">
+                        <a class="dropdown-item"
+                           th:unless="${usuario.idRol != null and #strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}"
+                           th:href="@{/panel}">
                             Inicio
                         </a>
                     </li>
@@ -67,8 +70,6 @@
                     </li>
                 </ul>
             </div>
-        </div>
-    </div>
 
     <!-- Menú lateral offcanvas -->
     <div class="offcanvas offcanvas-start offcanvas-fullscreen" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">

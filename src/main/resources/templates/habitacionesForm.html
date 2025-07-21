@@ -4,7 +4,7 @@
       layout:decorate="~{/layout/plantilla}">
 <head>
     <title>Formulario de Habitaciones - Hotel Gominola</title>
-    <link th:href="@{/css/contact.css}" rel="stylesheet" />
+    <link th:href="@{/css/forms.css}" rel="stylesheet" />
 </head>
 <body class="bg-gradient-primary">
 <main layout:fragment="contenido">
@@ -18,11 +18,13 @@
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <h2 class="mb-4 text-center"
-                        th:text="${habitacion.id} != null ? 'Editar Habitación' : 'Registrar Habitación'"></h2>
+                        th:text="${habitacion.id} != null ? 'Editar Habitación' : 'Registrar Habitación'"
+                        id="form-subtitle"></h2>
 
                     <form class="contact-form" role="form" aria-describedby="instrucciones-formulario"
                           th:action="@{/habitaciones/guardar}" method="post"
-                          th:object="${habitacion}" enctype="multipart/form-data">
+                          th:object="${habitacion}" enctype="multipart/form-data"
+                          aria-labelledby="form-subtitle">
 
                         <p id="instrucciones-formulario" class="text-muted text-center">
                             Todos los campos marcados con * son obligatorios.
@@ -33,7 +35,7 @@
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <label for="Hotel" class="form-label">Hotel *</label>
-                                <select class="form-select" id="Hotel" th:field="*{hotel}" required>
+                                <select class="form-select" id="Hotel" th:field="*{hotel}" required aria-required="true" aria-label="Seleccione el hotel al que pertenece la habitación, campo obligatorio">
                                     <option value="" disabled th:selected="*{hotel == null}">Seleccione un hotel</option>
                                     <option th:each="hotel : ${hoteles}"
                                             th:value="${hotel.id}"
@@ -43,7 +45,7 @@
 
                             <div class="col-md-6">
                                 <label for="Producto" class="form-label">Producto *</label>
-                                <select class="form-select" id="Producto" th:field="*{producto}" required>
+                                <select class="form-select" id="Producto" th:field="*{producto}" required aria-required="true" aria-label="Seleccione el producto o tipo de habitación, campo obligatorio">
                                     <option value="" disabled th:selected="*{producto == null}">Seleccione un producto</option>
                                     <option th:each="producto : ${productos}"
                                             th:value="${producto.id}"
@@ -55,51 +57,49 @@
                         <div class="row mb-4">
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <label for="numeroHabitacion" class="form-label">Número de Habitación *</label>
-                                <input type="number" class="form-control" id="numeroHabitacion" th:field="*{numeroHabitacion}" min="1" required />
+                                <input type="number" class="form-control" id="numeroHabitacion" th:field="*{numeroHabitacion}" min="1" required aria-required="true" aria-label="Ingrese el número de la habitación, campo obligatorio" />
                             </div>
 
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <label for="piso" class="form-label">Piso *</label>
-                                <input type="number" class="form-control" id="piso" th:field="*{piso}" min="0" required />
+                                <input type="number" class="form-control" id="piso" th:field="*{piso}" min="0" required aria-required="true" aria-label="Ingrese el número de piso donde se encuentra la habitación, campo obligatorio" />
                             </div>
 
                             <div class="col-md-4">
                                 <label for="tipo" class="form-label">Tipo *</label>
-                                <input type="text" class="form-control" id="tipo" th:field="*{tipo}" maxlength="25" required />
+                                <input type="text" class="form-control" id="tipo" th:field="*{tipo}" maxlength="25" required aria-required="true" aria-label="Ingrese el tipo de habitación, por ejemplo 'Doble' o 'Individual', campo obligatorio" />
                             </div>
                         </div>
 
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <label for="capacidad" class="form-label">Capacidad *</label>
-                                <input type="number" class="form-control" id="capacidad" th:field="*{capacidad}" min="1" required />
+                                <input type="number" class="form-control" id="capacidad" th:field="*{capacidad}" min="1" required aria-required="true" aria-label="Ingrese la capacidad máxima de personas de la habitación, campo obligatorio" />
                             </div>
 
                             <div class="col-md-6">
                                 <label for="estadoOcupacion" class="form-label">Estado de Ocupación *</label>
-                                <input type="text" class="form-control" id="estadoOcupacion" th:field="*{ocupada}" maxlength="30" required />
+                                <input type="text" class="form-control" id="estadoOcupacion" th:field="*{ocupada}" maxlength="30" required aria-required="true" aria-label="Ingrese el estado de ocupación de la habitación, por ejemplo 'Libre' u 'Ocupada', campo obligatorio" />
                             </div>
                         </div>
 
-                        <!-- ✅ Campo imagen -->
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3">
                                 <label for="imagen" class="form-label">Imagen de la habitación</label>
                                 <input type="file" class="form-control" id="imagen" name="imagen" accept=".jpg,.jpeg,.png"
-                                       aria-describedby="ayuda-foto" />
-                                <div class="form-text">Formatos permitidos: JPG, JPEG, PNG (máx. 5MB).</div>
+                                       aria-describedby="ayuda-foto" aria-label="Seleccione una imagen para la habitación, formatos JPG, JPEG, PNG, campo opcional" />
+                                <div id="ayuda-foto" class="form-text">Formatos permitidos: JPG, JPEG, PNG (máx. 5MB).</div>
                             </div>
 
-                            <!-- ✅ Previsualización si ya existe imagen -->
                             <div class="col-md-6" th:if="${habitacion.imagenUrl != null}">
                                 <label class="form-label">Imagen actual:</label><br />
-                                <img th:src="@{${habitacion.imagenUrl}}" alt="Imagen habitación"
+                                <img th:src="@{${habitacion.imagenUrl}}" th:alt="'Imagen actual de la habitación número ' + ${habitacion.numeroHabitacion} + ' en el piso ' + ${habitacion.piso}"
                                      class="img-thumbnail" style="max-height: 200px;" onerror="this.style.display='none'" />
                             </div>
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary" aria-label="Guardar habitación">Guardar Habitación</button>
+                            <button type="submit" class="btn btn-primary" aria-label="Guardar los datos de la habitación">Guardar Habitación</button>
                         </div>
 
                     </form>

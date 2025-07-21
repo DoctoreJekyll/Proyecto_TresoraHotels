@@ -18,6 +18,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reserva {
+    public enum ESTADO_RESERVA {
+        PAGADA,
+        CANCELADA,
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -37,8 +42,9 @@ public class Reserva {
     @Column(name = "fecha_salida", nullable = false)
     private LocalDate fechaSalida;
 
+    @Enumerated(EnumType.STRING) // Se guarda como texto
     @Column(name = "estado", nullable = false, length = 30)
-    private String estado;
+    private ESTADO_RESERVA estado = ESTADO_RESERVA.PAGADA;
 
     @Column(name = "pax", nullable = false)
     private Integer pax;
@@ -49,6 +55,12 @@ public class Reserva {
     @Column(name = "comentarios", length = 80)
     private String comentarios;
 
+    private double totalReserva;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idMetodoPagoSeleccionado")
+    private MetodoPago metodoPagoSeleccionado;
+
     @OneToMany(mappedBy = "idReserva")
     private Set<DetallesReserva> detallesReservas = new LinkedHashSet<>();
 
@@ -56,3 +68,4 @@ public class Reserva {
     private Set<ProductosUsuario> productosUsuarios = new LinkedHashSet<>();
 
 }
+

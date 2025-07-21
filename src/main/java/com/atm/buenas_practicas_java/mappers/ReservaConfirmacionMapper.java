@@ -31,6 +31,7 @@ public class ReservaConfirmacionMapper {
         dto.setPax(reserva.getPax());
         dto.setComentarios(reserva.getComentarios());
         dto.setPrecioBase(reserva.getIdHabitacion().getProducto().getPrecioBase());
+        dto.setMetodoPagoNombre(reserva.getMetodoPagoSeleccionado().getNombre());
 
 
         // Convertir productos contratados

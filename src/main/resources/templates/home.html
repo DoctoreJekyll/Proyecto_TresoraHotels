@@ -15,15 +15,15 @@
 
 <main layout:fragment="contenido">
 
-    <!-- Carrusel Dinámico de Hoteles -->
-    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000"
+         aria-label="Carrusel de imágenes destacadas de hoteles">
 
-        <!-- Indicadores -->
         <div class="carousel-indicators">
             <button type="button"
                     th:each="hotel, iterStat : ${hotels}"
                     th:attr="data-bs-target='#carouselExampleIndicators', data-bs-slide-to=${iterStat.index}"
-                    th:classappend="${iterStat.index == 0} ? 'active'">
+                    th:classappend="${iterStat.index == 0} ? 'active'"
+                    th:aria-label="'Diapositiva ' + (${iterStat.index} + 1) + ' del hotel ' + ${hotel.nombre}">
             </button>
         </div>
         <div class="carousel-inner">
@@ -32,82 +32,91 @@
                  th:classappend="${iterStat.index == 0} ? 'active'">
                 <img th:src="${hotel.imageURL}" class="d-block w-100" th:alt="'Imagen del hotel ' + ${hotel.nombre}" />
                 <div class="carousel-center-caption">
-                    <h2 th:text="${hotel.nombre}">Nombre del hotel</h2>
-                    <p th:text="${hotel.descripcion}">Descripción del hotel</p>
-                </div>
+                    <h2 th:text="${hotel.nombre}">Nombre del hotel</h2> <p th:text="${hotel.descripcion}">Descripción del hotel</p> </div>
             </div>
         </div>
-        <!-- Controles -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev" aria-label="Diapositiva anterior">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next" aria-label="Diapositiva siguiente">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
         </button>
     </div>
 
 
-    <!-- Sección Introducción -->
-    <section class="py-5 text-center">
+
+    <section class="py-5 text-center" aria-labelledby="introduccion-tresora-heading">
         <div class="container">
-            <h1 class="display-4">Hoteles Tresora</h1>
+            <h1 class="display-4" id="introduccion-tresora-heading">Hoteles Tresora</h1>
             <p class="lead">Tres destinos, una misma alma</p>
         </div>
     </section>
 
-    <!-- Sección Descripción -->
-    <section class="py-5">
+
+
+    <section class="py-5" aria-labelledby="descripcion-tresora-heading">
         <div class="container">
-            <h3>En Tresora, cada viaje es una búsqueda única, y cada destino, un hallazgo valioso. Nuestra cadena de hoteles nace de la unión de tres experiencias que atesoran lo mejor del descanso.</h3>
+            <h3 id="descripcion-tresora-heading">En Tresora, cada viaje es una búsqueda única, y cada destino, un hallazgo valioso. Nuestra cadena de hoteles nace de la unión de tres experiencias que atesoran lo mejor del descanso.</h3>
         </div>
     </section>
 
-    <!-- Sección Sobre Nosotros -->
-    <section class="py-5 text-center">
+
+
+    <section class="py-5 text-center" aria-labelledby="about-us-heading">
         <div class="container">
-            <h1 class="display-4">Sobre nosotros</h1>
+            <h1 class="display-4" id="about-us-heading">Sobre nosotros</h1>
             <p class="lead">Conoce al equipo detrás de la web.</p>
         </div>
     </section>
 
-    <section class="swiper mySwiper py-5">
+    <section class="swiper mySwiper py-5" aria-label="Carrusel de miembros del equipo">
         <div class="swiper-wrapper">
             <div class="swiper-slide" th:each="miembro: ${equipo}">
-                <img th:src="${miembro.imagenURL}" th:alt="'Imagen de ' + ${miembro.nombre}" />
+                <img th:src="${miembro.imagenURL}" th:alt="'Imagen de perfil de ' + ${miembro.nombre}" />
                 <h5 th:text="${miembro.nombre}">Nombre Miembro</h5>
                 <p th:text="${miembro.descripcion}">Descripción del miembro</p>
-                <ul class="social-links" th:if="${miembro.redesSociales} != null and ${#lists.size(miembro.redesSociales)} > 0">
+                <ul class="social-links" th:if="${miembro.redesSociales} != null and ${#lists.size(miembro.redesSociales)} > 0"
+                    th:aria-label="'Enlaces a redes sociales de ' + ${miembro.nombre}">
                     <li th:each="red : ${miembro.redesSociales}">
-                        <a th:href="${red.url}" th:text="${red.nombre}" target="_blank">Red Social</a>
+                        <a th:href="${red.url}" th:text="${red.nombre}" target="_blank" th:aria-label="${'Visitar perfil de ' + red.nombre + ' de ' + miembro.nombre}">Red Social</a>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="swiper-pagination"></div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
+        <div class="swiper-pagination" aria-label="Paginación del carrusel de equipo"></div>
+        <div class="swiper-button-prev" aria-label="Diapositiva anterior de equipo"></div>
+        <div class="swiper-button-next" aria-label="Diapositiva siguiente de equipo"></div>
     </section>
+
+
+
+    <a th:href="@{/reserva/rapida}" target="_blank" class="d-block-text text-center reserva_rapida" aria-label="Acceso directo para hacer una reserva rápida">
+        <p style= "margin: 0; font-size: 0.8rem; color: #FFFFFF; letter-spacing: 2px; font-weight: bold;">RESERVA</p>
+        <i class="bi bi-rocket" style="font-size: 1.75rem; color: #FFFFFF;" aria-hidden="true"></i>
+    </a>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script th:src="@{/js/swiper.js}"></script>
 
-    <!-- Sección Hoteles -->
-    <section class="py-5" style="padding-bottom: 6rem !important;">
+
+
+    <section class="py-5" style="padding-bottom: 6rem !important;" aria-labelledby="nuestros-hoteles-heading">
         <div class="container-xl px-4" style="max-width: 100%;">
-            <h2 class="text-center display-5 mb-5" style="font-weight: 600;">Nuestros Hoteles</h2>
+            <h2 class="text-center display-5 mb-5" style="font-weight: 600;" id="nuestros-hoteles-heading">Nuestros Hoteles</h2>
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div class="col" th:each="hotel : ${hotels}">
-                    <div class="card shadow-lg h-100 border-0 rounded-4 bg-gray text-dark">
-                        <img th:src="${hotel.imageURL}" class="card-img-top" style="height: 250px; object-fit: cover;" alt="Imagen hotel">
+                    <div class="card shadow-lg h-100 rounded-4">
+                        <img th:src="${hotel.imageURL}" class="card-img-top" style="height: 250px; object-fit: cover;" th:alt="'Vista exterior del hotel ' + ${hotel.nombre}">
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title" th:text="${hotel.nombre}">Nombre Hotel</h5>
-                            <div class="mb-2">
-                                <span class="text-warning">&#9733;&#9733;&#9733;&#9733;</span><span class="text-muted">&#9733;</span>
-                            </div>
+                            <div class="mb-2" aria-label="Calificación del hotel">
+                                <span class="text-warning" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;</span><span class="text-muted" aria-hidden="true">&#9733;</span>
+                                <span class="visually-hidden">4 de 5 estrellas</span> </div>
                             <p class="card-text flex-grow-1" th:text="${hotel.descripcion}">Descripción</p>
-                            <p class="card-text"><strong th:text="'Desde ' + ${hotel.id} + '€ noche'">Precio</strong></p>
-                            <a class="btn btn-primary w-100 mt-auto" th:href="@{'/hotel/' + ${hotel.nombre}}"  target="_blank">Reservar ahora</a>
-<!--                            <a class="btn btn-primary w-100 mt-auto" th:href="@{/hotel(id=${hotel.nombre})}" target="_blank">Reservar ahora</a>-->
+                            <p class="card-text"><strong th:text="'Desde ' + ${hotel.id} + '€ noche'" aria-label="'Precio desde ' + ${hotel.id} + ' euros por noche'">Precio</strong></p>
+                            <a class="btn btn-outline-grupo5 w-100 mt-auto" th:href="@{'/hotel/' + ${hotel.nombre}}"  target="_blank" th:aria-label="'Reservar habitación en el hotel ' + ${hotel.nombre} + ' ahora'">Reservar ahora</a>
                         </div>
                     </div>
                 </div>
@@ -117,63 +126,62 @@
 
 
 
-    <section class="py-5" style="padding-top: 6rem !important; padding-bottom: 6rem !important;">
+    <section class="py-5" style="padding-top: 6rem !important; padding-bottom: 6rem !important;" aria-labelledby="servicios-destacados-heading">
         <div class="container text-center px-4">
-            <h2 class="display-5 mb-5" style="font-weight: 600;">Servicios Destacados</h2>
-            <div class="swiper servicesSwiper" style="padding: 0 2rem;">
+            <h2 class="display-5 mb-5" style="font-weight: 600;" id="servicios-destacados-heading">Servicios Destacados</h2>
+            <div class="swiper servicesSwiper" style="padding: 0 2rem;" aria-label="Carrusel de servicios destacados del hotel">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide p-4 bg-gray rounded-4 shadow text-dark">
-                        <img th:src="@{/images/spa.jpg}" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Spa">
+                        <img th:src="@{/images/spa.jpg}" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Instalaciones de spa y wellness">
                         <h5>Spa & Wellness</h5>
                         <p>Relájate en nuestro completo spa con tratamientos exclusivos.</p>
                     </div>
                     <div class="swiper-slide p-4 bg-gray rounded-4 shadow text-dark">
-                        <img th:src="@{/images/restaurante.jpg}" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Restaurante">
+                        <img th:src="@{/images/restaurante.jpg}" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Comedor del restaurante gourmet">
                         <h5>Restaurante Gourmet</h5>
                         <p>Cocina local e internacional en un entorno elegante.</p>
                     </div>
                     <div class="swiper-slide p-4 bg-gray rounded-4 shadow text-dark">
-                        <img th:src="@{/images/gimnasio.jpg}" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Gimnasio">
+                        <img th:src="@{/images/gimnasio.jpg}" class="mb-3" style="width:100%; height:200px; object-fit:cover;" alt="Área de entrenamiento en el gimnasio">
                         <h5>Gimnasio</h5>
                         <p>Gimnasio con todas sus instalaciones.</p>
                     </div>
                 </div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev" aria-label="Servicio anterior"></div>
+                <div class="swiper-button-next" aria-label="Servicio siguiente"></div>
+                <div class="swiper-pagination" aria-label="Paginación del carrusel de servicios"></div>
             </div>
         </div>
     </section>
 
-    <!-- Carrusel Ubicaciones -->
 
-    <section class="py-5">
+
+    <section class="py-5" aria-labelledby="carousel-ubicaciones-heading">
+        <h2 id="carousel-ubicaciones-heading" class="visually-hidden">Ubicación de nuestros hoteles</h2>
         <div class="d-flex justify-content-center">
             <div style="width: 70%;" class="rounded-4 shadow-lg overflow-hidden">
-                <div id="locationCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+                <div id="locationCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000"
+                     aria-label="Carrusel de ubicaciones de hoteles">
                     <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#locationCarousel" data-bs-slide-to="0" class="active"></button>
-                        <button type="button" data-bs-target="#locationCarousel" data-bs-slide-to="1"></button>
-                        <button type="button" data-bs-target="#locationCarousel" data-bs-slide-to="2"></button>
+                        <button type="button" data-bs-target="#locationCarousel" data-bs-slide-to="0" class="active" aria-label="Ver ubicación del primer hotel"></button>
+                        <button type="button" data-bs-target="#locationCarousel" data-bs-slide-to="1" aria-label="Ver ubicación del segundo hotel"></button>
+                        <button type="button" data-bs-target="#locationCarousel" data-bs-slide-to="2" aria-label="Ver ubicación del tercer hotel"></button>
                     </div>
                     <div class="carousel-inner">
                         <div class="carousel-item" th:each="hotel, iter : ${hotels}" th:classappend="${iter.index == 0} ? ' active'">
-                            <!-- Solo usando la URL -->
-                            <iframe th:src="${hotel.direccionURL}" width="100%" height="500" style="border:0;" allowfullscreen loading="lazy"></iframe>
+                            <iframe th:src="${hotel.direccionURL}" width="100%" height="500" style="border:0;" allowfullscreen loading="lazy" th:title="'Mapa de ubicación del hotel ' + ${hotel.nombre}"></iframe>
                             <div class="carousel-caption d-none d-md-block">
-                                <h5 th:text="${hotel.nombre}">Nombre Hotel</h5>
-                                <p th:text="${hotel.direccion}">Ubicación</p>
+                                <h5 th:text="${hotel.nombre}" class="visually-hidden">Nombre Hotel</h5>
+                                <p th:text="${hotel.direccion}" class="visually-hidden">Ubicación</p>
                             </div>
                         </div>
                     </div>
 
-
-                    <!-- Botones de control fuera de carousel-inner -->
-                    <button class="carousel-control-prev" type="button" data-bs-target="#locationCarousel" data-bs-slide="prev">
+                    <button class="carousel-control-prev" type="button" data-bs-target="#locationCarousel" data-bs-slide="prev" aria-label="Mapa anterior">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Anterior</span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#locationCarousel" data-bs-slide="next">
+                    <button class="carousel-control-next" type="button" data-bs-target="#locationCarousel" data-bs-slide="next" aria-label="Mapa siguiente">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Siguiente</span>
                     </button>
@@ -182,27 +190,31 @@
         </div>
     </section>
 
-    <nav id="bookingBar">
+
+    <nav id="bookingBar" aria-label="Barra de búsqueda rápida de reservas">
         <form id="bookingForm">
-            <select name="hotelId" id="hotelSelect" required aria-label="Selecciona Hotel">
-                <!-- opciones aquí -->
-                    <option selected disabled>Seleccione Hotel</option>
-                    <option th:each="hotel : ${hotels}"
-                            th:value="${hotel.id}"
-                            th:text="${hotel.nombre}"
-                            th:attr="data-nombre=${hotel.nombre}">
-                        Hotel
-                    </option>
-                </select>
-            <input type="date" name="fechaEntrada" id="fechaEntrada" required>
-            <input type="date" name="fechaSalida" id="fechaSalida" required>
-            <select name="adultos" id="adultos" required>
+            <label for="hotelSelect" class="visually-hidden">Selecciona Hotel</label>
+            <select name="hotelId" id="hotelSelect" required aria-label="Selecciona un hotel para tu reserva, campo obligatorio">
+                <option selected disabled>Seleccione Hotel</option>
+                <option th:each="hotel : ${hotels}"
+                        th:value="${hotel.id}"
+                        th:text="${hotel.nombre}"
+                        th:attr="data-nombre=${hotel.nombre}">
+                    Hotel
+                </option>
+            </select>
+            <label for="fechaEntrada" class="visually-hidden">Fecha de entrada</label>
+            <input type="date" name="fechaEntrada" id="fechaEntrada" required aria-label="Selecciona la fecha de entrada, campo obligatorio">
+            <label for="fechaSalida" class="visually-hidden">Fecha de salida</label>
+            <input type="date" name="fechaSalida" id="fechaSalida" required aria-label="Selecciona la fecha de salida, campo obligatorio">
+            <label for="adultos" class="visually-hidden">Número de adultos</label>
+            <select name="adultos" id="adultos" required aria-label="Selecciona el número de adultos, campo obligatorio">
                 <option value="1">1 Adulto</option>
                 <option value="2">2 Adultos</option>
                 <option value="3">3 Adultos</option>
                 <option value="4">4 Adultos</option>
             </select>
-            <button type="submit">Buscar</button>
+            <button class="btn btn-outline-grupo5" type="submit" aria-label="Buscar habitaciones disponibles">Buscar</button>
         </form>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -229,10 +241,8 @@
                 });
             });
         </script>
-
     </nav>
-    <!-- Botón para abrir/cerrar la barra -->
-    <button id="toggleBookingBtn" aria-expanded="true" aria-controls="bookingBar" title="Abrir/Cerrar barra reservas">
+    <button id="toggleBookingBtn" aria-expanded="true" aria-controls="bookingBar" title="Abrir/Cerrar barra reservas" aria-label="Alternar visibilidad de la barra de búsqueda de reservas">
         &#9776;
     </button>
 

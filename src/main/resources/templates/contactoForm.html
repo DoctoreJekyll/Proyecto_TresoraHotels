@@ -3,7 +3,7 @@
       layout:decorate="~{/layout/plantilla}">
 <head>
   <title>Contacto - Hotel Gominola</title>
-  <link th:href="@{/css/contact.css}" rel="stylesheet" />
+  <link th:href="@{/css/forms.css}" rel="stylesheet" />
 </head>
 
 <body class="bg-gradient-primary">
@@ -16,7 +16,6 @@
         Completa el formulario para enviarnos tu consulta.
       </p>
 
-      <!-- ----------------------------------------Formulario de Contacto---------------------------------------------------------------------------------->
       <div id="formulario-contacto" class="row justify-content-center">
         <div class="col-lg-10">
           <h2 class="mb-4 text-center">Envíanos un mensaje</h2>
@@ -32,12 +31,12 @@
             <div class="row mb-4">
               <div class="col-md-6 mb-3 mb-md-0">
                 <label for="nombre" class="form-label">Nombre *</label>
-                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Tu nombre completo" required>
+                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Tu nombre completo" required aria-required="true" aria-label="Introduce tu nombre completo, campo obligatorio">
               </div>
 
               <div class="col-md-6">
                 <label for="correo" class="form-label">Correo electrónico *</label>
-                <input type="email" class="form-control" id="correo" th:field="*{correo}" placeholder="nombre@ejemplo.com" required>
+                <input type="email" class="form-control" id="correo" th:field="*{correo}" placeholder="nombre@ejemplo.com" required aria-required="true" aria-label="Introduce tu correo electrónico, campo obligatorio">
               </div>
             </div>
 
@@ -45,12 +44,12 @@
               <label for="telefono" class="form-label">Teléfono</label>
               <input type="tel" class="form-control" id="telefono" th:field="*{telefono}"
                      placeholder="Ej. 654321987" pattern="[0-9]{7,15}" inputmode="numeric"
-                     aria-label="Número de teléfono. Ejemplo: 654321987">
+                     aria-label="Número de teléfono. Ejemplo: 654321987, campo opcional">
             </div>
 
             <div class="mb-4">
               <label for="departamento" class="form-label">Departamento *</label>
-              <select class="form-select" id="departamento" th:field="*{departamento}" aria-required="true">
+              <select class="form-select" id="departamento" th:field="*{departamento}" aria-required="true" aria-label="Selecciona el departamento al que va dirigida tu consulta, campo obligatorio">
                 <option value="" disabled>Seleccione una opción</option>
                 <option value="habitacion">Habitación</option>
                 <option value="reserva">Reserva</option>
@@ -62,30 +61,29 @@
             <div class="mb-4">
               <label for="file1" class="form-label">Adjuntar foto 1 (opcional)</label>
               <input class="form-control" type="file" id="file1" name="file1" accept=".jpg,.jpeg,.png"
-                     aria-describedby="ayuda-file1">
+                     aria-describedby="ayuda-file1" aria-label="Adjuntar primera foto, campo opcional">
               <div id="ayuda-file1" class="form-text">
                 Puedes subir una imagen en formato JPG, PNG o similar.
               </div>
             </div>
 
-            <!-- ✅ Previsualización si ya existe imagen -->
             <div class="col-md-6" th:if="${contacto.foto1 != null}">
               <label class="form-label">Imagen actual:</label><br />
-              <img th:src="@{${contacto.foto1}}" alt="Imagen formulario"
+              <img th:src="@{${contacto.foto1}}" alt="Imagen adjuntada para formulario de contacto"
                    class="img-thumbnail" style="max-height: 200px;" onerror="this.style.display='none'" />
             </div>
 
             <div class="mb-4">
               <label for="file2" class="form-label">Adjuntar foto 2 (opcional)</label>
               <input class="form-control" type="file" id="file2" name="file2"  accept=".jpg,.jpeg,.png"
-                     aria-describedby="ayuda-file2">
+                     aria-describedby="ayuda-file2" aria-label="Adjuntar segunda foto, campo opcional">
               <div id="ayuda-file2" class="form-text">
                 Puedes subir otra imagen si lo necesitas.
               </div>
 
               <div class="col-md-6" th:if="${contacto.foto2 != null}">
                 <label class="form-label">Imagen actual:</label><br />
-                <img th:src="@{${contacto.foto2}}" alt="Imagen formulario 2"
+                <img th:src="@{${contacto.foto2}}" alt="Segunda imagen adjuntada para formulario de contacto"
                      class="img-thumbnail" style="max-height: 200px;" onerror="this.style.display='none'" />
               </div>
 
@@ -94,7 +92,7 @@
             <div class="mb-4">
               <label for="mensaje" class="form-label">Mensaje *</label>
               <textarea class="form-control" id="mensaje" th:field="*{mensaje}" rows="5"
-                        placeholder="Escribe tu mensaje aquí..." required></textarea>
+                        placeholder="Escribe tu mensaje aquí..." required aria-required="true" aria-label="Escribe tu mensaje o consulta aquí, campo obligatorio"></textarea>
             </div>
 
             <div class="text-center">
@@ -107,17 +105,16 @@
     </div>
   </section>
 
-  <!-- ----------------------------------------Datos de Contacto---------------------------------------------------------------------------------->
   <section id="contact-info" class="contact-info-section py-5" tabindex="0" aria-labelledby="titulo-contacto">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-6">
           <h2 id="titulo-contacto" class="mb-4 text-center">Información de contacto</h2>
 
-          <p><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Av. de la Piruleta, Ciudad Gominola, País Feliz</p>
-          <p><i class="fa-solid fa-phone" aria-hidden="true"></i> +123 456 7890</p>
-          <p><i class="fa-solid fa-envelope" aria-hidden="true"></i> contacto@hotel.com</p>
-          <p><i class="fa-solid fa-clock" aria-hidden="true"></i> Lunes a Domingo: 8:00 - 20:00</p>
+          <p><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span aria-label="Dirección del hotel">Av. de la Piruleta, Ciudad Gominola, País Feliz</span></p>
+          <p><i class="fa-solid fa-phone" aria-hidden="true"></i> <span aria-label="Número de teléfono del hotel">+123 456 7890</span></p>
+          <p><i class="fa-solid fa-envelope" aria-hidden="true"></i> <span aria-label="Correo electrónico de contacto del hotel">contacto@hotel.com</span></p>
+          <p><i class="fa-solid fa-clock" aria-hidden="true"></i> <span aria-label="Horario de atención">Lunes a Domingo: 8:00 - 20:00</span></p>
         </div>
       </div>
     </div>

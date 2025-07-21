@@ -13,8 +13,19 @@
         .mensaje-filtro {
             text-align: center;
             font-size: 1.2em;
-            color: #6c757d;
+            color: #ffffff;
             margin-top: 50px;
+        }
+        /* Clase para ocultar visualmente pero mantener accesible para lectores de pantalla */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
         }
     </style>
 
@@ -22,17 +33,22 @@
 <body class="bg-gradient-primary" th:attr="data-hotel-id=${hotel.id}">
 <main layout:fragment="contenido">
 
-    <form id="filtroHabitacionesForm" th:action="@{/hotel/{nombre}(nombre=${hotel.nombre})}" method="get">
-        <div class="container d-flex flex-wrap gap-3 align-items-center justify-content-center py-4 bg-dark text-light">
+    <h1 class="visually-hidden" th:text="'Detalle y reserva en el hotel ' + ${hotel.nombre}"></h1>
+
+    <form id="filtroHabitacionesForm" th:action="@{/hotel/{nombre}(nombre=${hotel.nombre})}" method="get" aria-label="Filtro de habitaciones por fecha">
+        <div class="container d-flex flex-wrap gap-5 align-items-center justify-content-center py-2 px-2 bg-dark text-light"
+             style="margin-top: 30px; margin-bottom: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
             <div>
                 <label for="globalEntrada" class="form-label">Fecha de entrada:</label>
-                <input type="date" class="form-control" id="globalEntrada" name="fechaEntrada" th:value="${fechaEntrada}" />
+                <input type="date" class="form-control" id="globalEntrada" name="fechaEntrada" th:value="${fechaEntrada}"
+                       aria-label="Selecciona la fecha de entrada para el filtro de habitaciones" />
             </div>
             <div>
                 <label for="globalSalida" class="form-label">Fecha de salida:</label>
-                <input type="date" class="form-control" id="globalSalida" name="fechaSalida" th:value="${fechaSalida}" />
+                <input type="date" class="form-control" id="globalSalida" name="fechaSalida" th:value="${fechaSalida}"
+                       aria-label="Selecciona la fecha de salida para el filtro de habitaciones" />
             </div>
-            <button type="submit" class="btn btn-warning mt-4">Filtrar habitaciones</button>
+            <button type="submit" class="btn btn-outline-grupo5 mt-4" aria-label="Aplicar filtro de habitaciones">Filtrar habitaciones</button>
         </div>
     </form>
 
@@ -202,7 +218,10 @@
 
                         calcular();
                         document.querySelectorAll(`[data-index="${index}"]`).forEach(el => {
-                            el.addEventListener("change", () => calcular());
+                            // Solo añadir listener si el elemento no es el input de fecha (que ya lo tiene)
+                            if (el.id !== entrada.id && el.id !== salida.id) {
+                                el.addEventListener("change", () => calcular());
+                            }
                         });
                     });
                 }
@@ -231,58 +250,66 @@
         });
     </script>
 
-    <section class="py-5 text-center">
+    <section class="py-5 text-center" aria-labelledby="hotel-principal-heading">
         <div class="container">
-            <h1 class="display-4" th:text="${hotel.nombre}">Nombre Hotel</h1>
+            <h1 class="display-4" th:text="${hotel.nombre}" id="hotel-principal-heading">Nombre Hotel</h1>
             <p class="lead" th:text="${hotel.descripcion}">Descripción del hotel</p>
         </div>
     </section>
 
     <div class="container mb-5 text-center">
-        <img th:src="${hotel.direccionURL}" class="img-fluid rounded-4 shadow" alt="Imagen del hotel" style="max-height: 400px; object-fit: cover;">
+        <img th:src="${hotel.direccionURL}" class="img-fluid rounded-4 shadow"
+             th:alt="'Fachada o vista principal del hotel ' + ${hotel.nombre}"
+             style="max-height: 400px; object-fit: cover;">
     </div>
 
-    <div id="mensajeFiltro" class="mensaje-filtro oculta">
+    <div id="mensajeFiltro" class="mensaje-filtro oculta" role="status" aria-live="polite">
         <p>Por favor, selecciona las fechas de entrada y salida para ver las habitaciones disponibles.</p>
     </div>
 
-    <section class="py-5" id="habitacionesContainer">
+    <section class="py-5" id="habitacionesContainer" aria-labelledby="habitaciones-disponibles-heading">
         <div class="container-xl px-4">
-            <h2 class="text-center display-5 mb-5" style="font-weight: 600;">Habitaciones Disponibles</h2>
+            <h2 class="text-center display-5 mb-5" style="font-weight: 600;" id="habitaciones-disponibles-heading">Habitaciones Disponibles</h2>
 
             <div th:each="habitacion, iterStat : ${habitaciones}"
                  class="card mb-4 shadow-lg border-0 rounded-4 oculta"
-                 th:attr="data-index=${iterStat.index}, data-precio-base=${habitacion.producto.precioBase}, data-id-habitacion=${habitacion.id}">
+                 th:attr="data-index=${iterStat.index}, data-precio-base=${habitacion.producto.precioBase}, data-id-habitacion=${habitacion.id}"
+                 th:aria-label="'Detalles de la habitación tipo ' + ${habitacion.tipo}">
                 <div class="row g-0">
                     <div class="col-md-5">
-                        <img th:src="${habitacion.imagenUrl}" class="img-fluid rounded-start h-100" style="object-fit: cover;" alt="Imagen habitación">
+                        <img th:src="${habitacion.imagenUrl}" class="img-fluid rounded-start h-100" style="object-fit: cover;"
+                             th:alt="'Imagen de la habitación tipo ' + ${habitacion.tipo} + ' con capacidad para ' + ${habitacion.capacidad} + ' personas'">
                     </div>
 
                     <div class="col-md-7 d-flex flex-column justify-content-center p-4 bg-white text-dark">
                         <h5 class="mb-2" th:text="${habitacion.tipo}">Tipo de habitación</h5>
                         <p class="mb-1"><strong>Capacidad:</strong> <span th:text="${habitacion.capacidad}">2</span> pax</p>
-                        <p class="mb-1"><strong>Precio desde:</strong> <span th:text="${habitacion.producto.precioBase} + ' €/noche'"> 50€ / noche</span></p>
+                        <p class="mb-1"><strong>Precio desde:</strong> <span th:text="${habitacion.producto.precioBase} + ' €/noche'" aria-label="'Precio desde ' + ${habitacion.producto.precioBase} + ' euros por noche'"> 50€ / noche</span></p>
                         <p class="mb-3" th:text="${habitacion.tipo}">Descripción de la habitación</p>
 
                         <button type="button"
-                                class="btn btn-primary mt-auto"
+                                class="btn btn-outline-grupo5 mt-auto"
                                 data-bs-toggle="modal"
                                 th:data-bs-target="'#modalReserva__' + ${iterStat.index}"
-                                th:attrappend="data-index=${iterStat.index}">
+                                th:attrappend="data-index=${iterStat.index}"
+                                th:aria-label="'Abrir formulario de reserva para la habitación tipo ' + ${habitacion.tipo}">
                             Reservar ahora
                         </button>
                     </div>
                 </div>
 
-                <div class="modal fade" th:id="'modalReserva__' + ${iterStat.index}" tabindex="-1" aria-labelledby="modalLabel__${iterStat.index}" aria-hidden="true">
+                <div class="modal fade" th:id="'modalReserva__' + ${iterStat.index}" tabindex="-1"
+                     th:aria-labelledby="'modalLabel__' + ${iterStat.index}" aria-hidden="true"
+                     role="dialog">
                     <div class="modal-dialog modal-xl modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" th:id="'modalLabel__' + ${iterStat.index}" th:text="'Reserva: ' + ${habitacion.tipo}">Reserva</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar formulario de reserva"></button>
                             </div>
                             <div class="modal-body">
-                                <form th:action="@{/hotel/reservaCompleta}" method="post">
+                                <form th:action="@{/hotel/reservaCompleta}" method="post" th:object="${reservaDTO}"
+                                      th:aria-label="'Formulario de reserva para la habitación tipo ' + ${habitacion.tipo}">
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                     <input type="hidden" name="hotel" th:value="${hotel.id}" />
                                     <input type="hidden" name="idHabitacion" th:value="${habitacion.id}" />
@@ -290,34 +317,55 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label th:for="'nombre__' + ${iterStat.index}" class="form-label">Nombre completo</label>
-                                            <input type="text" class="form-control" th:id="'nombre__' + ${iterStat.index}" name="nombre" placeholder="Tu nombre"
-                                                   th:value="${usuarioLogeadoName ?: ''}" th:readonly="${usuarioLogeadoName != null}">
+                                            <input type="text" class="form-control" th:id="'nombre__' + ${iterStat.index}" th:field="*{nombre}" placeholder="Tu nombre"
+                                                   th:readonly="${usuarioLogeadoName != null}"
+                                                   aria-label="Tu nombre completo">
                                         </div>
                                         <div class="col-md-6">
-                                        <label th:for="'email__' + ${iterStat.index}" class="form-label">Correo electrónico</label>
-                                        <input type="email" class="form-control" th:id="'email__' + ${iterStat.index}" name="email" placeholder="correo@email.com"
-                                               th:value="${usuarioLogeadoEmail ?: ''}" th:readonly="${usuarioLogeadoEmail != null}">
-                                         </div>
+                                            <label th:for="'email__' + ${iterStat.index}" class="form-label">Correo electrónico</label>
+                                            <input type="email" class="form-control" th:id="'email__' + ${iterStat.index}" th:field="*{email}" placeholder="correo@email.com"
+                                                   th:readonly="${usuarioLogeadoEmail != null}"
+                                                   aria-label="Tu correo electrónico">
+                                        </div>
                                         <div class="col-md-6">
                                             <label th:for="'entrada__' + ${iterStat.index}" class="form-label">Fecha de entrada</label>
-                                            <input type="date" class="form-control" th:id="'entrada__' + ${iterStat.index}" name="fechaEntrada">
+                                            <input type="date" class="form-control" th:id="'entrada__' + ${iterStat.index}" th:field="*{fechaEntrada}"
+                                                   aria-label="Fecha de entrada de la reserva">
                                         </div>
                                         <div class="col-md-6">
                                             <label th:for="'salida__' + ${iterStat.index}" class="form-label">Fecha de salida</label>
-                                            <input type="date" class="form-control" th:id="'salida__' + ${iterStat.index}" name="fechaSalida">
+                                            <input type="date" class="form-control" th:id="'salida__' + ${iterStat.index}" th:field="*{fechaSalida}"
+                                                   aria-label="Fecha de salida de la reserva">
                                         </div>
+
+                                        <div class="form-group">
+                                            <label th:for="'idMetodoPagoSeleccionado__' + ${iterStat.index}" class="form-label">Método de Pago:</label>
+                                            <select class="form-control" th:id="'idMetodoPagoSeleccionado__' + ${iterStat.index}" th:field="*{idMetodoPagoSeleccionado}" required
+                                                    aria-required="true" aria-label="Seleccione el método de pago">
+                                                <option value="">Seleccione un método de pago</option>
+                                                <option th:each="metodo : ${metodoPagosDisponibles}"
+                                                        th:value="${metodo.id}"
+                                                        th:text="${metodo.nombre}">
+                                                    Tarjeta de Crédito
+                                                </option>
+                                            </select>
+                                        </div>
+
                                         <div class="col-md-6">
                                             <label th:for="'pax__' + ${iterStat.index}" class="form-label">Nº de personas</label>
-                                            <input type="number" class="form-control" th:id="'pax__' + ${iterStat.index}" name="pax" min="1" max="10">
+                                            <input type="number" class="form-control" th:id="'pax__' + ${iterStat.index}" th:field="*{pax}" min="1" max="10"
+                                                   aria-label="Número de personas para la reserva">
                                         </div>
+
                                         <div class="col-12">
                                             <label th:for="'comentarios__' + ${iterStat.index}" class="form-label">Comentarios adicionales</label>
-                                            <textarea class="form-control" th:id="'comentarios__' + ${iterStat.index}" name="comentarios" rows="3"></textarea>
+                                            <textarea class="form-control" th:id="'comentarios__' + ${iterStat.index}" th:field="*{comentarios}" rows="3"
+                                                      aria-label="Comentarios adicionales sobre la reserva"></textarea>
                                         </div>
                                     </div>
 
-                                    <div class="form-group mb-4 mt-4">
-                                        <p class="services-label mb-2">Servicios adicionales:</p>
+                                    <div class="form-group mb-4 mt-4" role="group" aria-labelledby="servicios-adicionales-label">
+                                        <p class="services-label mb-2" id="servicios-adicionales-label">Servicios adicionales:</p>
                                         <div th:each="producto, pStat : ${productos}" class="checkbox-group mb-3">
                                             <div class="form-check mb-2">
                                                 <input type="checkbox"
@@ -325,24 +373,28 @@
                                                        th:name="'productos[' + ${pStat.index} + '].idProducto'"
                                                        th:value="${producto.id}"
                                                        th:attr="data-precio=${producto.precioBase}, data-index=${iterStat.index}"
-                                                       class="form-check-input me-2 producto-checkbox" />
+                                                       class="form-check-input me-2 producto-checkbox"
+                                                       th:aria-label="'Seleccionar el servicio adicional ' + ${producto.nombre}" />
                                                 <label th:for="'producto__' + ${iterStat.index} + '_' + ${pStat.index}" th:text="${producto.nombre}" class="form-check-label"></label>
                                             </div>
-                                            <input type="number" th:name="'productos[' + ${pStat.index} + '].cantidad'" placeholder="Cantidad" class="form-control mb-1 cantidad-input" style="max-width: 100px;" min="1" th:attr="data-index=${iterStat.index}" />
-                                            <input type="date" th:name="'productos[' + ${pStat.index} + '].fecha'" class="form-control mb-1 fecha-input" style="max-width: 200px;" th:attr="data-index=${iterStat.index}" />
-                                            <input type="number" th:name="'productos[' + ${pStat.index} + '].descuento'" placeholder="% desc" class="form-control mb-3 descuento-input" style="max-width: 100px;" min="0" max="100" th:attr="data-index=${iterStat.index}" />
+                                            <input type="number" th:name="'productos[' + ${pStat.index} + '].cantidad'" placeholder="Cantidad" class="form-control mb-1 cantidad-input" style="max-width: 100px;" min="1" th:attr="data-index=${iterStat.index}"
+                                                   th:aria-label="'Cantidad para el servicio ' + ${producto.nombre}" />
+                                            <input type="date" th:name="'productos[' + ${pStat.index} + '].fecha'" class="form-control mb-1 fecha-input" style="max-width: 200px;" th:attr="data-index=${iterStat.index}"
+                                                   th:aria-label="'Fecha para el servicio ' + ${producto.nombre}" />
+                                            <input type="number" th:name="'productos[' + ${pStat.index} + '].descuento'" placeholder="% desc" class="form-control mb-3 descuento-input" style="max-width: 100px;" min="0" max="100" th:attr="data-index=${iterStat.index}"
+                                                   th:aria-label="'Porcentaje de descuento para el servicio ' + ${producto.nombre}" />
                                         </div>
                                     </div>
 
                                     <div class="mt-3">
                                         <label><strong>Precio estimado:</strong>
-                                            <span th:id="'precioTotal__' + ${iterStat.index}">0 €</span>
+                                            <span th:id="'precioTotal__' + ${iterStat.index}" aria-live="polite">0 €</span>
                                         </label>
-                                        <div th:id="'desglosePrecio__' + ${iterStat.index}" style="font-size: 0.9em; color: #555;"></div>
+                                        <div th:id="'desglosePrecio__' + ${iterStat.index}" style="font-size: 0.9em; color: #555;" aria-live="polite"></div>
                                     </div>
 
                                     <div class="mt-4 text-end">
-                                        <button type="submit" class="btn btn-success">Confirmar Reserva</button>
+                                        <button type="submit" class="btn btn-outline-grupo5" aria-label="Confirmar y enviar reserva">Confirmar Reserva</button>
                                     </div>
                                 </form>
                             </div>
@@ -350,47 +402,48 @@
                     </div>
                 </div>
             </div>
-
             <th:block th:with="
-    urlBase=${'/hotel/' + hotel.nombre},
-    pageAnterior=${habitaciones.number - 1},
-    pageSiguiente=${habitaciones.number + 1}
-">
-                <nav aria-label="Paginación habitaciones">
+            urlBase=${'/hotel/' + hotel.nombre},
+            pageAnterior=${habitaciones.number - 1},
+            pageSiguiente=${habitaciones.number + 1}
+        ">
+                <nav aria-label="Paginación de habitaciones disponibles">
                     <ul class="pagination justify-content-center mt-4">
                         <li class="page-item" th:classappend="${habitaciones.hasPrevious()} ? '' : 'disabled'">
                             <a class="page-link"
-                               th:href="@{${urlBase}(page=${pageAnterior}, fechaEntrada=${fechaEntrada}, fechaSalida=${fechaSalida})}">
+                               th:href="@{${urlBase}(page=${pageAnterior}, fechaEntrada=${fechaEntrada}, fechaSalida=${fechaSalida})}"
+                               aria-label="Ir a la página anterior de habitaciones">
                                 Anterior
                             </a>
                         </li>
                         <li class="page-item disabled">
-        <span class="page-link">
-          Página <span th:text="${habitaciones.number + 1}">1</span> de
-          <span th:text="${habitaciones.totalPages}">1</span>
-        </span>
+                        <span class="page-link" aria-current="page">
+                            Página <span th:text="${habitaciones.number + 1}">1</span> de
+                            <span th:text="${habitaciones.totalPages}">1</span>
+                        </span>
                         </li>
                         <li class="page-item" th:classappend="${habitaciones.hasNext()} ? '' : 'disabled'">
                             <a class="page-link"
-                               th:href="@{${urlBase}(page=${pageSiguiente}, fechaEntrada=${fechaEntrada}, fechaSalida=${fechaSalida})}">
+                               th:href="@{${urlBase}(page=${pageSiguiente}, fechaEntrada=${fechaEntrada}, fechaSalida=${fechaSalida})}"
+                               aria-label="Ir a la página siguiente de habitaciones">
                                 Siguiente
                             </a>
                         </li>
                     </ul>
                 </nav>
             </th:block>
-
-
         </div>
     </section>
 
-    <section class="py-5 bg-secondary text-white">
-        <div class="container">
-            <h3>Dirección y contacto</h3>
-            <p><strong>Ciudad:</strong> <span th:text="${hotel.ciudad}">Ciudad</span></p>
-            <p><strong>Dirección:</strong> <span th:text="${hotel.direccion}">Dirección</span></p>
-            <p><strong>Email:</strong> <span th:text="${hotel.email}">Email</span></p>
-            <p><strong>Teléfono:</strong> <span th:text="${hotel.telefono}">Teléfono</span></p>
+    <section>
+        <div class="py-5 text-white" style="background-color: #00BFFF;" aria-labelledby="direccion-contacto-heading">
+            <div class="container">
+                <h3 id="direccion-contacto-heading">Dirección y contacto</h3>
+                <p><strong>Ciudad:</strong> <span th:text="${hotel.ciudad}">Ciudad</span></p>
+                <p><strong>Dirección:</strong> <span th:text="${hotel.direccion}">Dirección</span></p>
+                <p><strong>Email:</strong> <span th:text="${hotel.email}">Email</span></p>
+                <p><strong>Teléfono:</strong> <span th:text="${hotel.telefono}">Teléfono</span></p>
+            </div>
         </div>
     </section>
 

@@ -3,8 +3,7 @@ package com.atm.buenas_practicas_java.services;
 import com.atm.buenas_practicas_java.DTOs.UsuarioDTO;
 import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.repositories.UsuarioRepo;
-import com.atm.buenas_practicas_java.services.mappers.UsuarioMapper;
-import com.atm.buenas_practicas_java.services.templateMethod.AbstractTemplateServicesEntities;
+import com.atm.buenas_practicas_java.mappers.UsuarioMapper;
 import com.atm.buenas_practicas_java.services.templateMethod.AbstractTemplateServicesEntitiesDTOs;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,4 +33,14 @@ public class UsuarioService extends AbstractTemplateServicesEntitiesDTOs<
         }
         return super.saveEntity(usuario);
     }
+
+    public boolean verificarPassword(Usuario usuario, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, usuario.getPassword());
+    }
+
+    public void actualizarPassword(Usuario usuario, String nuevaPassword) {
+        usuario.setPassword(passwordEncoder.encode(nuevaPassword));
+        saveEntity(usuario);
+    }
+
 }

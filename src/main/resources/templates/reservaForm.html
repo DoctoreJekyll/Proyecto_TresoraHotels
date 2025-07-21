@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/layout/plantilla}">
+
+<head>
+    <title>Reserva Rápida - Tresora Hotels</title>
+    <link th:href="@{/css/forms.css}" rel="stylesheet" />
+    <style>
+        /* Estilos para ocultar visualmente pero mantener accesible */
+        .visually-hidden {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+        /* Estilos para el mensaje de error inline */
+        .form-error-message {
+            color: #dc3545; /* Color de Bootstrap para errores */
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+            display: none; /* Oculto por defecto */
+        }
+        .form-error-message.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-primary">
+
+<main layout:fragment="contenido" id="main-content" class="main-container" role="main" aria-labelledby="booking-title">
+    <div class="center-wrapper" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; width: 100%;">
+
+        <script th:inline="javascript">
+            document.addEventListener("DOMContentLoaded", function () {
+                const habitacionSelect = document.getElementById('idHabitacion');
+                const hotelSelect = document.getElementById('hotelSelect');
+                const precioTotalEl = document.getElementById('precioTotal');
+                const desglosePrecioEl = document.getElementById('desglosePrecio');
+                const fechaEntradaEl = document.getElementById('fechaEntrada');
+                const fechaSalidaEl = document.getElementById('fechaSalida');
+                const formErrorMessageEl = document.getElementById('formErrorMessage'); // Elemento para el mensaje de error
+
+                // --- Event Listeners principales ---
+                hotelSelect.addEventListener('change', cargarHabitaciones);
+                fechaEntradaEl.addEventListener('change', cargarHabitaciones);
+                fechaSalidaEl.addEventListener('change', cargarHabitaciones);
+                habitacionSelect.addEventListener('change', calcularPrecioTotal);
+
+                // Escucha cambios en los checkboxes y también en cantidad y descuento para recalcular el precio
+                document.querySelectorAll('input[type="checkbox"][name^="productos"]').forEach(cb => {
+                    cb.addEventListener('change', calcularPrecioTotal);
+                    const group = cb.closest('.checkbox-group');
+                    if (group) {
+                        group.querySelector('input[name$=".cantidad"]')?.addEventListener('input', calcularPrecioTotal);
+                        group.querySelector('input[name$=".descuento"]')?.addEventListener('input', calcularPrecioTotal);
+                    }
+                });
+
+                // --- Funciones de Lógica ---
+                function cargarHabitaciones() {
+                    const hotelId = hotelSelect.value;
+                    const fechaEntrada = fechaEntradaEl.value;
+                    const fechaSalida = fechaSalidaEl.value;
+
+                    // Resetear la selección de habitación y el precio si los datos no son válidos para la búsqueda
+                    if (!hotelId || !fechaEntrada || !fechaSalida || new Date(fechaEntrada) >= new Date(fechaSalida)) {
+                        habitacionSelect.innerHTML = '<option value="" disabled selected>Seleccione hotel y fechas válidas primero</option>';
+                        habitacionSelect.setAttribute('aria-label', 'Seleccione hotel y fechas válidas primero para cargar habitaciones disponibles');
+                        calcularPrecioTotal(); // Recalcular para reflejar el estado actual
+                        return;
+                    }
+
+                    habitacionSelect.innerHTML = '<option value="" disabled selected>Cargando habitaciones...</option>';
+                    habitacionSelect.setAttribute('aria-label', 'Cargando habitaciones disponibles...');
+
+
+                    fetch(`/reservas/api/habitaciones?hotelId=${hotelId}&fechaEntrada=${fechaEntrada}&fechaSalida=${fechaSalida}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error al cargar habitaciones: ' + response.statusText);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            habitacionSelect.innerHTML = '<option value="" disabled selected>Seleccione una habitación</option>';
+                            habitacionSelect.setAttribute('aria-label', 'Seleccione una habitación disponible');
+                            const currentHabitacionId = [[${reservaDTO.idHabitacion}]];
+                            let habitacionEncontradaYSeleccionada = false;
+
+                            if (data.length === 0) {
+                                const noOption = document.createElement('option');
+                                noOption.value = "";
+                                noOption.disabled = true;
+                                noOption.selected = true;
+                                noOption.textContent = "No hay habitaciones disponibles para estas fechas y hotel.";
+                                habitacionSelect.appendChild(noOption);
+                                // Informar que no hay habitaciones
+                                console.warn("No hay habitaciones disponibles para las fechas y hotel seleccionados.");
+                            } else {
+                                data.forEach(habitacion => {
+                                    const option = document.createElement('option');
+                                    option.value = habitacion.id;
+                                    option.textContent = habitacion.tipo + ' - Nº ' + habitacion.numeroHabitacion;
+                                    option.dataset.precio = habitacion.precioBase;
+
+                                    if (currentHabitacionId && habitacion.id === currentHabitacionId) {
+                                        option.selected = true;
+                                        habitacionEncontradaYSeleccionada = true;
+                                    }
+                                    habitacionSelect.appendChild(option);
+                                });
+                            }
+
+                            if (currentHabitacionId && !habitacionEncontradaYSeleccionada && data.length > 0) {
+                                console.warn(`La habitación con ID ${currentHabitacionId} no está disponible para las fechas seleccionadas o ya no existe.`);
+                                habitacionSelect.value = ""; // Deseleccionar la opción no disponible
+                                // Podrías añadir un mensaje visible al usuario aquí
+                            } else if (currentHabitacionId && !habitacionEncontradaYSeleccionada && data.length === 0) {
+                                habitacionSelect.value = ""; // Asegurarse que el select queda vacío si no hay habitaciones
+                            }
+
+                            calcularPrecioTotal();
+                        })
+                        .catch(err => {
+                            console.error('Error cargando habitaciones:', err);
+                            habitacionSelect.innerHTML = '<option value="" disabled selected>Error al cargar habitaciones</option>';
+                            habitacionSelect.setAttribute('aria-label', 'Error al cargar habitaciones');
+                            calcularPrecioTotal();
+                        });
+                }
+
+                function calcularPrecioTotal() {
+                    let total = 0;
+                    let desgloseTexto = '';
+
+                    const selectedOption = habitacionSelect.options[habitacionSelect.selectedIndex];
+                    const precioHabitacion = selectedOption?.dataset.precio ? parseFloat(selectedOption.dataset.precio) : 0;
+
+                    const fechaEntrada = new Date(fechaEntradaEl.value);
+                    const fechaSalida = new Date(fechaSalidaEl.value);
+
+                    const msPorDia = 1000 * 60 * 60 * 24;
+                    let noches = 0;
+
+                    if (!isNaN(fechaEntrada.getTime()) && !isNaN(fechaSalida.getTime()) && fechaEntrada < fechaSalida) {
+                        noches = Math.max(0, Math.round((fechaSalida - fechaEntrada) / msPorDia));
+                        total += precioHabitacion * noches;
+                        if (precioHabitacion > 0) {
+                            desgloseTexto += `${precioHabitacion.toFixed(2)} € x ${noches} noche${noches !== 1 ? 's' : ''} (habitación)`;
+                        }
+                    }
+
+                    document.querySelectorAll('.checkbox-group').forEach(group => {
+                        const checkbox = group.querySelector('input[type="checkbox"]');
+                        if (checkbox?.checked && checkbox.dataset.precio) {
+                            const cantidadInput = group.querySelector('input[name$=".cantidad"]');
+                            const descuentoInput = group.querySelector('input[name$=".descuento"]');
+                            const productName = group.querySelector('label[for^="producto_"]').textContent; // Obtener el nombre del producto
+
+                            const cantidad = parseFloat(cantidadInput?.value) || 0;
+                            let descuentoPorcentaje = parseFloat(descuentoInput?.value) || 0;
+                            descuentoPorcentaje = Math.max(0, Math.min(100, descuentoPorcentaje));
+
+                            let precioProducto = parseFloat(checkbox.dataset.precio);
+                            precioProducto = precioProducto * cantidad;
+                            const precioConDescuento = precioProducto * (1 - (descuentoPorcentaje / 100));
+                            total += precioConDescuento;
+
+                            if (cantidad > 0) {
+                                if (desgloseTexto !== '') {
+                                    desgloseTexto += ' + ';
+                                }
+                                desgloseTexto += `${precioConDescuento.toFixed(2)} € (${productName}, ${cantidad} ud${cantidad !== 1 ? 's' : ''}${descuentoPorcentaje > 0 ? ` con ${descuentoPorcentaje}% desc.` : ''})`;
+                            }
+                        }
+                    });
+
+                    precioTotalEl.innerText = total.toFixed(2) + ' €';
+                    desglosePrecioEl.innerText = desgloseTexto !== '' ? `(${desgloseTexto})` : '';
+
+                    // Anunciar cambios al lector de pantalla si el contenido cambia
+                    // No es necesario modificar aria-live directamente, ya que está en el HTML
+                }
+
+                // --- Validación del formulario antes de enviar ---
+                document.getElementById("booking-form").addEventListener("submit", function (e) {
+                    let hasError = false;
+                    formErrorMessageEl.classList.remove('show'); // Ocultar mensaje previo
+
+                    document.querySelectorAll('.checkbox-group').forEach(group => {
+                        const checkbox = group.querySelector('input[type="checkbox"]');
+                        const cantidadInput = group.querySelector('input[name$=".cantidad"]');
+                        const fechaInput = group.querySelector('input[name$=".fecha"]');
+
+                        if (checkbox?.checked) {
+                            if (!cantidadInput.value || !fechaInput.value) {
+                                hasError = true;
+                                cantidadInput.classList.add('is-invalid');
+                                fechaInput.classList.add('is-invalid');
+                                cantidadInput.setAttribute('aria-invalid', 'true');
+                                fechaInput.setAttribute('aria-invalid', 'true');
+                                // Podrías añadir mensajes de error específicos para cada campo aquí
+                            } else {
+                                cantidadInput.classList.remove('is-invalid');
+                                fechaInput.classList.remove('is-invalid');
+                                cantidadInput.removeAttribute('aria-invalid');
+                                fechaInput.removeAttribute('aria-invalid');
+                            }
+                        } else {
+                            // Si el checkbox no está marcado, limpiar posibles estados de error
+                            cantidadInput?.classList.remove('is-invalid');
+                            fechaInput?.classList.remove('is-invalid');
+                            cantidadInput?.removeAttribute('aria-invalid');
+                            fechaInput?.removeAttribute('aria-invalid');
+                        }
+                    });
+
+                    if (hasError) {
+                        e.preventDefault();
+                        formErrorMessageEl.textContent = "Si seleccionas un servicio adicional, debes rellenar cantidad y fecha para cada uno.";
+                        formErrorMessageEl.classList.add('show'); // Mostrar mensaje de error
+                        formErrorMessageEl.focus(); // Mover el foco al mensaje de error para que sea leído
+                    }
+                });
+
+
+                // --- Carga inicial de datos para el modo edición ---
+                const productosSeleccionados = /*[[${reservaDTO.productos}]]*/ [];
+                if (productosSeleccionados && productosSeleccionados.length > 0) {
+                    document.querySelectorAll('input[type="checkbox"][name^="productos"]').forEach(function(cb) {
+                        const productoIdEnCheckbox = parseInt(cb.value);
+                        const pDto = productosSeleccionados.find(p => p.idProducto === productoIdEnCheckbox);
+
+                        if (pDto) {
+                            cb.checked = true;
+                            const group = cb.closest('.checkbox-group');
+                            if (group) {
+                                group.querySelector('input[name$=".cantidad"]').value = pDto.cantidad;
+                                group.querySelector('input[name$=".fecha"]').value = pDto.fecha ? String(pDto.fecha).substring(0, 10) : '';
+                                group.querySelector('input[name$=".descuento"]').value = pDto.descuento;
+                            }
+                        }
+                    });
+                }
+
+                // --- Carga inicial de habitaciones y cálculo de precio al cargar la página ---
+                if (hotelSelect.value && fechaEntradaEl.value && fechaSalidaEl.value) {
+                    cargarHabitaciones();
+                } else {
+                    calcularPrecioTotal();
+                }
+
+            });
+        </script>
+
+        <div class="card form-card" style="max-width: 512px; width: 100%; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <h1 id="booking-title" class="card-title text-center">Reserva desde Empleado</h1>
+
+            <form th:action="@{/reservas/guardar}" th:object="${reservaDTO}" method="post" id="booking-form"
+                  aria-labelledby="booking-title" aria-describedby="form-intro">
+                <input type="hidden" name="id" th:value="${reservaId}" aria-hidden="true"/>
+
+                <p id="form-intro" class="card-text mb-4">Complete los campos para registrar o modificar una reserva. Todos los campos obligatorios están indicados.</p>
+                <p class="visually-hidden">Los campos marcados con un asterisco son obligatorios.</p>
+
+                <div class="form-group mb-4">
+                    <label for="nombre">Nombre <span aria-hidden="true">*</span></label>
+                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required
+                           aria-required="true" aria-label="Nombre del huésped"/>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="email">Email <span aria-hidden="true">*</span></label>
+                    <input type="email" th:field="*{email}" id="email" class="form-control" required
+                           aria-required="true" aria-label="Correo electrónico del huésped" autocomplete="email"/>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="hotelSelect">Hotel <span aria-hidden="true">*</span></label>
+                    <select th:field="*{hotel}" id="hotelSelect" class="form-control" required
+                            aria-required="true" aria-label="Seleccione el hotel para la reserva">
+                        <option value="" disabled th:selected="*{hotel == null}">Seleccione un hotel</option>
+                        <option th:each="hotel : ${hoteles}"
+                                th:value="${hotel.id}"
+                                th:text="${hotel.nombre}"
+                                th:selected="${hotel.id == reservaDTO.hotel}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="fechaEntrada">Fecha de Entrada <span aria-hidden="true">*</span></label>
+                    <input type="date" th:field="*{fechaEntrada}" id="fechaEntrada" class="form-control" required
+                           aria-required="true" aria-label="Seleccione la fecha de entrada"/>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="fechaSalida">Fecha de Salida <span aria-hidden="true">*</span></label>
+                    <input type="date" th:field="*{fechaSalida}" id="fechaSalida" class="form-control" required
+                           aria-required="true" aria-label="Seleccione la fecha de salida"/>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="idHabitacion">Habitación <span aria-hidden="true">*</span></label>
+                    <select th:field="*{idHabitacion}" id="idHabitacion" class="form-control" required
+                            aria-required="true" aria-label="Seleccione la habitación para la reserva">
+                        <option value="" disabled selected>Seleccione hotel y fechas primero</option>
+                        <option th:if="${reservaDTO.idHabitacion != null}"
+                                th:value="${reservaDTO.idHabitacion}"
+                                th:text="${'Habitación actual (cargando...) '}"
+                                th:selected="true">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="idMetodoPagoSeleccionado">Método de Pago <span aria-hidden="true">*</span></label>
+                    <select class="form-control" id="idMetodoPagoSeleccionado" th:field="*{idMetodoPagoSeleccionado}" required
+                            aria-required="true" aria-label="Seleccione un método de pago">
+                        <option value="" disabled th:selected="*{idMetodoPagoSeleccionado == null}">Seleccione un método de pago</option>
+                        <option th:each="metodo : ${reservaDTO.metodoPagos}"
+                                th:value="${metodo.id}"
+                                th:text="${metodo.nombre}">
+                            Tarjeta de Crédito
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="pax">Número de huéspedes <span aria-hidden="true">*</span></label>
+                    <input type="number" min="1" max="10" th:field="*{pax}" id="pax" class="form-control" required
+                           aria-required="true" aria-label="Ingrese el número de huéspedes"/>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="comentarios">Comentarios</label>
+                    <textarea th:field="*{comentarios}" id="comentarios" class="form-control" rows="3" placeholder="Comentarios adicionales sobre la reserva..."
+                              aria-label="Comentarios adicionales para la reserva, campo opcional"></textarea>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="estado">Estado de la Reserva <span aria-hidden="true">*</span></label>
+                    <select th:field="*{estado}" id="estado" class="form-control" required
+                            aria-required="true" aria-label="Seleccione el estado de la reserva">
+                        <option th:each="estadoOpt : ${T(com.atm.buenas_practicas_java.entities.Reserva.ESTADO_RESERVA).values()}"
+                                th:value="${estadoOpt}"
+                                th:text="${estadoOpt.name().replace('_', ' ')}"
+                                th:selected="${estadoOpt == reservaDTO.estado}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-4" role="group" aria-labelledby="services-label">
+                    <p id="services-label" class="services-label mb-2">Servicios adicionales:</p>
+
+                    <div th:each="producto, iterStat : ${productos}" class="checkbox-group mb-3" role="group"
+                         th:aria-labelledby="'producto_name_' + ${iterStat.index}">
+                        <div class="form-check mb-2">
+                            <input type="checkbox"
+                                   th:id="'producto_checkbox_' + ${iterStat.index}"
+                                   th:name="'productos[' + ${iterStat.index} + '].idProducto'"
+                                   th:value="${producto.id}"
+                                   th:attr="data-precio=${producto.precioBase}"
+                                   class="form-check-input me-2"
+                                   th:aria-describedby="'producto_name_' + ${iterStat.index}"/>
+                            <label th:for="'producto_checkbox_' + ${iterStat.index}"
+                                   th:text="${producto.nombre}"
+                                   th:id="'producto_name_' + ${iterStat.index}"
+                                   class="form-check-label"></label>
+                        </div>
+
+                        <input type="number" th:name="'productos[' + ${iterStat.index} + '].cantidad'"
+                               placeholder="Cantidad" class="form-control mb-1" style="max-width: 100px;" min="1"
+                               th:aria-label="'Cantidad de ' + ${producto.nombre}"
+                               th:aria-describedby="'producto_name_' + ${iterStat.index}"/>
+                        <input type="date" th:name="'productos[' + ${iterStat.index} + '].fecha'"
+                               class="form-control mb-1" style="max-width: 200px;"
+                               th:aria-label="'Fecha de uso de ' + ${producto.nombre}"
+                               th:aria-describedby="'producto_name_' + ${iterStat.index}"/>
+                        <input type="number" th:name="'productos[' + ${iterStat.index} + '].descuento'"
+                               placeholder="% desc" class="form-control mb-3" style="max-width: 100px;" min="0" max="100"
+                               th:aria-label="'Descuento en porcentaje para ' + ${producto.nombre}"
+                               th:aria-describedby="'producto_name_' + ${iterStat.index}"/>
+                    </div>
+
+                    <div id="formErrorMessage" class="form-error-message" role="alert" aria-live="assertive" tabindex="-1">
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <label for="precioTotalText">
+                            <strong>Precio estimado total:</strong>
+                            <span id="precioTotalText" class="visually-hidden"></span> </label>
+                        <span id="precioTotal" aria-live="polite" aria-atomic="true" aria-describedby="desglosePrecio">0.00 €</span>
+                        <div id="desglosePrecio" style="font-size: 0.9em; color: #555;" aria-live="polite" aria-atomic="true"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" aria-label="Guardar y confirmar reserva">Guardar Reserva</button>
+            </form>
+
+            <p class="card-text text-center mt-4">¡Disponibilidad limitada! Reserva en segundos.</p>
+        </div>
+    </div>
+</main>
+
+</body>
+
+</html>

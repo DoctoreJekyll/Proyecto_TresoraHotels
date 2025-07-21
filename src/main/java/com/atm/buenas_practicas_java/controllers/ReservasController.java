@@ -5,17 +5,21 @@ import com.atm.buenas_practicas_java.DTOs.ReservaRapidaDTO;
 import com.atm.buenas_practicas_java.entities.Habitacion;
 import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.entities.Reserva;
+import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.mappers.ReservaConfirmacionMapper;
 import com.atm.buenas_practicas_java.repositories.HotelesRepo;
-import com.atm.buenas_practicas_java.services.HabitacionService;
-import com.atm.buenas_practicas_java.services.ProductoService;
-import com.atm.buenas_practicas_java.services.ReservaService;
+import com.atm.buenas_practicas_java.services.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -25,8 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+//TODO RENAME RESERVASCONTROLLER X RESERVARAPIDACONTROLLER
 @Controller
-@RequestMapping("/reservas")
+@RequestMapping("/reserva")
 @RequiredArgsConstructor
 public class ReservasController {
 
@@ -34,7 +39,8 @@ public class ReservasController {
     private final ProductoService productoService; // Para mostrar productos en el formulario
     private final HabitacionService habitacionService;
     private final ReservaConfirmacionMapper confirmacionReservaDTO;
-    private final HotelesRepo hotelesRepo;
+    private final HotelService hotelService;
+    private final UsuarioService usuarioService;
 
     @GetMapping("/api/habitaciones")
     @ResponseBody
@@ -73,10 +79,13 @@ public class ReservasController {
         Map<Hotel, List<Habitacion>> habitacionesPorHotel = habitaciones.stream()
                 .collect(Collectors.groupingBy(Habitacion::getHotel, LinkedHashMap::new, Collectors.toList()));
 
-        model.addAttribute("reservaDTO", new ReservaRapidaDTO());
+        ReservaRapidaDTO dto = reservaService.reservaRapidaUsuarioLog(usuarioService);
+
+        // El resto de campos quedan en null (vacíos en el formulario)
+        model.addAttribute("reservaDTO", dto);
         model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
         model.addAttribute("habitacionesPorHotel", habitacionesPorHotel);
-        model.addAttribute("hoteles", hotelesRepo.findAll());
+        model.addAttribute("hoteles", hotelService.findAll());
 
         return "reservaRapida";
     }

@@ -1,0 +1,58 @@
+@charset "UTF-8";
+* {
+    box-sizing: border-box;
+}
+
+/* Estilo para los campos de input y select cuando están enfocados (con el borde azul) */
+.form-control:focus,
+.form-select:focus {
+    border-color: #00BFFF;
+    box-shadow: 0 0 0 0.2rem rgba(0, 191, 255, 0.25);
+}
+
+/* Estilo para el hover del botón oscuro delineado */
+.btn-outline-dark:hover {
+    background-color: #00BFFF;
+    color: #FFFFFF;
+}
+
+/* Estilos para los botones generales que no sean btn-outline-dark ni btn-card */
+.btn:not(.btn-outline-dark):not(.btn-card) {
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 2px solid #00BFFF;
+    transition: all 0.3s ease;
+}
+
+/* Estilos para el hover de los botones generales */
+.btn:not(.btn-outline-dark):not(.btn-card):hover {
+    background-color: #00BFFF;
+    color: white;
+    border-color: #00BFFF;
+}
+
+/* Estilos para los botones con la clase .btn-card */
+.btn-card {
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 2px solid #000000;
+}
+
+/* Estilos para el hover de los botones .btn-card */
+.btn-card:hover {
+    background-color: #00BFFF;
+    color: white;
+}
+
+/* Estilos para los iconos de información de contacto */
+.contact-info i {
+    color: #00BFFF !important;      /* Color del icono */
+    fill: #00BFFF !important;       /* Asegura que el color se aplique a los SVG */
+    font-size: 1.5rem;              /* Tamaño del icono */
+    margin-right: 10px;             /* Espaciado entre el ícono y el texto */
+}
+#instrucciones-formulario,
+#ayuda-file1,
+#ayuda-file2 {
+    color: white !important;
+}

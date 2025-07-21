@@ -11,7 +11,7 @@ import java.time.LocalTime;
 @Setter
 @Entity
 @Table(name = "limpieza_habitaciones")
-public class LimpiezaHabitacion {
+public class LimpiezaHabitaciones {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

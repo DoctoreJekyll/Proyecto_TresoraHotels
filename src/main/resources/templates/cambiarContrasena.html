@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/plantilla}">
+<head>
+    <title>Cambiar Contraseña - Tresora Hotels</title>
+</head>
+
+<body>
+<main id="contenido-principal" class="container py-5" layout:fragment="contenido" role="main" aria-labelledby="heading-password">
+    <section class="mb-5">
+        <h1 class="display-5 fw-bold text-center" id="heading-password">Cambiar Contraseña</h1>
+        <p class="lead text-center" id="description-password">Actualiza tu contraseña de forma segura</p>
+    </section>
+
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert" aria-live="assertive">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <div th:if="${successMessage}" class="alert alert-success" role="status" aria-live="polite">
+        <p th:text="${successMessage}"></p>
+    </div>
+
+    <form th:action="@{/usuarios/cambiar-contrasena}" method="post" class="row g-3" aria-describedby="description-password">
+        <div class="col-md-6">
+            <label for="actual" class="form-label">Contraseña actual</label>
+            <input type="password" id="actual" name="actual" class="form-control" required aria-required="true"
+                   aria-label="Introduce tu contraseña actual" />
+        </div>
+
+        <div class="col-md-6">
+            <label for="nueva" class="form-label">Nueva contraseña</label>
+            <input type="password" id="nueva" name="nueva" class="form-control" required aria-required="true"
+                   aria-label="Introduce tu nueva contraseña" />
+        </div>
+
+        <div class="col-md-6">
+            <label for="confirmacion" class="form-label">Confirmar nueva contraseña</label>
+            <input type="password" id="confirmacion" name="confirmacion" class="form-control" required aria-required="true"
+                   aria-label="Vuelve a introducir la nueva contraseña para confirmarla" />
+        </div>
+
+        <div class="col-12 text-end mt-4">
+            <button type="submit" class="btn btn-grupo5" aria-label="Guardar nueva contraseña">Guardar</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
