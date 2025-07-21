@@ -63,34 +63,66 @@ public class LocalDataLoader {
     }
     public void loadMiembrosEquipo() {
         // Cargar datos del equipo
-        MiembroEquipo carlos = new MiembroEquipo(
-                "Carlos Gómez",
-                "https://randomuser.me/api/portraits/men/45.jpg",
-                "CEO y fundador. Apasionado por la innovación hotelera.",
+        MiembroEquipo Alba = new MiembroEquipo(
+                "Alba Gutierrez García",
+                "images/Alba.jpg",
+                "La Arquitecta del Caos",
                 Arrays.asList(
-                        new RedSocial("LinkedIn", "https://linkedin.com/in/carlos-gomez"),
-                        new RedSocial("Twitter", "https://twitter.com/carlosgomez")
+                        new RedSocial("LinkedIn", "https://www.linkedin.com/in/alba-guti%C3%A9rrez-garc%C3%ADa/")
                 )
         );
 
         // Asociar las redes sociales con el miembro
-        carlos.getRedesSociales().forEach(redSocial -> redSocial.setMiembro(carlos));
+       Alba.getRedesSociales().forEach(redSocial -> redSocial.setMiembro(Alba));
 
-        MiembroEquipo laura = new MiembroEquipo(
-                "Laura Pérez",
-                "https://randomuser.me/api/portraits/women/32.jpg",
-                "Directora de marketing. Creativa, empática y visionaria.",
-                null
+        MiembroEquipo Alvaro = new MiembroEquipo(
+                "Álvaro Fernández Sevilla",
+                "images/Alvaro.jpg",
+                "El Ejecutador Silencioso",
+                Arrays.asList(
+                        new RedSocial("LinkedIn", "https://www.linkedin.com/in/alvaro-fernandez-sevilla/")
+                )
+        );
+        // Asociar las redes sociales con el miembro
+        Alvaro.getRedesSociales().forEach(redSocial -> redSocial.setMiembro(Alvaro));
+
+        MiembroEquipo Jose= new MiembroEquipo(
+                "Jose Antonio Rodríguez Martin",
+                "images/Jose.jpg",
+                "Cafetero entre códigos",
+                Arrays.asList(
+                        new RedSocial("LinkedIn", "https://www.linkedin.com/in/jose-rodriguez-martin/?originalSubdomain=es")
+                )
+        );
+        // Asociar las redes sociales con el miembro
+       Jose.getRedesSociales().forEach(redSocial -> redSocial.setMiembro(Jose));
+
+
+        MiembroEquipo Lucia= new MiembroEquipo(
+                "Lucia Beltran Infante",
+                "images/Lucia.jpg",
+                "",
+                Arrays.asList(
+                        new RedSocial("LinkedIn", "https://www.linkedin.com/in/luc%C3%ADa-beltr%C3%A1n-infante/")
+                )
+        );
+        // Asociar las redes sociales con el miembro
+        Lucia.getRedesSociales().forEach(redSocial -> redSocial.setMiembro(Lucia));
+
+        MiembroEquipo Natalia= new MiembroEquipo(
+                "Natalia García Rodríguez",
+                "images/Natalia.jpg",
+                "",
+                Arrays.asList(
+                        new RedSocial("LinkedIn", "https://www.linkedin.com/in/natalia-garcia-rodriguez/")
+                )
         );
 
-        MiembroEquipo andres = new MiembroEquipo(
-                "Andrés Rivera",
-                "https://randomuser.me/api/portraits/men/76.jpg",
-                "CTO. Arquitecto de soluciones modernas y escalables.",
-                null
-        );
+        // Asociar las redes sociales con el miembro
+        Natalia.getRedesSociales().forEach(redSocial -> redSocial.setMiembro(Natalia));
 
-        miembroEquipoRepo.saveAll(Arrays.asList(carlos, laura, andres));
+        miembroEquipoRepo.saveAll(Arrays.asList(Alba, Alvaro, Jose, Lucia, Natalia));
+        System.out.println("Datos del equipo cargados en la base de datos.");
     }
 
     public void loadHoteles() {
