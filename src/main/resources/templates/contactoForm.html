@@ -4,10 +4,66 @@
 <head>
   <title>Contacto - Hotel Gominola</title>
   <link th:href="@{/css/forms.css}" rel="stylesheet" />
+
+  <link href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gradient-primary">
 <main layout:fragment="contenido">
+
+
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/intro.min.js"></script>
+
+  <script layout:fragment="tutorial">
+    document.addEventListener('DOMContentLoaded', function () {
+      let steps = [
+        {
+          title: "Formulario de Contacto",
+          intro: "¡Bienvenido al tutorial del formulario de contacto! Te guiaremos por los campos principales."
+        },
+        {
+          element: '#nombre',
+          intro: "Aquí debes introducir tu **nombre completo**. Es un campo obligatorio para poder contactarte.",
+          position: 'right' // Puedes ajustar la posición del tooltip
+        },
+        {
+          element: '#correo',
+          intro: "Ingresa tu **correo electrónico**. Asegúrate de que sea válido para que podamos responder a tu consulta.",
+          position: 'left'
+        },
+        {
+          element: '#departamento',
+          intro: "Selecciona el **departamento** al que va dirigida tu consulta. Esto nos ayuda a dirigir tu mensaje correctamente."
+        },
+        {
+          element: '#mensaje',
+          intro: "Por último, escribe tu **mensaje o consulta detallada** en este campo. Cuanta más información nos des, mejor podremos ayudarte."
+        },
+        {
+          element: document.querySelector('.contact-form button[type="submit"]'), // Selecciona el botón de enviar
+          intro: "Cuando hayas completado todos los campos, haz clic en **Enviar** para mandarnos tu mensaje. ¡Listo!",
+          position: 'top'
+        }
+      ];
+
+      document.getElementById('inicio_tutorial').addEventListener('click', function () {
+        // Eliminar animación si la tienes aplicada a este botón
+        this.style.animation = "none";
+
+        introJs().setOptions({
+          steps: steps,
+          'nextLabel': "Siguiente &#10140;", // Flecha a la derecha
+          'prevLabel': "&#10140; Anterior", // Flecha a la izquierda
+          'doneLabel': "¡Entendido!",
+          showProgress: true, // Mostrar la barra de progreso
+          tooltipClass: 'customTooltip' // Opcional: para aplicar estilos personalizados
+        }).start();
+      });
+    });
+  </script>
+
+
+
   <section id="contact-form" class="contact-form-section" tabindex="0" aria-labelledby="contactanos">
     <div class="container">
       <h1 class="mb-4 text-center" id="contactanos">Contáctanos</h1>
@@ -15,6 +71,10 @@
         Estamos aquí para ayudarte.<br>
         Completa el formulario para enviarnos tu consulta.
       </p>
+
+      <div class="text-center mb-4">
+        <button id="inicio_tutorial" class="btn btn-info">¿Necesitas ayuda? Iniciar Tutorial</button>
+      </div>
 
       <div id="formulario-contacto" class="row justify-content-center">
         <div class="col-lg-10">
@@ -124,5 +184,6 @@
     </div>
   </section>
 </main>
+
 </body>
 </html>
