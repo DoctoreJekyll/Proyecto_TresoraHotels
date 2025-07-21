@@ -15,16 +15,9 @@
         <project.name>buenaspracticas</project.name>
         <project.groupId>com.atm.java6</project.groupId>
     </properties>
-
-<!--    <groupId>com.atm.java6</groupId>-->
-<!--    <artifactId>buenaspracticas</artifactId>-->
-<!--    <version>0.0.1-SNAPSHOT</version>-->
-
     <groupId>${project.groupId}</groupId>
     <artifactId>${project.name}</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
-
     <name>${project.name}</name>
     <description>${project.name}</description>
     <url/>
@@ -187,6 +180,17 @@
             <artifactId>jakarta.validation-api</artifactId>
             <version>3.0.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.xhtmlrenderer</groupId>
+            <artifactId>flying-saucer-core</artifactId>
+            <version>9.1.22</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xhtmlrenderer</groupId>
+            <artifactId>flying-saucer-pdf</artifactId>
+            <version>9.1.22</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -219,21 +223,6 @@
                     </image>
                 </configuration>
             </plugin>
-
-
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <version>3.4.3</version>-->
-<!--                <configuration>-->
-<!--                    <image>          -->
-<!--                      <name>docker.io/${env.PROJECT_NAME}:${env.VERSION}</name>-->
-<!--                      <builder>paketobuildpacks/builder-jammy-full:latest</builder>-->
-<!--                      <cleanCache>true</cleanCache>-->
-<!--                      <verboseLogging>true</verboseLogging>-->
-<!--                    </image>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
             <plugin>
               <groupId>org.jacoco</groupId>
               <artifactId>jacoco-maven-plugin</artifactId>

@@ -46,10 +46,14 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" th:if="${#strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}" th:href="@{/usuarios/userhome}">
+                        <a class="dropdown-item"
+                           th:if="${usuario.idRol != null and #strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}"
+                           th:href="@{/usuarios/userhome}">
                             Inicio
                         </a>
-                        <a class="dropdown-item" th:unless="${#strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}" th:href="@{/panel}">
+                        <a class="dropdown-item"
+                           th:unless="${usuario.idRol != null and #strings.toLowerCase(usuario.idRol.nombreRol) == 'cliente'}"
+                           th:href="@{/panel}">
                             Inicio
                         </a>
                     </li>
@@ -66,8 +70,6 @@
                     </li>
                 </ul>
             </div>
-        </div>
-    </div>
 
     <!-- Menú lateral offcanvas -->
     <div class="offcanvas offcanvas-start offcanvas-fullscreen" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
@@ -96,18 +98,12 @@
     </div>
 </nav>
 
-<!-- CONTENIDO PRINCIPAL - Aquí incluimos todo lo que no es navbar ni footer -->
-<main id="contenido-principal">
-<!--    &lt;!&ndash; Reserva Rápida &ndash;&gt;-->
-<!--    <a th:href="@{/reserva/rapida}" target="_blank" class="d-block-text text-center reserva_rapida" aria-label="Reserva rápida">-->
-<!--        <p style= "margin: 0; font-size: 0.8rem; color: #FFFFFF; letter-spacing: 2px; font-weight: bold;">RESERVA</p>-->
-<!--        <i class="bi bi-rocket" style="font-size: 1.75rem; color: #FFFFFF;"></i>-->
-<!--    </a>-->
+<!-- --------------------------------------------------------------------------------------------------------------------------------- -->
 
-    <!-- CONTENIDO DE LA PÁGINA -->
-    <div layout:fragment="contenido">
-        <!-- Este contenido será reemplazado por cada vista -->
-    </div>
+<!-- CONTENIDO -->
+<main id="contenido-principal" layout:fragment="contenido" class="content-padding-top">
+    <!-- Este contenido será reemplazado por cada vista -->
+</main>
 
     <!-- Botón de desplazamiento hacia arriba -->
     <button id="scroll-top-btn" aria-label="Volver al inicio de la página" title="Volver arriba">
@@ -118,7 +114,7 @@
     <button id="toggleVoiceBtn" aria-label="Activar lectura en voz alta" aria-checked="false" title="Activar/Desactivar lectura en voz alta">
         <i class="bi bi-volume-up"></i>
     </button>
-</main>
+
 
 <!-- FOOTER -->
 <footer class="mt-5 pt-4 pb-3 rounded">

@@ -25,5 +25,7 @@ public class ConfirmacionReservaDTO {
 
     private double precioFinal;
 
+    private String metodoPagoNombre;
+
 
 }
