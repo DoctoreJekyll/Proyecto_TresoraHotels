@@ -122,8 +122,24 @@ body {
   color: #00BFFF;
 }
 
-.table{
-  color:white;
+.table {
+  background-color: #000000 !important; /* fuerza el fondo negro */
+  color: #ffffff;
+  border-color: #00BFFF;
+}
+
+.table thead,
+.table tbody,
+.table tr,
+.table td {
+  background-color: #000000 !important; /* asegura que el fondo sea negro */
+  color: #ffffff !important;
+}
+
+.table th {
+  background-color: #00BFFF;
+  color: #ffffff;
+  font-weight: bold;
 }
 
 /* Buscador y Formularios */
@@ -196,6 +212,21 @@ body {
 .navbar-toggler:focus,
 .navbar-toggler:hover {
   background-color: #00BFFF;
+  color: white;
+}
+
+.btn:not(.btn-outline-dark):not(.btn-card):not(.btn-danger) {
+  border: 2px solid #00BFFF;
+  transition: all 0.3s ease;
+}
+
+.btn:not(.btn-outline-dark):not(.btn-card):not(.btn-danger):hover {
+  background-color: #00BFFF;
+  color: white;
+  border-color: #00BFFF;
+}
+.btn-danger:hover {
+  background-color: #7f0808;
   color: white;
 }
 

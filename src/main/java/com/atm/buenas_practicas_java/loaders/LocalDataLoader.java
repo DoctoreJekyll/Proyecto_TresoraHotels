@@ -117,6 +117,7 @@ public class LocalDataLoader {
                         new RedSocial("LinkedIn", "https://www.linkedin.com/in/natalia-garcia-rodriguez/")
                 )
         );
+
         // Asociar las redes sociales con el miembro
         Natalia.getRedesSociales().forEach(redSocial -> redSocial.setMiembro(Natalia));
 
@@ -588,7 +589,7 @@ public void loadReservas() {
 
     private Reserva getReserva2() {
         Reserva reserva2 = new Reserva();
-        reserva2.setIdUsuario(usuarioRepo.getReferenceById(5));
+        reserva2.setIdUsuario(usuarioRepo.getReferenceById(1));
         reserva2.setIdHabitacion(habitacion3);
         reserva2.setFechaEntrada(LocalDate.of(2025, 8, 1));
         reserva2.setFechaSalida(LocalDate.of(2025, 8, 10));
@@ -602,7 +603,7 @@ public void loadReservas() {
 
     private Reserva getReserva3() {
         Reserva reserva3 = new Reserva();
-        reserva3.setIdUsuario(usuarioRepo.getReferenceById(1));
+        reserva3.setIdUsuario(usuarioRepo.getReferenceById(9));
         reserva3.setIdHabitacion(habitacion3);
         reserva3.setFechaEntrada(LocalDate.of(2025, 6, 1));
         reserva3.setFechaSalida(LocalDate.of(2025, 6, 10));

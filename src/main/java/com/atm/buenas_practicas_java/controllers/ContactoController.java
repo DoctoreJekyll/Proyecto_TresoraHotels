@@ -31,6 +31,8 @@ public class ContactoController {
     public String mostrarFormularioContacto(Model model) {
         Contacto contacto = contactoService.contactoUsuarioLog(usuarioService);
         model.addAttribute("contacto", contacto);
+        model.addAttribute("usuarioLogeadoEmail", contactoService.returnMail(usuarioService));
+        model.addAttribute("usuarioLogeadoName", contactoService.returnName(usuarioService));
     return "contactoForm";
     }
 
