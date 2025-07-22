@@ -57,7 +57,9 @@
                             Inicio
                         </a>
                     </li>
-                    <li><a class="dropdown-item" th:href="@{'/usuarios/reserva/' + ${usuario.id}}">Mis Reservas</a></li>
+                    <li th:if="${usuario.idRol.nombreRol == 'CLIENTE'}">
+                        <a class="dropdown-item" th:href="@{'/usuarios/reserva/' + ${usuario.id}}">Mis Reservas</a>
+                    </li>
                     <li><a class="dropdown-item" th:href="@{/usuarios/miPerfil}">Perfil</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
