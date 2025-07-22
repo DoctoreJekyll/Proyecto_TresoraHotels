@@ -72,7 +72,7 @@ public class ReservasController {
     public String returnName(UsuarioService usuarioService)
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails user = (UserDetails) authentication.getPrincipal();
             String userEmail = user.getUsername();
             Usuario usuario = usuarioService.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
@@ -86,7 +86,7 @@ public class ReservasController {
     public String returnMail(UsuarioService usuarioService)
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails)  {
             UserDetails user = (UserDetails) authentication.getPrincipal();
             return user.getUsername();
         }
