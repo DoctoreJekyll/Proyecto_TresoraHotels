@@ -2,6 +2,8 @@
 
 > **La mejor tecnología es la que no deja a nadie atrás**
 
+![Logo Tresora](static/images/LogoTresora.png)
+
 ---
 
 ## 📑 Índice
@@ -20,20 +22,20 @@
 
 ---
 
-## 🏨 ¿Qué es Tresora?
+## 🏨🛎️ ¿Qué es Tresora? 
 
 **Tresora Hotels** es una aplicación web desarrollada para facilitar la reserva de habitaciones en hoteles de forma ágil, intuitiva e inclusiva.
 
 ---
 
-## 🧩 Descripción del proyecto
+## 📝 Descripción del proyecto
 
-Una aplicación de reservas hoteleras que permite al usuario:
+Tresora es una cadena hotelera que permite al usuario:
 
 - Reservar habitaciones en distintos hoteles con fotos y desgloses de precio.
-- Elegir entre reservas completas o rápidas.
+- Elegir entre reservas convencionales o rápidas.
 - Añadir servicios extras a su reserva.
-- Acceder a una experiencia accesible: incluye soporte por voz, etiquetas ARIA, tipografías accesibles, modo alto contraste, y tutoriales.
+- Acceder a una experiencia accesible: incluye soporte por voz, tutoriales, tipografía diseñada especialmente para personas con discapacidad visual, html con etiquetas ARIA y un diseño web con alto contraste *(ratio 9.89:1 👉 https://webaim.org/resources/contrastchecker)*.
 
 Además, cuenta con una parte de gestión para empleados y administradores con acceso a:
 
@@ -41,11 +43,11 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 - Informes de limpieza.
 - Gestión de reservas y facturación.
 
-> El objetivo es diseñar una herramienta accesible, clara y funcional para mejorar el proceso de reservas tanto para el cliente como para el personal del hotel.
+> **El objetivo es diseñar una herramienta accesible, clara y funcional para mejorar el proceso de reservas tanto para el cliente como para el personal del hotel.**
 
 ---
 
-## 🛠 Tecnologías utilizadas
+## 💻 Tecnologías utilizadas
 
 - **Backend:** Java, Spring Boot, Spring Web, Spring Security, Jakarta Validation
 - **Frontend:** Thymeleaf, HTML5, CSS3
@@ -63,27 +65,27 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 - PostgreSQL (aunque no es obligatorio, ya que usamos un `DataLoader`)
 - Maven
 
-### 📦 Instalación y ejecución
+### 🛠️ Instalación y ejecución 
 
-1. Clona el repositorio:
+**1. Clona el repositorio:**
    ```bash
    git clone https://github.com/tuusuario/tresora-hotels.git
    cd tresora-hotels
    ```
 
-2. Configura las credenciales de tu base de datos PostgreSQL en `application.properties`.
+**2. Configura las credenciales de tu base de datos PostgreSQL en `application.properties`.**
 
-3. Inicia los servicios con Docker:
+**3. Inicia los servicios con Docker:**
    ```bash
    docker-compose up
    ```
 
-4. Ejecuta la aplicación (por ejemplo, desde tu IDE o usando Maven):
+**4. Ejecuta la aplicación (por ejemplo, desde tu IDE o usando Maven):**
    ```bash
    mvn spring-boot:run
    ```
 
-> Todos los datos iniciales se cargan automáticamente al iniciar gracias al `DataLoader`.
+> **Todos los datos iniciales se cargan automáticamente al iniciar gracias al ***`DataLoader`***.**
 
 ---
 
@@ -93,9 +95,9 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 
 ---
 
-## 🧪 Uso y funcionalidades
+## 🔎 Uso y funcionalidades
 
-### 👤 Usuario
+### 🙋🏻‍♂️🙋🏾‍♀️ Usuario
 
 - Crear una cuenta
 - Realizar reservas normales o rápidas sin registro
@@ -108,7 +110,7 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 - Panel de gestión de habitaciones, reservas y usuarios
 - Gestión de servicios e informes de limpieza
 
-### 🛡 Roles
+### 🔒🔑 Roles
 
 - **Usuario**
 - **Empleado**
@@ -116,7 +118,7 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 
 ---
 
-## 📁 Estructura del proyecto
+## 📁 Estructura del proyecto 📂
 
 ```bash
 src
@@ -149,7 +151,7 @@ Puedes:
 
 ---
 
-## 👨‍💻 Autores
+## 👨🏾‍💻👩🏼‍💻 Autores
 
 - [Jose A. Rodriguez](https://github.com/DoctoreJekyll)
 - [Alba Gutierrez](https://github.com/AlbaGutierrezGarcia)
@@ -161,7 +163,7 @@ Puedes:
 
 ## 🚧 Estado del proyecto
 
-🔧 En desarrollo
+🔧 En desarrollo 🔧
 
 ---
 
