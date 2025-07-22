@@ -1,40 +1,41 @@
-# 🌐 Tresora Hotels
+#  ![Logo Tresora](src/main/resources/static/images/LogoTresora.png)
 
 > **La mejor tecnología es la que no deja a nadie atrás**
+
+
 
 ---
 
 ## 📑 Índice
 
-1. [Sobre Tresora](#-sobre-tresora)
+1. [¿Que es Tresora?](#-¿qué-es-Tresora?)
 2. [Descripción del proyecto](#-descripción-del-proyecto)
 3. [Tecnologías utilizadas](#-tecnologías-utilizadas)
 4. [Cómo empezar](#-cómo-empezar)
 5. [Capturas de pantalla](#-capturas-de-pantalla)
 6. [Uso y funcionalidades](#-uso-y-funcionalidades)
 7. [Estructura del proyecto](#-estructura-del-proyecto)
-8. [Contribuciones](#-contribuciones)
-9. [Licencia](#-licencia)
-10. [Autores](#-autores)
-11. [Estado del proyecto](#-estado-del-proyecto)
-12. [Demo online](#-demo-online)
+8. [Licencia](#-licencia)
+9. [Autores](#-autores)
+10. [Estado del proyecto](#-estado-del-proyecto)
+11. [Demo online](#-demo-online)
 
 ---
 
-## 🏨 Sobre Tresora
+## 🏨🛎️ ¿Qué es Tresora? 
 
 **Tresora Hotels** es una aplicación web desarrollada para facilitar la reserva de habitaciones en hoteles de forma ágil, intuitiva e inclusiva.
 
 ---
 
-## 🧩 Descripción del proyecto
+## 📝 Descripción del proyecto
 
-Una aplicación de reservas hoteleras que permite al usuario:
+Tresora es una cadena hotelera que permite al usuario:
 
 - Reservar habitaciones en distintos hoteles con fotos y desgloses de precio.
-- Elegir entre reservas completas o rápidas.
+- Elegir entre reservas convencionales o rápidas.
 - Añadir servicios extras a su reserva.
-- Acceder a una experiencia accesible: incluye soporte por voz, etiquetas ARIA, tipografías accesibles, modo alto contraste, y tutoriales.
+- Acceder a una experiencia accesible: incluye soporte por voz, tutoriales, tipografía diseñada especialmente para personas con discapacidad visual, html con etiquetas ARIA y un diseño web con alto contraste *(ratio 9.89:1 👉 https://webaim.org/resources/contrastchecker)*.
 
 Además, cuenta con una parte de gestión para empleados y administradores con acceso a:
 
@@ -42,11 +43,12 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 - Informes de limpieza.
 - Gestión de reservas y facturación.
 
-> El objetivo es diseñar una herramienta accesible, clara y funcional para mejorar el proceso de reservas tanto para el cliente como para el personal del hotel.
+
+> **El objetivo es diseñar una herramienta accesible, clara y funcional para mejorar el proceso de reservas tanto para el cliente como para el personal del hotel.**
 
 ---
 
-## 🛠 Tecnologías utilizadas
+## 💻 Tecnologías utilizadas
 
 - **Backend:** Java, Spring Boot, Spring Web, Spring Security, Jakarta Validation
 - **Frontend:** Thymeleaf, HTML5, CSS3
@@ -64,27 +66,27 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 - PostgreSQL (aunque no es obligatorio, ya que usamos un `DataLoader`)
 - Maven
 
-### 📦 Instalación y ejecución
+### 🛠️ Instalación y ejecución 
 
-1. Clona el repositorio:
+**1. Clona el repositorio:**
    ```bash
    git clone https://github.com/tuusuario/tresora-hotels.git
    cd tresora-hotels
    ```
 
-2. Configura las credenciales de tu base de datos PostgreSQL en `application.properties`.
+**2. Configura las credenciales de tu base de datos PostgreSQL en `application.properties`.**
 
-3. Inicia los servicios con Docker:
+**3. Inicia los servicios con Docker:**
    ```bash
    docker-compose up
    ```
 
-4. Ejecuta la aplicación (por ejemplo, desde tu IDE o usando Maven):
+**4. Ejecuta la aplicación (por ejemplo, desde tu IDE o usando Maven):**
    ```bash
    mvn spring-boot:run
    ```
 
-> Todos los datos iniciales se cargan automáticamente al iniciar gracias al `DataLoader`.
+> **Todos los datos iniciales se cargan automáticamente al iniciar gracias al ***`DataLoader`***.**
 
 ---
 
@@ -94,9 +96,9 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 
 ---
 
-## 🧪 Uso y funcionalidades
+## 🔎 Uso y funcionalidades
 
-### 👤 Usuario
+### 🙋🏻‍♂️🙋🏾‍♀️ Usuario
 
 - Crear una cuenta
 - Realizar reservas normales o rápidas sin registro
@@ -109,7 +111,7 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 - Panel de gestión de habitaciones, reservas y usuarios
 - Gestión de servicios e informes de limpieza
 
-### 🛡 Roles
+### 🔒🔑 Roles
 
 - **Usuario**
 - **Empleado**
@@ -117,22 +119,28 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 
 ---
 
-## 📁 Estructura del proyecto
+## 📁 Estructura del proyecto 📂
 
 ```bash
 src
 ├── main
 │   ├── java/com/tresora
+│   │   ├── config            # Seguridad y configuración
 │   │   ├── controllers       # Controladores MVC
+│   │   ├── DTOs              # Clases de transferencia de datos
 │   │   ├── entities          # Entidades JPA
+│   │   ├── loaders           # Carga de datos iniciales
+│   │   ├── mappers           # Convertidores entidad-dto y viceversa
 │   │   ├── repositories      # Repositorios Spring Data
 │   │   ├── services          # Servicios y lógica de negocio
-│   │   ├── dto               # Clases de transferencia de datos
-│   │   └── config            # Seguridad y configuración
+│   │   ├── util              # Clases utiles           
 │   └── resources
-│       ├── templates         # Vistas Thymeleaf
-│       ├── static            # Recursos estáticos (CSS, JS)
-│       └── application.properties
+│       ├── static                                 # Recursos estáticos
+│       ├── templates                              # Vistas Thymeleaf
+│       └── application.properties                 # Configuración inicial 
+│       └── application-desarrollo.properties      # Configuración desarrollo
+│       └── application-local.properties           # Configuración local
+│       └── application-produccion.properties      # Configuración producción
 ```
 
 
@@ -144,30 +152,39 @@ Este proyecto está licenciado bajo la **GNU General Public License v3.0 (GPLv3)
 
 Puedes:
 
-- Usar, modificar y distribuir libremente.
+- Ejecutar, adaptar y compartir el software sin restricciones.
 - Publicar tus versiones modificadas siempre bajo GPLv3.
 - Leer más 👉 [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html)
 
+***Compartir es vivir... ¡pero con licencia libre!***
+
 ---
 
-## 👨‍💻 Autores
-
-- [Jose A. Rodriguez](https://github.com/DoctoreJekyll)
+## 👨🏾‍💻👩🏼‍💻 Autores
+**Enlaces a GitHub :**
+- [Jose A. Rodriguez](https://github.com/DoctoreJekyll) 
 - [Alba Gutierrez](https://github.com/AlbaGutierrezGarcia)
 - [Alvaro Sevilla](https://github.com/alvarosevilla96)
 - [Lucia Beltran](https://github.com/Lu-web165)
 - [Natalia Garcia](https://github.com/natgarrod)
 
+**Enlaces a Linkedin :**
+- [Jose A. Rodriguez](https://www.linkedin.com/in/jose-rodriguez-martin/)
+- [Alba Gutierrez](https://www.linkedin.com/in/alba-gutiérrez-garcía/)
+- [Alvaro Sevilla](https://www.linkedin.com/in/alvaro-fernandez-sevilla/)
+- [Lucia Beltran](https://www.linkedin.com/in/lucía-beltrán-infante/)
+- [Natalia Garcia](https://www.linkedin.com/in/natalia-garcia-rodriguez/)
+
 ---
 
 ## 🚧 Estado del proyecto
 
-🔧 En desarrollo
+🔧  ***En desarrollo***  
 
 ---
 
 ## 🌍 Demo online
 
-👉 [https://grupo05-desarrollo.serverjava.net/](https://grupo05-desarrollo.serverjava.net/)
+👉💙🌐 [https://grupo05-desarrollo.serverjava.net/](https://grupo05-desarrollo.serverjava.net/)
 
 ---
