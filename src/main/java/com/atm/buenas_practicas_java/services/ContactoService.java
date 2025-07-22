@@ -49,7 +49,7 @@ public class ContactoService extends AbstractTemplateServicesEntities <Contacto,
             return usuario.getNombre();
         }
 
-        return "";
+        return null;
     }
 
 
@@ -61,7 +61,7 @@ public class ContactoService extends AbstractTemplateServicesEntities <Contacto,
             return user.getUsername();
         }
 
-        return "";
+        return null;
     }
 
 

@@ -196,19 +196,34 @@
 
                 <div class="form-group mb-4">
                     <label for="nombre">Nombre</label>
-                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required aria-required="true" aria-label="Introduzca su nombre"
-                           th:value="${usuarioLogeadoName != null ? usuarioLogeadoName : ''}"
-                           th:readonly="${usuarioLogeadoName != null}"
-                           data-intro="Comienza introduciendo tu **nombre**. Este campo es obligatorio." data-step="2" data-intro-position="right" />
+                    <input type="text"
+                           th:field="*{nombre}"
+                           id="nombre"
+                           class="form-control"
+                           required aria-required="true"
+                           aria-label="Introduzca su nombre"
+                           th:value="${usuarioLogeadoName}"
+                           th:attr="readonly=${usuarioLogeadoName != null} ? 'readonly' : null"
+                           data-intro="Comienza introduciendo tu **nombre**. Este campo es obligatorio."
+                           data-step="2"
+                           data-intro-position="right" />
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="email">Email</label>
-                    <input type="email" th:field="*{email}" id="email" class="form-control" required aria-required="true" aria-label="Introduzca su correo electrónico"
-                           th:value="${usuarioLogeadoEmail != null ? usuarioLogeadoEmail : ''}"
-                           th:readonly="${usuarioLogeadoEmail != null}"
-                           data-intro="Introduce tu **correo electrónico** para recibir la confirmación de tu reserva." data-step="3" data-intro-position="left" />
+                    <input type="email"
+                           th:field="*{email}"
+                           id="email"
+                           class="form-control"
+                           required aria-required="true"
+                           aria-label="Introduzca su correo electrónico"
+                           th:value="${usuarioLogeadoEmail}"
+                           th:attr="readonly=${usuarioLogeadoEmail != null} ? 'readonly' : null"
+                           data-intro="Introduce tu **correo electrónico** para recibir la confirmación de tu reserva."
+                           data-step="3"
+                           data-intro-position="left" />
                 </div>
+
 
                 <div class="form-group mb-4">
                     <label for="hotelSelect">Hotel</label>
