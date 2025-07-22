@@ -61,9 +61,6 @@ public class Reserva {
     @JoinColumn(name = "idMetodoPagoSeleccionado")
     private MetodoPago metodoPagoSeleccionado;
 
-    @OneToMany(mappedBy = "idReserva")
-    private Set<DetallesReserva> detallesReservas = new LinkedHashSet<>();
-
     @OneToMany(mappedBy = "idReserva", cascade = CascadeType.ALL)
     private Set<ProductosUsuario> productosUsuarios = new LinkedHashSet<>();
 

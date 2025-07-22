@@ -13,8 +13,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ContactoService extends AbstractTemplateServicesEntities <Contacto,Integer, ContactoRepo> {
-    public ContactoService(ContactoRepo repo) { super(repo); }
 
+    private EmailService emailService;
+
+    public ContactoService(ContactoRepo repo, EmailService emailService)
+    {
+        super(repo);
+        this.emailService = emailService;
+    }
 
     public Contacto contactoUsuarioLog(UsuarioService usuarioService) {
         Contacto contacto = new Contacto();
@@ -46,6 +52,7 @@ public class ContactoService extends AbstractTemplateServicesEntities <Contacto,
         return "";
     }
 
+
     public String returnMail(UsuarioService usuarioService)
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -55,6 +62,22 @@ public class ContactoService extends AbstractTemplateServicesEntities <Contacto,
         }
 
         return "";
+    }
+
+
+    //Aqui enviamos el mail
+    public void sendEmailWhenContact(Contacto contacto) {
+        emailService.sendEmail(
+                "notificaciones@agestturnos.es",
+                contacto.getCorreo(),
+                "Hemos recibido su mensaje correctamente",
+                "Hola " + contacto.getNombre() + ",\n\n" +
+                        "Hemos recogido su solicitud de contacto\n" +
+                        "Gracias por su confianza\n" +
+                        "Nos pondremos en contacto lo antes posible \n" +
+                        "Su mensaje :" + contacto.getMensaje() + "\n\n" +
+                        "¡Esperamos verte pronto!"
+        );
     }
 
 
