@@ -159,7 +159,7 @@ public class DesarrolloDataLoader {
 
     private Hotel getHotel3() {
         Hotel hotel3 = new Hotel();
-        hotel3.setNombre("Playa");
+        hotel3.setNombre("Costa Azul");
         hotel3.setDescripcion("Relájate frente al mar Mediterráneo");
         hotel3.setCiudad("Alicante");
         hotel3.setDireccion("Avenida del Mar, 55, 03001 Alicante");
@@ -171,7 +171,7 @@ public class DesarrolloDataLoader {
     }
     private Hotel getHotel2() {
         Hotel hotel2 = new Hotel();
-        hotel2.setNombre("Montaña");
+        hotel2.setNombre("Monteverde Palace");
         hotel2.setDescripcion("Lujo entre montañas y aire puro");
         hotel2.setCiudad("Granada");
         hotel2.setDireccion("Camino de la Sierra, s/n, 18010, Granada");
@@ -183,7 +183,7 @@ public class DesarrolloDataLoader {
     }
     private Hotel getHotel() {
         Hotel hotel1 = new Hotel();
-        hotel1.setNombre("Ciudad");
+        hotel1.setNombre("Urban Retire");
         hotel1.setDescripcion("Un paraíso costero para que te lo goces");
         hotel1.setCiudad("Málaga");
         hotel1.setDireccion("Playa de Pedregalejo, Málaga-Este, 29017, Málaga");
@@ -270,7 +270,7 @@ public class DesarrolloDataLoader {
     private Habitacion habitacion6() {
         habitacion6 = new Habitacion();
         habitacion6.setHotel(hotel1);
-        habitacion6.setProducto(producto3);
+        habitacion6.setProducto(producto2);
         habitacion6.setNumeroHabitacion(3);
         habitacion6.setPiso(1);
         habitacion6.setTipo("Triple");
@@ -310,7 +310,7 @@ public class DesarrolloDataLoader {
     private Habitacion habitacion8() {
         habitacion8 = new Habitacion();
         habitacion8.setHotel(hotel2);
-        habitacion8.setProducto(producto3);
+        habitacion8.setProducto(producto2);
         habitacion8.setNumeroHabitacion(102);
         habitacion8.setPiso(1);
         habitacion8.setTipo("Triple");
@@ -416,7 +416,7 @@ public class DesarrolloDataLoader {
         producto.setIdCategoria(categoriaProducto);
         producto.setNombre("Habitacion simple");
         producto.setDescripcion("Habitacion simple bien guapa");
-        producto.setPrecioBase(11.0);
+        producto.setPrecioBase(55.0);
         producto.setActivo(true);
         producto.setFechaDesde(LocalDate.EPOCH);
         producto.setFechaHasta(LocalDate.EPOCH);
@@ -429,7 +429,7 @@ public class DesarrolloDataLoader {
         producto.setIdCategoria(categoriaProducto);
         producto.setNombre("Suite de lujo");
         producto.setDescripcion("Habitación con cama king size, jacuzzi y vistas al mar");
-        producto.setPrecioBase(323.0);
+        producto.setPrecioBase(100.0);
         producto.setActivo(true);
         producto.setFechaDesde(LocalDate.of(2025, 1, 1));
         producto.setFechaHasta(LocalDate.of(2025, 12, 31));
@@ -441,8 +441,8 @@ public class DesarrolloDataLoader {
         producto.setIdHotel(hotel3.getId());
         producto.setIdCategoria(categoriaProducto2);
         producto.setNombre("Servicio de Restaurante");
-        producto.setDescripcion("Restaurante bien guapa");
-        producto.setPrecioBase(10.0);
+        producto.setDescripcion("Restaurante para toda la familia");
+        producto.setPrecioBase(15.0);
         producto.setActivo(true);
         producto.setFechaDesde(LocalDate.of(2025, 6, 1));
         producto.setFechaHasta(LocalDate.of(2025, 12, 31));
@@ -712,7 +712,7 @@ public class DesarrolloDataLoader {
         factura1.setIdDetalle(7);
         factura1.setIdHotel(hotel1);
         factura1.setFechaEmision(LocalDate.of(2025, 8, 1));
-        factura1.setEstado("pendiente");
+        factura1.setEstado("PAGADA");
         factura1.setObservaciones("todo correcto");
         return factura1;
     }

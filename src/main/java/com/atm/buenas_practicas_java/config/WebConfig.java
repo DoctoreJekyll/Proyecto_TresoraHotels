@@ -11,8 +11,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**")
                 .addResourceLocations(
-                        "classpath:/static/images/",  // <--- agrega esto
-                        "file:///C:/Users/jarma/Desktop/Proyecto_TresoraHotels/opt/imagenes/"  // este es el externo
+                        "classpath:/static/images/",
+                        "file:///C:/Users/jarma/Desktop/Proyecto_TresoraHotels/opt/imagenes/"
                 );
     }
 }
