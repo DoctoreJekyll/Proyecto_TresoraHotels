@@ -51,6 +51,7 @@ public class DesarrolloDataLoader {
 
     @PostConstruct
     public void loadDataDesarrollo() {
+        System.out.println("Cargando datos desarrollo");
         loadHoteles();
         loadRoles();
         loadUsuarios();
@@ -60,6 +61,8 @@ public class DesarrolloDataLoader {
         loadMetodoPago();
         loadFacturas();
         loadMiembrosEquipo();
+        System.out.println("Datos cargados desde desarrollo");
+        log.info("Datos cargados??");
     }
     public void loadMiembrosEquipo() {
         // Cargar datos del equipo
