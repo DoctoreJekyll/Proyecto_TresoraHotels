@@ -41,7 +41,7 @@
 
             <div class="mb-4">
               <label for="idMetodoPago" class="form-label">Método de Pago *</label>
-              <select class="form-select" id="idMetodoPago" th:field="*{metodoPago}" required aria-required="true" aria-label="Seleccione el método de pago para esta factura, campo obligatorio">
+              <select class="form-select" id="idMetodoPago" th:field="*{getIdMetodoPago()}" required aria-required="true" aria-label="Seleccione el método de pago para esta factura, campo obligatorio">
                 <option value="" disabled selected>Seleccione un método</option>
                 <option th:each="metodo : ${metodosPagos}"
                         th:value="${metodo.id}"
@@ -51,7 +51,7 @@
 
             <div class="mb-4">
               <label for="idHotel" class="form-label">Hotel *</label>
-              <select class="form-select" id="idHotel" th:field="*{hotel}" required aria-required="true" aria-label="Seleccione el hotel asociado a esta factura, campo obligatorio">
+              <select class="form-select" id="idHotel" th:field="*{getIdHotel()}" required aria-required="true" aria-label="Seleccione el hotel asociado a esta factura, campo obligatorio">
                 <option value="" disabled selected>Seleccione un hotel</option>
                 <option th:each="hotel : ${hoteles}"
                         th:value="${hotel.id}"
