@@ -164,7 +164,7 @@ public class DesarrolloDataLoader {
         hotel3.setCiudad("Alicante");
         hotel3.setDireccion("Avenida del Mar, 55, 03001 Alicante");
         hotel3.setDireccionURL("https://maps.google.com/?q=Avenida+del+Mar+55+Alicante");
-        hotel3.setImageURL("https://picsum.photos/600/400?random=12");
+        hotel3.setImageURL("/images/home2.jpg");
         hotel3.setTelefono("+34 611 555 666");
         hotel3.setEmail("contacto@costazulresort.com");
         return hotel3;
@@ -176,7 +176,7 @@ public class DesarrolloDataLoader {
         hotel2.setCiudad("Granada");
         hotel2.setDireccion("Camino de la Sierra, s/n, 18010, Granada");
         hotel2.setDireccionURL("//umap.openstreetmap.fr/es/map/mapa-sin-titulo_1254618?scaleControl=false&miniMap=true&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=false&datalayers=e67e5d33-c34d-4abb-95d0-4a009c4b1ba9&homeControl=false#14/37.0983/-3.3994");
-        hotel2.setImageURL("https://picsum.photos/600/400?random=8");
+        hotel2.setImageURL("/images/home1.jpg");
         hotel2.setTelefono("+34 622 333 444");
         hotel2.setEmail("reservas@monteverdepalace.com");
         return hotel2;
@@ -188,7 +188,7 @@ public class DesarrolloDataLoader {
         hotel1.setCiudad("Málaga");
         hotel1.setDireccion("Playa de Pedregalejo, Málaga-Este, 29017, Málaga");
         hotel1.setDireccionURL("//umap.openstreetmap.fr/es/map/mapa-sin-titulo_1254618?scaleControl=false&miniMap=true&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true&datalayers=e67e5d33-c34d-4abb-95d0-4a009c4b1ba9");
-        hotel1.setImageURL("https://picsum.photos/600/400?random=5");
+        hotel1.setImageURL("/images/home3.jpg");
         hotel1.setTelefono("+34 633 111 222");
         hotel1.setEmail("info@tresorabeach.com");
         return hotel1;
@@ -401,7 +401,7 @@ public class DesarrolloDataLoader {
 
     // Imagen reutilizable
     private String defaultImage() {
-        return "https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=";
+        return "/images/habitacion.jpg";
     }
 
 
@@ -647,7 +647,7 @@ public class DesarrolloDataLoader {
         limpiezaHabitacion1.setIdHabitacion(habitacion2);
         limpiezaHabitacion1.setFechaLimpieza(LocalDate.of(2025, 7, 29));
         limpiezaHabitacion1.setHoraLimpieza(LocalTime.of(12, 23));
-        limpiezaHabitacion1.setFoto1("https://media.istockphoto.com/id/1086675290/es/foto/retrete-sucio-poco-higi%C3%A9nicas-con-manchas-de-cal-en-el-ba%C3%B1o-p%C3%BAblico-cerca.jpg?s=2048x2048&w=is&k=20&c=fWHGeQZ-YdQNgPMLYZ03QcvRAzpLXYBFIBlUkCComtk=");
+        limpiezaHabitacion1.setFoto1("/images/limpieza1.jpg");
         limpiezaHabitacion1.setFoto2("");
         return limpiezaHabitacion1;
     }
@@ -658,8 +658,8 @@ public class DesarrolloDataLoader {
         limpiezaHabitacion2.setIdHabitacion(habitacion3);
         limpiezaHabitacion2.setFechaLimpieza(LocalDate.of(2025, 8, 1));
         limpiezaHabitacion2.setHoraLimpieza(LocalTime.of(10, 11));
-        limpiezaHabitacion2.setFoto1("https://media.istockphoto.com/id/2149016574/es/foto/almohada-sucia-en-mano-de-mujer.jpg?s=2048x2048&w=is&k=20&c=2_jT6XjWtKCA6ETydDOZDEzAo4fYOT8BCb_wLFCEaxs=");
-        limpiezaHabitacion2.setFoto2("https://media.istockphoto.com/id/2161307161/es/foto/stains-on-white-shirts.jpg?s=2048x2048&w=is&k=20&c=TleWVC9MOgi5lI3nXkqubTZCYHIFrTzdlfXmxLkxlPU=");
+        limpiezaHabitacion2.setFoto1("images/limpieza2.jpg");
+        limpiezaHabitacion2.setFoto2("images/limpieza3.jpg");
         return limpiezaHabitacion2;
     }
     /*---------------------------------------------------------------------------------------------------------------*/
