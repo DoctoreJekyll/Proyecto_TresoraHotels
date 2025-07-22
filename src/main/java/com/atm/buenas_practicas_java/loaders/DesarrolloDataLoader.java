@@ -51,7 +51,9 @@ public class DesarrolloDataLoader {
 
     @PostConstruct
     public void loadDataDesarrollo() {
+      
         log.info("INICIANDO CARGA");
+
         loadHoteles();
         loadRoles();
         loadUsuarios();
@@ -62,6 +64,7 @@ public class DesarrolloDataLoader {
         loadFacturas();
         loadMiembrosEquipo();
         log.info("FINALIZANDO CARGA");
+
     }
     public void loadMiembrosEquipo() {
         // Cargar datos del equipo
@@ -156,36 +159,36 @@ public class DesarrolloDataLoader {
 
     private Hotel getHotel3() {
         Hotel hotel3 = new Hotel();
-        hotel3.setNombre("Playa");
+        hotel3.setNombre("Costa Azul");
         hotel3.setDescripcion("Relájate frente al mar Mediterráneo");
         hotel3.setCiudad("Alicante");
         hotel3.setDireccion("Avenida del Mar, 55, 03001 Alicante");
         hotel3.setDireccionURL("https://maps.google.com/?q=Avenida+del+Mar+55+Alicante");
-        hotel3.setImageURL("https://picsum.photos/600/400?random=12");
+        hotel3.setImageURL("/images/home2.jpg");
         hotel3.setTelefono("+34 611 555 666");
         hotel3.setEmail("contacto@costazulresort.com");
         return hotel3;
     }
     private Hotel getHotel2() {
         Hotel hotel2 = new Hotel();
-        hotel2.setNombre("Montaña");
+        hotel2.setNombre("Monteverde Palace");
         hotel2.setDescripcion("Lujo entre montañas y aire puro");
         hotel2.setCiudad("Granada");
         hotel2.setDireccion("Camino de la Sierra, s/n, 18010, Granada");
         hotel2.setDireccionURL("//umap.openstreetmap.fr/es/map/mapa-sin-titulo_1254618?scaleControl=false&miniMap=true&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=false&datalayers=e67e5d33-c34d-4abb-95d0-4a009c4b1ba9&homeControl=false#14/37.0983/-3.3994");
-        hotel2.setImageURL("https://picsum.photos/600/400?random=8");
+        hotel2.setImageURL("/images/home1.jpg");
         hotel2.setTelefono("+34 622 333 444");
         hotel2.setEmail("reservas@monteverdepalace.com");
         return hotel2;
     }
     private Hotel getHotel() {
         Hotel hotel1 = new Hotel();
-        hotel1.setNombre("Ciudad");
+        hotel1.setNombre("Urban Retire");
         hotel1.setDescripcion("Un paraíso costero para que te lo goces");
         hotel1.setCiudad("Málaga");
         hotel1.setDireccion("Playa de Pedregalejo, Málaga-Este, 29017, Málaga");
         hotel1.setDireccionURL("//umap.openstreetmap.fr/es/map/mapa-sin-titulo_1254618?scaleControl=false&miniMap=true&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true&datalayers=e67e5d33-c34d-4abb-95d0-4a009c4b1ba9");
-        hotel1.setImageURL("https://picsum.photos/600/400?random=5");
+        hotel1.setImageURL("/images/home3.jpg");
         hotel1.setTelefono("+34 633 111 222");
         hotel1.setEmail("info@tresorabeach.com");
         return hotel1;
@@ -267,7 +270,7 @@ public class DesarrolloDataLoader {
     private Habitacion habitacion6() {
         habitacion6 = new Habitacion();
         habitacion6.setHotel(hotel1);
-        habitacion6.setProducto(producto3);
+        habitacion6.setProducto(producto2);
         habitacion6.setNumeroHabitacion(3);
         habitacion6.setPiso(1);
         habitacion6.setTipo("Triple");
@@ -307,7 +310,7 @@ public class DesarrolloDataLoader {
     private Habitacion habitacion8() {
         habitacion8 = new Habitacion();
         habitacion8.setHotel(hotel2);
-        habitacion8.setProducto(producto3);
+        habitacion8.setProducto(producto2);
         habitacion8.setNumeroHabitacion(102);
         habitacion8.setPiso(1);
         habitacion8.setTipo("Triple");
@@ -398,7 +401,7 @@ public class DesarrolloDataLoader {
 
     // Imagen reutilizable
     private String defaultImage() {
-        return "https://media.istockphoto.com/id/1334117383/es/foto/representaci%C3%B3n-digital-3d-de-una-suite-de-hotel-de-lujo.jpg?s=2048x2048&w=is&k=20&c=g7SxwCPRtqqK9DANIUyQqmY1MupgIz7fznf5JnZT1vA=";
+        return "/images/habitacion.jpg";
     }
 
 
@@ -413,7 +416,7 @@ public class DesarrolloDataLoader {
         producto.setIdCategoria(categoriaProducto);
         producto.setNombre("Habitacion simple");
         producto.setDescripcion("Habitacion simple bien guapa");
-        producto.setPrecioBase(11.0);
+        producto.setPrecioBase(55.0);
         producto.setActivo(true);
         producto.setFechaDesde(LocalDate.EPOCH);
         producto.setFechaHasta(LocalDate.EPOCH);
@@ -426,7 +429,7 @@ public class DesarrolloDataLoader {
         producto.setIdCategoria(categoriaProducto);
         producto.setNombre("Suite de lujo");
         producto.setDescripcion("Habitación con cama king size, jacuzzi y vistas al mar");
-        producto.setPrecioBase(323.0);
+        producto.setPrecioBase(100.0);
         producto.setActivo(true);
         producto.setFechaDesde(LocalDate.of(2025, 1, 1));
         producto.setFechaHasta(LocalDate.of(2025, 12, 31));
@@ -438,8 +441,8 @@ public class DesarrolloDataLoader {
         producto.setIdHotel(hotel3.getId());
         producto.setIdCategoria(categoriaProducto2);
         producto.setNombre("Servicio de Restaurante");
-        producto.setDescripcion("Restaurante bien guapa");
-        producto.setPrecioBase(10.0);
+        producto.setDescripcion("Restaurante para toda la familia");
+        producto.setPrecioBase(15.0);
         producto.setActivo(true);
         producto.setFechaDesde(LocalDate.of(2025, 6, 1));
         producto.setFechaHasta(LocalDate.of(2025, 12, 31));
@@ -644,7 +647,7 @@ public class DesarrolloDataLoader {
         limpiezaHabitacion1.setIdHabitacion(habitacion2);
         limpiezaHabitacion1.setFechaLimpieza(LocalDate.of(2025, 7, 29));
         limpiezaHabitacion1.setHoraLimpieza(LocalTime.of(12, 23));
-        limpiezaHabitacion1.setFoto1("https://media.istockphoto.com/id/1086675290/es/foto/retrete-sucio-poco-higi%C3%A9nicas-con-manchas-de-cal-en-el-ba%C3%B1o-p%C3%BAblico-cerca.jpg?s=2048x2048&w=is&k=20&c=fWHGeQZ-YdQNgPMLYZ03QcvRAzpLXYBFIBlUkCComtk=");
+        limpiezaHabitacion1.setFoto1("/images/limpieza1.jpg");
         limpiezaHabitacion1.setFoto2("");
         return limpiezaHabitacion1;
     }
@@ -655,8 +658,8 @@ public class DesarrolloDataLoader {
         limpiezaHabitacion2.setIdHabitacion(habitacion3);
         limpiezaHabitacion2.setFechaLimpieza(LocalDate.of(2025, 8, 1));
         limpiezaHabitacion2.setHoraLimpieza(LocalTime.of(10, 11));
-        limpiezaHabitacion2.setFoto1("https://media.istockphoto.com/id/2149016574/es/foto/almohada-sucia-en-mano-de-mujer.jpg?s=2048x2048&w=is&k=20&c=2_jT6XjWtKCA6ETydDOZDEzAo4fYOT8BCb_wLFCEaxs=");
-        limpiezaHabitacion2.setFoto2("https://media.istockphoto.com/id/2161307161/es/foto/stains-on-white-shirts.jpg?s=2048x2048&w=is&k=20&c=TleWVC9MOgi5lI3nXkqubTZCYHIFrTzdlfXmxLkxlPU=");
+        limpiezaHabitacion2.setFoto1("images/limpieza2.jpg");
+        limpiezaHabitacion2.setFoto2("images/limpieza3.jpg");
         return limpiezaHabitacion2;
     }
     /*---------------------------------------------------------------------------------------------------------------*/
@@ -709,7 +712,7 @@ public class DesarrolloDataLoader {
         factura1.setIdDetalle(7);
         factura1.setIdHotel(hotel1);
         factura1.setFechaEmision(LocalDate.of(2025, 8, 1));
-        factura1.setEstado("pendiente");
+        factura1.setEstado("PAGADA");
         factura1.setObservaciones("todo correcto");
         return factura1;
     }
