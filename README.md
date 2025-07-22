@@ -1,8 +1,8 @@
-# 🌐 Tresora Hotels
+#  ![Logo Tresora](src/main/resources/static/images/LogoTresora.png)
 
 > **La mejor tecnología es la que no deja a nadie atrás**
 
-![Logo Tresora](static/images/LogoTresora.png)
+
 
 ---
 
@@ -42,6 +42,7 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 - Listas y formularios para gestionar habitaciones, usuarios, servicios, etc.
 - Informes de limpieza.
 - Gestión de reservas y facturación.
+
 
 > **El objetivo es diseñar una herramienta accesible, clara y funcional para mejorar el proceso de reservas tanto para el cliente como para el personal del hotel.**
 
@@ -124,16 +125,22 @@ Además, cuenta con una parte de gestión para empleados y administradores con a
 src
 ├── main
 │   ├── java/com/tresora
+│   │   ├── config            # Seguridad y configuración
 │   │   ├── controllers       # Controladores MVC
+│   │   ├── DTOs              # Clases de transferencia de datos
 │   │   ├── entities          # Entidades JPA
+│   │   ├── loaders           # Carga de datos iniciales
+│   │   ├── mappers           # Convertidores entidad-dto y viceversa
 │   │   ├── repositories      # Repositorios Spring Data
 │   │   ├── services          # Servicios y lógica de negocio
-│   │   ├── dto               # Clases de transferencia de datos
-│   │   └── config            # Seguridad y configuración
+│   │   ├── util              # Clases utiles           
 │   └── resources
-│       ├── templates         # Vistas Thymeleaf
-│       ├── static            # Recursos estáticos (CSS, JS)
-│       └── application.properties
+│       ├── static                                 # Recursos estáticos
+│       ├── templates                              # Vistas Thymeleaf
+│       └── application.properties                 # Configuración inicial 
+│       └── application-desarrollo.properties      # Configuración desarrollo
+│       └── application-local.properties           # Configuración local
+│       └── application-produccion.properties      # Configuración producción
 ```
 
 
@@ -145,25 +152,34 @@ Este proyecto está licenciado bajo la **GNU General Public License v3.0 (GPLv3)
 
 Puedes:
 
-- Usar, modificar y distribuir libremente.
+- Ejecutar, adaptar y compartir el software sin restricciones.
 - Publicar tus versiones modificadas siempre bajo GPLv3.
 - Leer más 👉 [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html)
+
+***Compartir es vivir... ¡pero con licencia libre!***
 
 ---
 
 ## 👨🏾‍💻👩🏼‍💻 Autores
-
-- [Jose A. Rodriguez](https://github.com/DoctoreJekyll)
+**Enlaces a GitHub :**
+- [Jose A. Rodriguez](https://github.com/DoctoreJekyll) 
 - [Alba Gutierrez](https://github.com/AlbaGutierrezGarcia)
 - [Alvaro Sevilla](https://github.com/alvarosevilla96)
 - [Lucia Beltran](https://github.com/Lu-web165)
 - [Natalia Garcia](https://github.com/natgarrod)
 
+**Enlaces a Linkedin :**
+- [Jose A. Rodriguez](https://www.linkedin.com/in/jose-rodriguez-martin/)
+- [Alba Gutierrez](https://www.linkedin.com/in/alba-gutiérrez-garcía/)
+- [Alvaro Sevilla](https://www.linkedin.com/in/alvaro-fernandez-sevilla/)
+- [Lucia Beltran](https://www.linkedin.com/in/lucía-beltrán-infante/)
+- [Natalia Garcia](https://www.linkedin.com/in/natalia-garcia-rodriguez/)
+
 ---
 
 ## 🚧 Estado del proyecto
 
-🔧 En desarrollo 🔧
+🔧  ***En desarrollo***  
 
 ---
 
