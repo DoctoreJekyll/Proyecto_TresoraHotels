@@ -6,22 +6,21 @@
 
 ## 📑 Índice
 
-1. [Sobre Tresora](#-sobre-tresora)
+1. [¿Que es Tresora?](#-¿qué-es-Tresora?)
 2. [Descripción del proyecto](#-descripción-del-proyecto)
 3. [Tecnologías utilizadas](#-tecnologías-utilizadas)
 4. [Cómo empezar](#-cómo-empezar)
 5. [Capturas de pantalla](#-capturas-de-pantalla)
 6. [Uso y funcionalidades](#-uso-y-funcionalidades)
 7. [Estructura del proyecto](#-estructura-del-proyecto)
-8. [Contribuciones](#-contribuciones)
-9. [Licencia](#-licencia)
-10. [Autores](#-autores)
-11. [Estado del proyecto](#-estado-del-proyecto)
-12. [Demo online](#-demo-online)
+8. [Licencia](#-licencia)
+9. [Autores](#-autores)
+10. [Estado del proyecto](#-estado-del-proyecto)
+11. [Demo online](#-demo-online)
 
 ---
 
-## 🏨 Sobre Tresora
+## 🏨 ¿Qué es Tresora?
 
 **Tresora Hotels** es una aplicación web desarrollada para facilitar la reserva de habitaciones en hoteles de forma ágil, intuitiva e inclusiva.
 
