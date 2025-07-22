@@ -51,7 +51,9 @@ public class DesarrolloDataLoader {
 
     @PostConstruct
     public void loadDataDesarrollo() {
+      
         log.info("INICIANDO CARGA");
+
         loadHoteles();
         loadRoles();
         loadUsuarios();
@@ -62,6 +64,7 @@ public class DesarrolloDataLoader {
         loadFacturas();
         loadMiembrosEquipo();
         log.info("FINALIZANDO CARGA");
+
     }
     public void loadMiembrosEquipo() {
         // Cargar datos del equipo
