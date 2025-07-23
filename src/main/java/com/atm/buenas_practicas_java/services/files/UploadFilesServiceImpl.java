@@ -43,7 +43,7 @@ public class UploadFilesServiceImpl implements IUploadFilesService {
             String newFileName = UUID.randomUUID().toString() + extension;
             byte[] bytes = file.getBytes();
 
-            String folderPath = "/opt/imagenes";
+            String folderPath = "/uploads";
             File folder = new File(folderPath);
             if (!folder.exists()) {
                 boolean created = folder.mkdirs();
