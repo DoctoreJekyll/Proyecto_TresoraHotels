@@ -3,13 +3,12 @@
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate="~{/layout/plantilla}"
 	  lang="es">
-<body>
-<div layout:fragment="contenido">
 
+<div layout:fragment="contenido">
 	<main role="main" aria-labelledby="page-title">
 		<div class="d-flex justify-content-between align-items-center mb-3">
 			<h1 id="page-title" th:text="${titulo}">Vista de Lista</h1>
-			<a th:href="@{'/' + ${rutaEntidad} + '/nuevo'}" class="btn btn-success"
+			<a th:href="@{'/' + ${rutaEntidad} + '/nuevo'}" class="btn btn-outline-grupo5"
 			   th:title="'Añadir nuevo ' + ${titulo.toLowerCase().replace('vista de lista de ', '').replace('vista de lista', 'elemento')}"
 			   th:aria-label="'Añadir nuevo ' + ${titulo.toLowerCase().replace('vista de lista de ', '').replace('vista de lista', 'elemento')}">
 				<span aria-hidden="true">+</span> Añadir
@@ -50,7 +49,7 @@
 				</td>
 				<td class="text-nowrap">
 					<a th:href="@{'/' + ${rutaEntidad} + '/editar/' + ${fila.get('id')}}"
-					   class="btn btn-sm btn-primary me-1"
+					   class="btn btn-sm btn btn-grupo5 me-1"
 					   th:aria-label="'Editar registro con ID ' + ${fila.get('id')} + ((${fila.get('nombre')} != null) ? ' (' + ${fila.get('nombre')} + ')' : '')"
 					   title="Editar este registro">Editar</a>
 
@@ -69,7 +68,5 @@
 			</tbody>
 		</table>
 	</main>
-
 </div>
-</body>
 </html>

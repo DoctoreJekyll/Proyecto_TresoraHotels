@@ -116,6 +116,7 @@ public class SecurityConfig {
                         .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/reserva/rapida").permitAll()
                         .requestMatchers("/contactos/nuevo").permitAll()
+                        .requestMatchers("/hoteles").permitAll()
 
                         // Rutas específicas por rol
                         .requestMatchers("/panel").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")

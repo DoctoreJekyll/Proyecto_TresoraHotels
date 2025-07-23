@@ -69,10 +69,11 @@ public class ReservasController {
                 .toList();
     }
 
-
     // 1️⃣ Mostrar el formulario de reserva rápida
     @GetMapping("/rapida")
-    public String mostrarFormularioReservaRapida(Model model) {
+    public String mostrarFormularioReservaRapida(Model model, HttpSession session) {
+        session.getAttribute("forceSessionCreation");
+
         List<Habitacion> habitaciones = habitacionService.findAllConHotel();
 
         // Agrupar habitaciones por hotel
@@ -86,6 +87,8 @@ public class ReservasController {
         model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
         model.addAttribute("habitacionesPorHotel", habitacionesPorHotel);
         model.addAttribute("hoteles", hotelService.findAll());
+        model.addAttribute("usuarioLogeadoEmail", reservaService.returnMail(usuarioService));
+        model.addAttribute("usuarioLogeadoName", reservaService.returnName(usuarioService));
 
         return "reservaRapida";
     }

@@ -39,10 +39,10 @@
                             <div class="col-md-6">
                                 <label for="hotel" class="form-label">Hotel</label>
                                 <select class="form-select" id="hotel" name="hotelNombre" aria-label="Seleccione un hotel para la búsqueda">
-                                    <option value="" disabled selected>Todos los hoteles</option> <option th:each="hotel : ${hoteles}"
-                                                                                                          th:value="${hotel.nombre}"
-                                                                                                          th:text="${hotel.nombre}">
-                                </option>
+                                    <option th:each="hotel : ${hoteles}"
+                                            th:value="${hotel.nombre}"
+                                            th:text="${hotel.nombre}">
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
     <section class="row row-cols-1 row-cols-md-3 g-4" aria-label="Servicios y características del hotel">
         <div class="col">
             <div class="card h-100">
-                <img src="https://cdn.pixabay.com/photo/2015/11/06/11/45/interior-1026449_1280.jpg" class="card-img-top rounded" alt="Ilustración de una habitación de hotel con cama y muebles modernos.">
+                <img th:src="@{/images/userhome1.jpg}" class="card-img-top rounded" alt="Ilustración de una habitación de hotel con cama y muebles modernos.">
                 <div class="card-body">
                     <h5 class="card-title">Habitaciones</h5>
                     <p class="card-text">Disfruta de nuestras amplias habitaciones con vistas espectaculares y comodidades únicas.</p>
@@ -76,7 +76,7 @@
 
         <div class="col">
             <div class="card h-100">
-                <img src="https://cdn.pixabay.com/photo/2016/08/22/16/23/massage-therapy-1612308_1280.jpg" class="card-img-top rounded" alt="Manos realizando un masaje de espalda en una persona acostada.">
+                <img th:src="@{/images/userhome2.jpg}" class="card-img-top rounded" alt="Manos realizando un masaje de espalda en una persona acostada.">
                 <div class="card-body">
                     <h5 class="card-title">Spa y Bienestar</h5>
                     <p class="card-text">Relájate con nuestros tratamientos de Spa y servicios de bienestar personalizados.</p>
@@ -88,7 +88,7 @@
 
         <div class="col">
             <div class="card h-100">
-                <img src="https://cdn.pixabay.com/photo/2015/11/19/10/38/food-1050813_1280.jpg" class="card-img-top rounded" alt="Plato gourmet con comida emplatada de forma artística en un restaurante.">
+                <img th:src="@{/images/userhome3.jpg}" class="card-img-top rounded" alt="Plato gourmet con comida emplatada de forma artística en un restaurante.">
                 <div class="card-body">
                     <h5 class="card-title">Gastronomía Exclusiva</h5>
                     <p class="card-text">Saborea platos exquisitos en nuestro restaurante para todos los gustos.</p>

@@ -166,6 +166,39 @@ public class UsuarioController {
         return "redirect:/home";
     }
 
+    @GetMapping("/cambiar-contrasena")
+    @PreAuthorize("isAuthenticated()")
+    public String mostrarFormularioCambioContrasena() {
+        return "cambiarContrasena";
+    }
+
+    @PostMapping("/cambiar-contrasena")
+    @PreAuthorize("isAuthenticated()")
+    public String cambiarContrasena(@RequestParam String actual,
+                                    @RequestParam String nueva,
+                                    @RequestParam String confirmacion,
+                                    Model model,
+                                    Authentication auth) {
+        String email = auth.getName();
+        Usuario usuario = usuarioService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!usuarioService.verificarPassword(usuario, actual)) {
+            model.addAttribute("errorMessage", "La contraseña actual no es correcta.");
+            return "cambiarContrasena";
+        }
+
+        if (!nueva.equals(confirmacion)) {
+            model.addAttribute("errorMessage", "La nueva contraseña no coincide con la confirmación.");
+            return "cambiarContrasena";
+        }
+
+        usuarioService.actualizarPassword(usuario, nueva);
+        model.addAttribute("successMessage", "La contraseña se actualizó correctamente.");
+        return "cambiarContrasena";
+    }
+
+
     //--------------------------------CONTROLLER DE VISTAS DE EMPLEADO----------------------------------------------//
 
     @GetMapping("/nuevo")

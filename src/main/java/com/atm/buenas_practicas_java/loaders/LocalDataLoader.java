@@ -158,7 +158,7 @@ public class LocalDataLoader {
         hotel3.setDescripcion("Relájate frente al mar Mediterráneo");
         hotel3.setCiudad("Alicante");
         hotel3.setDireccion("Avenida del Mar, 55, 03001 Alicante");
-        hotel3.setDireccionURL("https://maps.google.com/?q=Avenida+del+Mar+55+Alicante");
+        hotel3.setDireccionURL("//umap.openstreetmap.fr/es/map/mapa-sin-titulo_1258844?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true");
         hotel3.setImageURL("https://picsum.photos/600/400?random=12");
         hotel3.setTelefono("+34 611 555 666");
         hotel3.setEmail("contacto@costazulresort.com");
@@ -589,7 +589,7 @@ public void loadReservas() {
 
     private Reserva getReserva2() {
         Reserva reserva2 = new Reserva();
-        reserva2.setIdUsuario(usuarioRepo.getReferenceById(5));
+        reserva2.setIdUsuario(usuarioRepo.getReferenceById(1));
         reserva2.setIdHabitacion(habitacion3);
         reserva2.setFechaEntrada(LocalDate.of(2025, 8, 1));
         reserva2.setFechaSalida(LocalDate.of(2025, 8, 10));
@@ -603,7 +603,7 @@ public void loadReservas() {
 
     private Reserva getReserva3() {
         Reserva reserva3 = new Reserva();
-        reserva3.setIdUsuario(usuarioRepo.getReferenceById(1));
+        reserva3.setIdUsuario(usuarioRepo.getReferenceById(9));
         reserva3.setIdHabitacion(habitacion3);
         reserva3.setFechaEntrada(LocalDate.of(2025, 6, 1));
         reserva3.setFechaSalida(LocalDate.of(2025, 6, 10));

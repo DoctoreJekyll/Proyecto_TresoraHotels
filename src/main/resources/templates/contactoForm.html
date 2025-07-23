@@ -1,20 +1,72 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/plantilla}">
 <head>
   <title>Contacto - Hotel Gominola</title>
   <link th:href="@{/css/forms.css}" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gradient-primary">
 <main layout:fragment="contenido">
+
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/intro.min.js"></script>
+
+  <script layout:fragment="tutorial">
+    document.addEventListener('DOMContentLoaded', function () {
+      let steps = [
+        {
+          title: "Formulario de Contacto",
+          intro: "¡Bienvenido al tutorial del formulario de contacto! Te guiaremos por los campos principales."
+        },
+        {
+          element: '#nombre',
+          intro: "Aquí debes introducir tu **nombre completo**. Es un campo obligatorio para poder contactarte.",
+          position: 'right'
+        },
+        {
+          element: '#correo',
+          intro: "Ingresa tu **correo electrónico**. Asegúrate de que sea válido para que podamos responder a tu consulta.",
+          position: 'left'
+        },
+        {
+          element: '#departamento',
+          intro: "Selecciona el **departamento** al que va dirigida tu consulta. Esto nos ayuda a dirigir tu mensaje correctamente."
+        },
+        {
+          element: '#mensaje',
+          intro: "Por último, escribe tu **mensaje o consulta detallada** en este campo. Cuanta más información nos des, mejor podremos ayudarte."
+        },
+        {
+          element: document.querySelector('.contact-form button[type="submit"]'),
+          intro: "Cuando hayas completado todos los campos, haz clic en **Enviar** para mandarnos tu mensaje. ¡Listo!",
+          position: 'top'
+        }
+      ];
+
+      document.getElementById('inicio_tutorial').addEventListener('click', function () {
+        this.style.animation = "none";
+        introJs().setOptions({
+          steps: steps,
+          'nextLabel': "Siguiente &#10140;",
+          'prevLabel': "&#10140; Anterior",
+          'doneLabel': "¡Entendido!",
+          showProgress: true,
+          tooltipClass: 'customTooltip'
+        }).start();
+      });
+    });
+  </script>
+
   <section id="contact-form" class="contact-form-section" tabindex="0" aria-labelledby="contactanos">
     <div class="container">
       <h1 class="mb-4 text-center" id="contactanos">Contáctanos</h1>
-      <p class="lead text-center">
-        Estamos aquí para ayudarte.<br>
-        Completa el formulario para enviarnos tu consulta.
-      </p>
+      <p class="lead text-center">Estamos aquí para ayudarte.<br>Completa el formulario para enviarnos tu consulta.</p>
+
+      <div class="text-center mb-4">
+        <button id="inicio_tutorial" class="btn btn-info">¿Necesitas ayuda? Iniciar Tutorial</button>
+      </div>
 
       <div id="formulario-contacto" class="row justify-content-center">
         <div class="col-lg-10">
@@ -31,12 +83,28 @@
             <div class="row mb-4">
               <div class="col-md-6 mb-3 mb-md-0">
                 <label for="nombre" class="form-label">Nombre *</label>
-                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Tu nombre completo" required aria-required="true" aria-label="Introduce tu nombre completo, campo obligatorio">
+                <input type="text"
+                       class="form-control"
+                       id="nombre"
+                       th:field="*{nombre}"
+                       placeholder="Tu nombre completo"
+                       required aria-required="true"
+                       aria-label="Introduce tu nombre completo, campo obligatorio"
+                       th:value="${usuarioLogeadoName}"
+                       th:readonly="${usuarioLogeadoName != null and usuarioLogeadoName != ''}" />
               </div>
 
               <div class="col-md-6">
                 <label for="correo" class="form-label">Correo electrónico *</label>
-                <input type="email" class="form-control" id="correo" th:field="*{correo}" placeholder="nombre@ejemplo.com" required aria-required="true" aria-label="Introduce tu correo electrónico, campo obligatorio">
+                <input type="email"
+                       class="form-control"
+                       id="correo"
+                       th:field="*{correo}"
+                       placeholder="nombre@ejemplo.com"
+                       required aria-required="true"
+                       aria-label="Introduce tu correo electrónico, campo obligatorio"
+                       th:value="${usuarioLogeadoEmail}"
+                       th:readonly="${usuarioLogeadoEmail != null and usuarioLogeadoEmail != ''}" />
               </div>
             </div>
 
@@ -62,9 +130,7 @@
               <label for="file1" class="form-label">Adjuntar foto 1 (opcional)</label>
               <input class="form-control" type="file" id="file1" name="file1" accept=".jpg,.jpeg,.png"
                      aria-describedby="ayuda-file1" aria-label="Adjuntar primera foto, campo opcional">
-              <div id="ayuda-file1" class="form-text">
-                Puedes subir una imagen en formato JPG, PNG o similar.
-              </div>
+              <div id="ayuda-file1" class="form-text">Puedes subir una imagen en formato JPG, PNG o similar.</div>
             </div>
 
             <div class="col-md-6" th:if="${contacto.foto1 != null}">
@@ -75,18 +141,15 @@
 
             <div class="mb-4">
               <label for="file2" class="form-label">Adjuntar foto 2 (opcional)</label>
-              <input class="form-control" type="file" id="file2" name="file2"  accept=".jpg,.jpeg,.png"
+              <input class="form-control" type="file" id="file2" name="file2" accept=".jpg,.jpeg,.png"
                      aria-describedby="ayuda-file2" aria-label="Adjuntar segunda foto, campo opcional">
-              <div id="ayuda-file2" class="form-text">
-                Puedes subir otra imagen si lo necesitas.
-              </div>
+              <div id="ayuda-file2" class="form-text">Puedes subir otra imagen si lo necesitas.</div>
 
               <div class="col-md-6" th:if="${contacto.foto2 != null}">
                 <label class="form-label">Imagen actual:</label><br />
                 <img th:src="@{${contacto.foto2}}" alt="Segunda imagen adjuntada para formulario de contacto"
                      class="img-thumbnail" style="max-height: 200px;" onerror="this.style.display='none'" />
               </div>
-
             </div>
 
             <div class="mb-4">
@@ -110,7 +173,6 @@
       <div class="row justify-content-center">
         <div class="col-lg-6">
           <h2 id="titulo-contacto" class="mb-4 text-center">Información de contacto</h2>
-
           <p><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span aria-label="Dirección del hotel">Av. de la Piruleta, Ciudad Gominola, País Feliz</span></p>
           <p><i class="fa-solid fa-phone" aria-hidden="true"></i> <span aria-label="Número de teléfono del hotel">+123 456 7890</span></p>
           <p><i class="fa-solid fa-envelope" aria-hidden="true"></i> <span aria-label="Correo electrónico de contacto del hotel">contacto@hotel.com</span></p>
