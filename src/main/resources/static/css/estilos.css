@@ -32,6 +32,14 @@ body {
   /* Eliminado: margin: 0 15px; para que el nav y footer no lo tengan */
 }
 
+main[layout\:fragment="contenido"],
+section[layout\:fragment="contenido"],
+div[layout\:fragment="contenido"] {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 
 .offcanvas {
   background-color: rgba(0, 0, 0, 0.8);
