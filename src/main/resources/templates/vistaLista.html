@@ -3,9 +3,8 @@
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate="~{/layout/plantilla}"
 	  lang="es">
-<body>
-<div layout:fragment="contenido">
 
+<div layout:fragment="contenido">
 	<main role="main" aria-labelledby="page-title">
 		<div class="d-flex justify-content-between align-items-center mb-3">
 			<h1 id="page-title" th:text="${titulo}">Vista de Lista</h1>
@@ -69,7 +68,5 @@
 			</tbody>
 		</table>
 	</main>
-
 </div>
-</body>
 </html>
