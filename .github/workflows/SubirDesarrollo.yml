@@ -69,4 +69,4 @@ jobs:
           PUERTO_DB_DESARROLLO: ${{ vars.PUERTO_DB_DESARROLLO }}
           SPRING_PROFILES_ACTIVE: desarrollo
           
-        run: docker compose -f compose-desarrollo.yaml up -d --no-recreate
+        run: docker compose -f compose-desarrollo.yaml up -d
