@@ -68,5 +68,5 @@ jobs:
           PUERTO_DB_DESARROLLO: ${{ vars.PUERTO_DB_DESARROLLO }}
         run: |
           docker volume create proyecto5_files
-          docker run --rm -v proyecto5_files:/uploads alpine ash -c "chown -v -R 1000:1000 /uploads"
-          docker compose -f compose-desarrollo.yaml up -d 
+          docker run --rm -v proyecto5_files:/uploads alpine ash -c "chown -v -R 1000:1000 /uploads && chmod -R 777 /uploads"
+          docker compose -f compose-desarrollo.yaml up -d
