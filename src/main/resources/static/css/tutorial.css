@@ -29,7 +29,7 @@
     .customTooltip .introjs-donebutton:hover
     {
         border: 4px solid #00BFFF !important;
-        transform: scale(0.5);
+        transform: scale(1.0);
     }
 
 .customTooltip .introjs-skipbutton
@@ -44,7 +44,7 @@
     padding: 0;
 }
 
-.customTooltip .introjs-skipbutton.introjs-closeButton:hover {
+.customTooltip .introjs-skipbutton:hover {
     color: #ff0000 !important;
     transform: scale(1.2);
 }
