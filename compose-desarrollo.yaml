@@ -24,7 +24,7 @@ services:
     expose: 
       - "8080"
     volumes:
-      - ./imagenes:/uploads
+      - proyecto5_files:/uploads
 
   db:
     image: postgres:latest
@@ -39,3 +39,12 @@ services:
     restart: always
     ports:
       - "${PUERTO_DB_DESARROLLO}:5432"
+    volumes:
+      - proyecto5_data:/var/lib/postgresql/data
+
+
+volumes:
+  proyecto5_files:
+    name: proyecto5_files
+  proyecto5_data:
+    name: proyecto5_data

@@ -184,9 +184,9 @@ public class DesarrolloDataLoader {
     private Hotel getHotel() {
         Hotel hotel1 = new Hotel();
         hotel1.setNombre("Urban Retire");
-        hotel1.setDescripcion("Un paraíso costero para que te lo goces");
+        hotel1.setDescripcion("Un hueco de felicidad en la ciudad");
         hotel1.setCiudad("Málaga");
-        hotel1.setDireccion("Playa de Pedregalejo, Málaga-Este, 29017, Málaga");
+        hotel1.setDireccion("Calle Pedregalejo, Málaga-Este, 29017, Málaga");
         hotel1.setDireccionURL("//umap.openstreetmap.fr/es/map/mapa-sin-titulo_1254618?scaleControl=false&miniMap=true&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true&datalayers=e67e5d33-c34d-4abb-95d0-4a009c4b1ba9");
         hotel1.setImageURL("/images/home3.jpg");
         hotel1.setTelefono("+34 633 111 222");
@@ -323,10 +323,10 @@ public class DesarrolloDataLoader {
     private Habitacion habitacion9() {
         habitacion9 = new Habitacion();
         habitacion9.setHotel(hotel2);
-        habitacion9.setProducto(producto);
+        habitacion9.setProducto(producto4);
         habitacion9.setNumeroHabitacion(103);
         habitacion9.setPiso(2);
-        habitacion9.setTipo("Suite");
+        habitacion9.setTipo("Familiar");
         habitacion9.setCapacidad(4);
         habitacion9.setOcupada(false);
         habitacion9.setImagenUrl(defaultImage());
@@ -408,6 +408,7 @@ public class DesarrolloDataLoader {
     private Producto producto;
     private Producto producto2;
     private Producto producto3;
+    private Producto producto4;
 
     private Producto getProducto()
     {
@@ -415,7 +416,7 @@ public class DesarrolloDataLoader {
         producto.setIdHotel(hotel1.getId());
         producto.setIdCategoria(categoriaProducto);
         producto.setNombre("Habitacion simple");
-        producto.setDescripcion("Habitacion simple bien guapa");
+        producto.setDescripcion("Habitacion simple ideal para una persona");
         producto.setPrecioBase(55.0);
         producto.setActivo(true);
         producto.setFechaDesde(LocalDate.EPOCH);
@@ -449,15 +450,30 @@ public class DesarrolloDataLoader {
         return producto;
     }
 
+    private Producto getProducto4() {
+        Producto producto = new Producto();
+        producto.setIdHotel(hotel3.getId());
+        producto.setIdCategoria(categoriaProducto);
+        producto.setNombre("Habitacion Familiar");
+        producto.setDescripcion("Habitacion con todo lo necesario para tu familia");
+        producto.setPrecioBase(60.0);
+        producto.setActivo(true);
+        producto.setFechaDesde(LocalDate.of(2025, 6, 1));
+        producto.setFechaHasta(LocalDate.of(2025, 12, 31));
+        return producto;
+    }
+
     private void saveAllProductos()
     {
         List<Producto> productos = new ArrayList<>();
         producto = getProducto();
         producto2 = getProducto2();
         producto3 = getProducto3();
+        producto4 = getProducto4();
         productos.add(producto);
         productos.add(producto2);
         productos.add(producto3);
+        productos.add(producto4);
         productoRepo.saveAll(productos);
     }
 
@@ -615,7 +631,7 @@ public class DesarrolloDataLoader {
         reserva3.setEstado(Reserva.ESTADO_RESERVA.PAGADA);
         reserva3.setPax(3);
         reserva3.setFechaReserva(Instant.now());
-        reserva3.setComentarios("Alergia almendras");
+        reserva3.setComentarios("Alergia mariscos");
         reserva3.setTotalReserva(100);
         return reserva3;
     }
