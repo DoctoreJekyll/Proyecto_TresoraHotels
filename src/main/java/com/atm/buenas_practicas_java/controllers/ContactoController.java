@@ -1,13 +1,9 @@
 package com.atm.buenas_practicas_java.controllers;
 
 import com.atm.buenas_practicas_java.entities.Contacto;
-import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.services.ContactoService;
 import com.atm.buenas_practicas_java.services.UsuarioService;
 import com.atm.buenas_practicas_java.services.files.IUploadFilesService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +29,7 @@ public class ContactoController {
         model.addAttribute("contacto", contacto);
         model.addAttribute("usuarioLogeadoEmail", contactoService.returnMail(usuarioService));
         model.addAttribute("usuarioLogeadoName", contactoService.returnName(usuarioService));
-    return "contactoForm";
+        return "contactoForm";
     }
 
     @PostMapping("/guardar")
@@ -59,7 +55,7 @@ public class ContactoController {
         {
             if (contactoExistente != null)
             {
-               contacto.setFoto1(contacto.getFoto1());
+                contacto.setFoto1(contacto.getFoto1());
             }
         }
 
@@ -77,13 +73,17 @@ public class ContactoController {
 
         contactoService.save(contacto);
 
+
+        //Aqui enviamos el mail
+        //contactoService.sendEmailWhenContact(contacto);
+
         return "redirect:/lista/contactos";
     }
 
     @GetMapping("/editar/{id}")
     public String mostrarFormularioContactoEditar (@PathVariable Integer id, Model model) {
         Contacto contacto = contactoService.findById(id)
-            .orElseThrow(() -> new RuntimeException("Mensaje no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Mensaje no encontrado"));
         model.addAttribute("contacto", contacto);
         return "contactoForm";
     }

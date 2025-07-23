@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/images/**")
                 .addResourceLocations(
                         "classpath:/static/images/",
-                        "file:///C:/Users/jarma/Desktop/Proyecto_TresoraHotels/opt/imagenes/"
+                        "file:/opt/imagenes/"
                 );
     }
 }

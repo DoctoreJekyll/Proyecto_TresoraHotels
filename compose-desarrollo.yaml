@@ -23,6 +23,8 @@ services:
     restart: always
     expose: 
       - "8080"
+    volumes:
+      - ./imagenes:/opt/imagenes
 
   db:
     image: postgres:latest

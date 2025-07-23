@@ -80,7 +80,7 @@ public class ReservasController {
             return usuario.getNombre();
         }
 
-        return "";
+        return null;
     }
 
     public String returnMail(UsuarioService usuarioService)
@@ -91,13 +91,15 @@ public class ReservasController {
             return user.getUsername();
         }
 
-        return "";
+        return null;
     }
 
 
     // 1️⃣ Mostrar el formulario de reserva rápida
     @GetMapping("/rapida")
-    public String mostrarFormularioReservaRapida(Model model) {
+    public String mostrarFormularioReservaRapida(Model model, HttpSession session) {
+        session.getAttribute("forceSessionCreation");
+
         List<Habitacion> habitaciones = habitacionService.findAllConHotel();
 
         // Agrupar habitaciones por hotel
