@@ -39,10 +39,10 @@
                             <div class="col-md-6">
                                 <label for="hotel" class="form-label">Hotel</label>
                                 <select class="form-select" id="hotel" name="hotelNombre" aria-label="Seleccione un hotel para la búsqueda">
-                                    <option value="" disabled selected>Todos los hoteles</option> <option th:each="hotel : ${hoteles}"
-                                                                                                          th:value="${hotel.nombre}"
-                                                                                                          th:text="${hotel.nombre}">
-                                </option>
+                                    <option th:each="hotel : ${hoteles}"
+                                            th:value="${hotel.nombre}"
+                                            th:text="${hotel.nombre}">
+                                    </option>
                                 </select>
                             </div>
                         </div>
