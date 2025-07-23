@@ -158,7 +158,7 @@ public class LocalDataLoader {
         hotel3.setDescripcion("Relájate frente al mar Mediterráneo");
         hotel3.setCiudad("Alicante");
         hotel3.setDireccion("Avenida del Mar, 55, 03001 Alicante");
-        hotel3.setDireccionURL("https://maps.google.com/?q=Avenida+del+Mar+55+Alicante");
+        hotel3.setDireccionURL("//umap.openstreetmap.fr/es/map/mapa-sin-titulo_1258844?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true");
         hotel3.setImageURL("https://picsum.photos/600/400?random=12");
         hotel3.setTelefono("+34 611 555 666");
         hotel3.setEmail("contacto@costazulresort.com");
