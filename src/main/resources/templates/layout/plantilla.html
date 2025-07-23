@@ -20,8 +20,8 @@
     <link th:href="@{/css/Voz.css}" rel="stylesheet" />
 </head>
 <script th:src="@{/js/scrollButon.js}"></script>
-<body>
 
+<body class="d-flex flex-column min-vh-100">
 <!-- NAVBAR -->
 <nav class="navbar" style="background-color: #E0E0E0;">
     <div class="container-fluid d-flex justify-content-between align-items-center">
@@ -103,7 +103,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------------------------- -->
 
 <!-- CONTENIDO -->
-<main id="contenido-principal" layout:fragment="contenido" class="content-padding-top">
+<main id="contenido-principal" layout:fragment="contenido" class="content-padding-top flex-grow-1">
     <!-- Este contenido será reemplazado por cada vista -->
 </main>
 
