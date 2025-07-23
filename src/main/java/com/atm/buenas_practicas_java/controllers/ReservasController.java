@@ -69,32 +69,6 @@ public class ReservasController {
                 .toList();
     }
 
-    public String returnName(UsuarioService usuarioService)
-    {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails user = (UserDetails) authentication.getPrincipal();
-            String userEmail = user.getUsername();
-            Usuario usuario = usuarioService.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-
-            return usuario.getNombre();
-        }
-
-        return null;
-    }
-
-    public String returnMail(UsuarioService usuarioService)
-    {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails)  {
-            UserDetails user = (UserDetails) authentication.getPrincipal();
-            return user.getUsername();
-        }
-
-        return null;
-    }
-
-
     // 1️⃣ Mostrar el formulario de reserva rápida
     @GetMapping("/rapida")
     public String mostrarFormularioReservaRapida(Model model, HttpSession session) {
@@ -113,8 +87,8 @@ public class ReservasController {
         model.addAttribute("productos", productoService.obtenerProductosActivosPorCategoria(2));
         model.addAttribute("habitacionesPorHotel", habitacionesPorHotel);
         model.addAttribute("hoteles", hotelService.findAll());
-        model.addAttribute("usuarioLogeadoEmail", returnMail(usuarioService));
-        model.addAttribute("usuarioLogeadoName", returnName(usuarioService));
+        model.addAttribute("usuarioLogeadoEmail", reservaService.returnMail(usuarioService));
+        model.addAttribute("usuarioLogeadoName", reservaService.returnName(usuarioService));
 
         return "reservaRapida";
     }

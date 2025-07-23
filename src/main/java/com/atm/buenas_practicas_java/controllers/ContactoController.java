@@ -38,47 +38,18 @@ public class ContactoController {
                                   @RequestParam("file2") MultipartFile file2,
                                   Model model) throws Exception {
 
-        Contacto contactoExistente = null;
+        // Servicio para imagenes
+        contactoService.checkIfImageExistAndCreate(contacto, file1, file2, contactoService, uploadFilesService);
 
-        // Solo buscamos si el ID no es nulo
-        if (contacto.getId() != null) {
-            contactoExistente = contactoService.findById(contacto.getId())
-                    .orElse(null); // Evitamos lanzar excepción
-        }
-
-
-        if (!file1.isEmpty()) {
-            String nombreArchivo1 = uploadFilesService.handleFileUpload(file1);
-            contacto.setFoto1("/images/" + nombreArchivo1);
-        }
-        else
-        {
-            if (contactoExistente != null)
-            {
-                contacto.setFoto1(contacto.getFoto1());
-            }
-        }
-
-        if (!file2.isEmpty()) {
-            String nombreArchivo2 = uploadFilesService.handleFileUpload(file2);
-            contacto.setFoto2("/images/" + nombreArchivo2);
-        }
-        else
-        {
-            if (contactoExistente != null)
-            {
-                contacto.setFoto2(contacto.getFoto2());
-            }
-        }
-
+        //Guardar contacto
         contactoService.save(contacto);
 
-
         //Aqui enviamos el mail
-        //contactoService.sendEmailWhenContact(contacto);
+        contactoService.sendEmailWhenContact(contacto);
 
         return "redirect:/lista/contactos";
     }
+
 
     @GetMapping("/editar/{id}")
     public String mostrarFormularioContactoEditar (@PathVariable Integer id, Model model) {
