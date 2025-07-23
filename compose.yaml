@@ -19,3 +19,5 @@ services:
     expose:
       # Expone el puerto 5432 dentro del contenedor para comunicación con otros servicios
       - '5432'
+    volumes:
+      - ./imagenes:/opt/imagenes

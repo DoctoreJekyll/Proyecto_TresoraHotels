@@ -39,9 +39,9 @@ public class UploadFilesServiceImpl implements IUploadFilesService {
             String newFileName = UUID.randomUUID().toString() + extension;
 
 
-            File folder = new File("C:/Users/jarma/Desktop/Proyecto_TresoraHotels/opt/imagenes");
+            File folder = new File("/opt/imagenes");
             if(!folder.exists()){
-                folder.mkdir();
+                folder.mkdirs();
             }
 
             Path path = Paths.get(folder.getPath(), newFileName);

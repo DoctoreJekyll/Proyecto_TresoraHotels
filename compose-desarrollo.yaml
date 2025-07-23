@@ -37,3 +37,6 @@ services:
     restart: always
     ports:
       - "${PUERTO_DB_DESARROLLO}:5432"
+
+    volumes:
+      - ./imagenes:/opt/imagenes
