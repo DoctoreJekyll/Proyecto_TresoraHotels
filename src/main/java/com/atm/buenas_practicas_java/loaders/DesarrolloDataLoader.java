@@ -94,7 +94,7 @@ public class DesarrolloDataLoader {
         MiembroEquipo Jose= new MiembroEquipo(
                 "Jose Antonio Rodríguez Martin",
                 "images/Jose.jpg",
-                "Cafetero entre códigos",
+                "Café entre líneas de código",
                 Arrays.asList(
                         new RedSocial("LinkedIn", "https://www.linkedin.com/in/jose-rodriguez-martin/?originalSubdomain=es")
                 )
