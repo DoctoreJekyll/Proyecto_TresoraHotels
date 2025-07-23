@@ -47,7 +47,7 @@ public class ContactoController {
         //Aqui enviamos el mail
         contactoService.sendEmailWhenContact(contacto);
 
-        return "redirect:/contactos";
+        return "redirect:/contactos/nuevo";
     }
 
 
