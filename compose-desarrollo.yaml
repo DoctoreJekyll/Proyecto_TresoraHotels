@@ -23,6 +23,8 @@ services:
     restart: always
     expose: 
       - "8080"
+    volumes:
+      - ./imagenes:/opt/imagenes
 
   db:
     image: postgres:latest
@@ -37,6 +39,3 @@ services:
     restart: always
     ports:
       - "${PUERTO_DB_DESARROLLO}:5432"
-
-    volumes:
-      - ./imagenes:/opt/imagenes

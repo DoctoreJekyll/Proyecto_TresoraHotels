@@ -20,6 +20,8 @@ services:
       timeout: 10s
       retries: 3
     restart: always
+    volumes:
+      - ./imagenes:/opt/imagenes
 
   db:
     image: postgres:latest
