@@ -39,26 +39,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    /**
-     * Configura una cadena de filtros de seguridad para gestionar la seguridad HTTP de la aplicación.
-     * Permite personalizar los comportamientos de seguridad como protección CSRF, autenticación básica,
-     * inicio de sesión con formulario y control de acceso a las solicitudes HTTP.
-     *
-     * <p>Este método define, entre otras configuraciones:
-     * <ul>
-     *   <li>Deshabilitar la protección CSRF, comúnmente usado en entornos de pruebas o para APIs REST.</li>
-     *   <li>Autenticación HTTP básica y a través de formulario por defecto.</li>
-     *   <li>Permitir el acceso público a ciertas rutas específicas, mientras que otras rutas
-     *       requieren autenticación.</li>
-     * </ul>
-     * </p>
-     *
-     * @param http Objeto {@link HttpSecurity} provisto por Spring Security, utilizado para personalizar
-     *             la configuración de seguridad web.
-     * @return Un objeto {@link SecurityFilterChain} que representa la configuración de seguridad
-     *         HTTP personalizada.
-     * @throws Exception En caso de que ocurra algún error durante la configuración.
-     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationSuccessHandler successHandler) throws Exception {
         http
