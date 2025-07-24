@@ -1,53 +1,58 @@
-
 // Estado inicial de la funcionalidad de voz
 let isVoiceEnabled = false;
-let lastSpokenElement = null; // Almacena el último elemento leído para evitar repeticiones
+let lastSpokenElement = null;
 
-// Referencia al botón de activación/desactivación
+// Botón de activación
 const toggleVoiceBtn = document.getElementById('toggleVoiceBtn');
-
-// Crear una instancia de SpeechSynthesis
 const synth = window.speechSynthesis;
 
-// Función para leer texto en voz alta
+// Función para hablar
 function speak(text) {
     if (isVoiceEnabled && text) {
-        // Cancelar cualquier síntesis de voz previa
         synth.cancel();
-
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'es-ES'; // Configurar idioma a español
-        utterance.rate = 1; // Velocidad de la voz
-        utterance.pitch = 1; // Tono de la voz
+        utterance.lang = 'es-ES';
+        utterance.rate = 1;
+        utterance.pitch = 1;
         synth.speak(utterance);
     }
 }
 
-// Función para obtener el texto a leer de un elemento
+// Obtener texto legible
 function getElementText(element) {
-    // Priorizar aria-label, luego textContent, luego title
     return (
         element.getAttribute('aria-label') ||
-        element.textContent.trim() || element.getAttribute('title')
-        //  ||'Elemento sin descripción'
+        element.textContent.trim() ||
+        element.getAttribute('title')
     );
 }
 
-// Seleccionar todos los elementos que tienen aria-label
-const elementsWithAriaLabel = document.querySelectorAll('[aria-label]');
+// Añadir eventos de voz a un elemento
+function addVoiceEventsToElement(element) {
+    if (element.hasAttribute('data-voice-enabled')) return;
+    element.setAttribute('data-voice-enabled', 'true');
 
-// También incluir botones y enlaces que podrían no tener aria-label
-const buttons = document.querySelectorAll('button, a.btn');
-
-// Combinar ambas selecciones y eliminar duplicados
-const allElements = new Set([...elementsWithAriaLabel, ...buttons]);
-
-// Añadir evento mouseenter a cada elemento
-allElements.forEach(element => {
     const handleSpeak = () => {
-        if (isVoiceEnabled) {
+        if (!isVoiceEnabled) return;
+
+        if (element.tagName === 'SELECT') {
+            const label = document.querySelector(`label[for="${element.id}"]`);
+            let announcement = '';
+            if (label) announcement += label.textContent + '. ';
+            announcement += element.getAttribute('aria-label') || '';
+
+            const selectedOption = element.options[element.selectedIndex];
+            if (selectedOption && selectedOption.value !== "" && !selectedOption.disabled) {
+                announcement += '. Valor actual: ' + selectedOption.textContent.trim();
+            }
+
+            if (announcement && lastSpokenElement !== element) {
+                speak(announcement);
+                lastSpokenElement = element;
+            }
+        } else {
             const text = getElementText(element);
-            if (lastSpokenElement !== element) {
+            if (text && lastSpokenElement !== element) {
                 speak(text);
                 lastSpokenElement = element;
             }
@@ -55,84 +60,58 @@ allElements.forEach(element => {
     };
 
     element.addEventListener('mouseenter', handleSpeak);
-    element.addEventListener('focus', handleSpeak); // <- Tabulador
+    element.addEventListener('focus', handleSpeak);
+    element.addEventListener('mouseleave', () => lastSpokenElement = null);
+    element.addEventListener('blur', () => lastSpokenElement = null);
 
-    const clearSpoken = () => {
-        lastSpokenElement = null;
-    };
-
-    element.addEventListener('mouseleave', clearSpoken);
-    element.addEventListener('blur', clearSpoken); // <- Cuando pierde el foco
-});
-
-
-// Función para agregar eventos a nuevos elementos (útil para contenido dinámico)
-function addVoiceEventsToNewElements() {
-    const newElementsWithAriaLabel = document.querySelectorAll('[aria-label]:not([data-voice-enabled])');
-    const newButtons = document.querySelectorAll('button:not([data-voice-enabled]), a.btn:not([data-voice-enabled])');
-
-    const newElements = new Set([...newElementsWithAriaLabel, ...newButtons]);
-
-    newElements.forEach(element => {
-        // Marcar como procesado
-        element.setAttribute('data-voice-enabled', 'true');
-
-        element.addEventListener('mouseenter', () => {
-            if (isVoiceEnabled) {
-                const text = getElementText(element);
-                if (lastSpokenElement !== element) {
-                    speak(text);
-                    lastSpokenElement = element;
-                }
+    // Evento para detectar cuando el usuario cambia de opción en un SELECT
+    if (element.tagName === 'SELECT') {
+        element.addEventListener('change', () => {
+            if (!isVoiceEnabled) return;
+            const selectedOption = element.options[element.selectedIndex];
+            if (selectedOption && selectedOption.textContent.trim()) {
+                speak('Seleccionado: ' + selectedOption.textContent.trim());
             }
         });
-
-        element.addEventListener('mouseleave', () => {
-            lastSpokenElement = null;
-        });
-    });
+    }
 }
 
-// Observador de mutaciones para detectar elementos añadidos dinámicamente
-const observer = new MutationObserver((mutations) => {
-    let shouldCheckForNewElements = false;
+// Inicializar todos los elementos actuales
+function initVoiceForAll() {
+    const elementsWithAria = document.querySelectorAll('[aria-label]');
+    const buttons = document.querySelectorAll('button, a.btn');
+    const selects = document.querySelectorAll('select');
+    const allElements = new Set([...elementsWithAria, ...buttons, ...selects]);
+    allElements.forEach(addVoiceEventsToElement);
+}
 
-    mutations.forEach((mutation) => {
-        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-            shouldCheckForNewElements = true;
+// Observador para nuevos elementos dinámicos
+const observer = new MutationObserver(mutations => {
+    let hasNewElements = false;
+    mutations.forEach(m => {
+        if (m.type === 'childList' && m.addedNodes.length > 0) {
+            hasNewElements = true;
         }
     });
-
-    if (shouldCheckForNewElements) {
-        addVoiceEventsToNewElements();
+    if (hasNewElements) {
+        initVoiceForAll();
     }
 });
+observer.observe(document.body, { childList: true, subtree: true });
 
-// Iniciar la observación del DOM
-observer.observe(document.body, {
-    childList: true,
-    subtree: true
-});
-
-// Manejar el botón de activar/desactivar voz
+// Botón de activación/desactivación
 toggleVoiceBtn.addEventListener('click', () => {
     isVoiceEnabled = !isVoiceEnabled;
     toggleVoiceBtn.setAttribute('aria-checked', isVoiceEnabled);
     toggleVoiceBtn.classList.toggle('active', isVoiceEnabled);
-    toggleVoiceBtn.setAttribute('aria-label', isVoiceEnabled ? 'Desactivar lectura en voz alta' : 'Activar lectura en voz alta');
-    toggleVoiceBtn.title = isVoiceEnabled ? 'Desactivar lectura en voz alta' : 'Activar lectura en voz alta';
-
-    // Cambiar el icono según el estado
+    toggleVoiceBtn.setAttribute('aria-label', isVoiceEnabled ? 'Botón lectura en voz activado' : 'Botón lectura en voz desactivado');
+    toggleVoiceBtn.title = isVoiceEnabled ? 'Lectura en voz activada' : 'Lectura en voz desactivada';
     toggleVoiceBtn.innerHTML = isVoiceEnabled
         ? '<i class="bi bi-volume-up-fill"></i>'
         : '<i class="bi bi-volume-mute"></i>';
-
-    // Cancelar cualquier síntesis previa antes de anunciar el cambio de estado
     synth.cancel();
-    speak(isVoiceEnabled ? 'Lectura en voz alta activada' : 'Lectura en voz alta desactivada');
+    speak(isVoiceEnabled ? 'Lectura en voz activada' : 'Lectura en voz desactivada');
 });
 
-// Ejecutar una vez al cargar para elementos añadidos dinámicamente
-document.addEventListener('DOMContentLoaded', () => {
-    addVoiceEventsToNewElements();
-});
+// Al cargar la página
+document.addEventListener('DOMContentLoaded', initVoiceForAll);
