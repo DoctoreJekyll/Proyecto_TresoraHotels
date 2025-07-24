@@ -5,6 +5,7 @@ import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.repositories.ContactoRepo;
 import com.atm.buenas_practicas_java.services.files.IUploadFilesService;
 import com.atm.buenas_practicas_java.services.files.UploadFilesServiceImpl;
+import com.atm.buenas_practicas_java.services.reserva.UsuarioContextService;
 import com.atm.buenas_practicas_java.services.templateMethod.AbstractTemplateServicesEntities;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -18,11 +19,13 @@ import org.springframework.web.server.ResponseStatusException;
 public class ContactoService extends AbstractTemplateServicesEntities <Contacto,Integer, ContactoRepo> {
 
     private final EmailService emailService;
+    private final UsuarioContextService usuarioContextService;
 
-    public ContactoService(ContactoRepo repo, EmailService emailService)
+    public ContactoService(ContactoRepo repo, EmailService emailService, UsuarioContextService usuarioContextService)
     {
         super(repo);
         this.emailService = emailService;
+        this.usuarioContextService = usuarioContextService;
     }
 
     public Contacto contactoUsuarioLog(UsuarioService usuarioService) {
@@ -43,28 +46,13 @@ public class ContactoService extends AbstractTemplateServicesEntities <Contacto,
 
     public String returnName(UsuarioService usuarioService)
     {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails user = (UserDetails) authentication.getPrincipal();
-            String userEmail = user.getUsername();
-            Usuario usuario = usuarioService.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-
-            return usuario.getNombre();
-        }
-
-        return null;
+        return usuarioContextService.getNombreUsuarioAutenticado();
     }
 
 
     public String returnMail(UsuarioService usuarioService)
     {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails user = (UserDetails) authentication.getPrincipal();
-            return user.getUsername();
-        }
-
-        return null;
+        return usuarioContextService.getEmailUsuarioAutenticado();
     }
 
     public void checkIfImageExistAndCreate(Contacto contacto, MultipartFile file1, MultipartFile file2, ContactoService contactoService, IUploadFilesService uploadFilesService) throws Exception {

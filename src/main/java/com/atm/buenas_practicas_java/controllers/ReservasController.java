@@ -9,6 +9,7 @@ import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.mappers.ReservaConfirmacionMapper;
 import com.atm.buenas_practicas_java.repositories.HotelesRepo;
 import com.atm.buenas_practicas_java.services.*;
+import com.atm.buenas_practicas_java.services.reserva.ReservaServiceRefactor;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReservasController {
 
-    private final ReservaService reservaService;
+    private final ReservaServiceRefactor reservaService;
     private final ProductoService productoService; // Para mostrar productos en el formulario
     private final HabitacionService habitacionService;
     private final ReservaConfirmacionMapper confirmacionReservaDTO;

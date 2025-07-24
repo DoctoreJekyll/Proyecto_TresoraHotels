@@ -7,6 +7,7 @@ import com.atm.buenas_practicas_java.entities.Hotel;
 import com.atm.buenas_practicas_java.entities.Reserva;
 import com.atm.buenas_practicas_java.mappers.ReservaConfirmacionMapper;
 import com.atm.buenas_practicas_java.services.*;
+import com.atm.buenas_practicas_java.services.reserva.ReservaServiceRefactor;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 public class CrudReservaController {
 
     private final HabitacionService habitacionService;
-    private final ReservaService reservaService;
+    private final ReservaServiceRefactor reservaService;
     private final UsuarioService usuarioService;
     private final ProductoService productoService;
     private final HotelService hotelService;

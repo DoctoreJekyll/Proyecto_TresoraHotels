@@ -10,6 +10,7 @@ import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.mappers.HabitacionMapper;
 import com.atm.buenas_practicas_java.mappers.ReservaConfirmacionMapper;
 import com.atm.buenas_practicas_java.services.*;
+import com.atm.buenas_practicas_java.services.reserva.ReservaServiceRefactor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +40,7 @@ public class HotelWebController {
     private final HotelService hotelService;
     private final HabitacionService habitacionService;
     private final ProductoService productoService;
-    private final ReservaService reservaService;
+    private final ReservaServiceRefactor reservaService;
     private final ReservaConfirmacionMapper confirmacionReservaDTO;
     private final HabitacionMapper habitacionMapper;
     private final UsuarioService usuarioService;
