@@ -17,14 +17,10 @@ public class UploadFilesServiceImpl implements IUploadFilesService {
     @Override
     public String handleFileUpload(MultipartFile file) {
         try {
-            log.debug("🔄 Iniciando proceso de subida de archivo");
-
             String fileOriginalName = file.getOriginalFilename();
             long size = file.getSize();
             long maxFileSize = 5 * 1024 * 1024;
 
-            log.debug("📄 Nombre original: {}", fileOriginalName);
-            log.debug("📦 Tamaño archivo: {} bytes", size);
 
             if (size > maxFileSize) {
                 String msg = "⛔ Archivo demasiado grande (max: " + maxFileSize + ")";
@@ -63,7 +59,6 @@ public class UploadFilesServiceImpl implements IUploadFilesService {
             // Mostrar contenido del directorio para verificación en logs
             File[] files = folder.listFiles();
             if (files != null) {
-                log.debug("🗂 Contenido actual de /opt/imagenes:");
                 for (File f : files) {
                     log.debug("  - {}", f.getName());
                 }

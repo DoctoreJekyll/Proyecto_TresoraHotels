@@ -71,7 +71,7 @@ public class DesarrolloDataLoader {
         MiembroEquipo Alba = new MiembroEquipo(
                 "Alba Gutierrez García",
                 "images/Alba.jpg",
-                "La Arquitecta del Caos",
+                "La Alquimista del orden",
                 Arrays.asList(
                         new RedSocial("LinkedIn", "https://www.linkedin.com/in/alba-guti%C3%A9rrez-garc%C3%ADa/")
                 )
@@ -106,7 +106,7 @@ public class DesarrolloDataLoader {
         MiembroEquipo Lucia= new MiembroEquipo(
                 "Lucia Beltran Infante",
                 "images/Lucia.jpg",
-                "",
+                "La Tejedora de interfaces",
                 Arrays.asList(
                         new RedSocial("LinkedIn", "https://www.linkedin.com/in/luc%C3%ADa-beltr%C3%A1n-infante/")
                 )
@@ -117,7 +117,7 @@ public class DesarrolloDataLoader {
         MiembroEquipo Natalia= new MiembroEquipo(
                 "Natalia García Rodríguez",
                 "images/Natalia.jpg",
-                "",
+                "La Centinela de ramas",
                 Arrays.asList(
                         new RedSocial("LinkedIn", "https://www.linkedin.com/in/natalia-garcia-rodriguez/")
                 )

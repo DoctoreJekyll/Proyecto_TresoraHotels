@@ -2,7 +2,7 @@ package com.atm.buenas_practicas_java.controllers.FactoryImpl;
 
 import com.atm.buenas_practicas_java.controllers.Factory.IFactoryProvider;
 import com.atm.buenas_practicas_java.entities.Reserva;
-import com.atm.buenas_practicas_java.services.ReservaService;
+import com.atm.buenas_practicas_java.services.reserva.ReservaServiceRefactor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +13,9 @@ import java.util.Map;
 @Component
 public class ReservaFactoryImpl implements IFactoryProvider {
 
-    private final ReservaService reservaService;
+    private final ReservaServiceRefactor reservaService;
 
-    public ReservaFactoryImpl(ReservaService reservaService) {
+    public ReservaFactoryImpl(ReservaServiceRefactor reservaService) {
         this.reservaService = reservaService;
     }
 

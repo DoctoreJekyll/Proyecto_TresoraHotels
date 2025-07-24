@@ -4,9 +4,9 @@ import com.atm.buenas_practicas_java.DTOs.UsuarioDTO;
 import com.atm.buenas_practicas_java.entities.Rol;
 import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.services.HotelService;
-import com.atm.buenas_practicas_java.services.ReservaService;
 import com.atm.buenas_practicas_java.services.RolService;
 import com.atm.buenas_practicas_java.services.UsuarioService;
+import com.atm.buenas_practicas_java.services.reserva.ReservaServiceRefactor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -29,7 +29,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final RolService rolService;
     private final HotelService hotelService;
-    private final ReservaService reservaService;
+    private final ReservaServiceRefactor reservaService;
 
     @GetMapping("/crear-cuenta")
     @PreAuthorize("permitAll()")
