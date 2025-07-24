@@ -49,7 +49,7 @@ public class FacturaController {
     @GetMapping("/nuevo")
     public String mostrarFormularioFactura (Model model) {
         Factura factura = new Factura();
-        model.addAttribute("factura", factura);
+        model.addAttribute("facturaNueva", factura);
 
         List<Hotel> hoteles = hotelService.findAll();
         model.addAttribute("hoteles", hoteles);
