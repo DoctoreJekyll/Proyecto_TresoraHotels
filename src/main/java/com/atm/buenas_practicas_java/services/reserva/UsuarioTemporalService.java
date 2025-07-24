@@ -6,6 +6,7 @@ import com.atm.buenas_practicas_java.repositories.UsuarioRepo;
 import com.atm.buenas_practicas_java.services.EmailService;
 import com.atm.buenas_practicas_java.services.RolService;
 import com.atm.buenas_practicas_java.util.PasswordGenerator;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +16,13 @@ public class UsuarioTemporalService {
     private final RolService rolService;
     private final EmailService emailService;
     private final UsuarioRepo usuarioRepo;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioTemporalService(RolService rolService, EmailService emailService, UsuarioRepo usuarioRepo) {
+    public UsuarioTemporalService(RolService rolService, EmailService emailService, UsuarioRepo usuarioRepo, PasswordEncoder passwordEncoder) {
         this.rolService = rolService;
         this.emailService = emailService;
         this.usuarioRepo = usuarioRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -32,16 +35,23 @@ public class UsuarioTemporalService {
     public Usuario findOrCreateUser(String nombre, String email) {
         return usuarioRepo.findByEmail(email)
                 .orElseGet(() -> {
+                    // Genera la contraseña en texto plano primero
+                    String rawPassword = PasswordGenerator.generateRandomPassword();
+
                     Usuario newUser = new Usuario();
                     newUser.setNombre(nombre);
                     newUser.setEmail(email);
-                    newUser.setPassword(PasswordGenerator.generateRandomPassword());
+                    // Codifica la contraseña antes de guardarla
+                    newUser.setPassword(passwordEncoder.encode(rawPassword));
 
                     Rol defaultRole = rolService.findById(1)
                             .orElseThrow(() -> new RuntimeException("Rol por defecto no encontrado"));
                     newUser.setIdRol(defaultRole);
 
-                    return usuarioRepo.save(newUser);
+                    Usuario usuarioSaved = usuarioRepo.save(newUser);
+                    // Pasa la contraseña en texto plano
+                    enviarEmailBienvenida(usuarioSaved, rawPassword);
+                    return usuarioSaved;
                 });
     }
 
@@ -68,4 +78,3 @@ public class UsuarioTemporalService {
         );
     }
 }
-
