@@ -1,10 +1,13 @@
 package com.atm.buenas_practicas_java.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -14,6 +17,7 @@ import java.util.Set;
 @Table(name = "hoteles")
 @NoArgsConstructor
 @AllArgsConstructor
+//@JsonIgnoreProperties({"habitaciones", "facturas", "usuarios"})
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

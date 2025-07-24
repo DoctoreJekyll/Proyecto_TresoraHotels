@@ -193,7 +193,9 @@
 
             <form th:action="@{/reserva/rapida}" th:object="${reservaDTO}" method="post" id="booking-form" aria-describedby="form-instructions">
 
-                <p class="card-text mb-4" id="form-instructions">Complete los campos para reservar su estancia. Todos los campos son obligatorios.</p>
+                <p class="card-text mb-4" id="form-instructions" tabindex="0" aria-label="Complete los campos para reservar su estancia. Todos los campos son obligatorios">
+                    Complete los campos para reservar su estancia. Todos los campos son obligatorios.
+                </p>
 
                 <div class="form-group mb-4">
                     <label for="nombre">Nombre</label>
@@ -323,7 +325,7 @@
                                placeholder="% desc"
                                class="form-control mb-3"
                                style="max-width: 100px;" min="0" max="100"
-                               th:aria-label="'Porcentaje de descuento para ' + ${producto.nombre}" />
+                               th:aria-label="'Porcentaje de descuento para ' + ${producto.nombre}" readonly/>
                     </div>
 
                     <div class="form-group mt-4">

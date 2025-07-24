@@ -57,11 +57,20 @@
                             Inicio
                         </a>
                     </li>
+
                     <li th:if="${usuario.idRol.nombreRol == 'CLIENTE'}">
                         <a class="dropdown-item" th:href="@{'/usuarios/reserva/' + ${usuario.id}}">Mis Reservas</a>
                     </li>
+
                     <li><a class="dropdown-item" th:href="@{/usuarios/miPerfil}">Perfil</a></li>
+
+                    <!-- SOLO ADMIN: Crear cuenta -->
+                    <li th:if="${usuario.idRol.nombreRol == 'ADMIN'}">
+                        <a class="dropdown-item" th:href="@{/usuarios/crear-cuenta}">Crear Cuenta</a>
+                    </li>
+
                     <li><hr class="dropdown-divider"></li>
+
                     <li>
                         <form th:action="@{/logout}" method="post" class="dropdown-item p-0">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />

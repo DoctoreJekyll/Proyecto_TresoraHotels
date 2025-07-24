@@ -388,7 +388,7 @@
                         <input type="number" th:name="'productos[' + ${iterStat.index} + '].descuento'"
                                placeholder="% desc" class="form-control mb-3" style="max-width: 100px;" min="0" max="100"
                                th:aria-label="'Descuento en porcentaje para ' + ${producto.nombre}"
-                               th:aria-describedby="'producto_name_' + ${iterStat.index}"/>
+                               th:aria-describedby="'producto_name_' + ${iterStat.index}" readonly/>
                     </div>
 
                     <div id="formErrorMessage" class="form-error-message" role="alert" aria-live="assertive" tabindex="-1">
