@@ -13,16 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-/**
- * Clase de configuración de seguridad para la aplicación.
- * Utiliza las anotaciones de Spring Security para definir y personalizar
- * la seguridad de la aplicación, incluyendo la configuración de solicitudes
- * HTTP, autenticación y control de acceso.
- *
- * @Configuration Marca esta clase como una clase de configuración.
- * @EnableWebSecurity Habilita la seguridad web de Spring Security en la aplicación.
- *
- */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
