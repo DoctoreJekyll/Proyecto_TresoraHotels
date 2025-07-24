@@ -45,6 +45,10 @@
                 <a href="lista/categorias" class="btn btn-grupo5 w-100" aria-label="Acceder a la gestión de categorías de producto">Categorías de Producto</a>
             </div>
 
+            <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'EMPLEADO')">
+                <a href="/lista/contactos" class="btn btn-grupo5 w-100" aria-label="Acceder a los contactos recibidos">Ver Contactos</a>
+            </div>
+
         </div>
     </div>
 </main>

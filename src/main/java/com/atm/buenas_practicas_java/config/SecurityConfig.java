@@ -74,6 +74,7 @@ public class SecurityConfig {
                         .requestMatchers("/lista/facturas").hasAnyRole("ADMIN", "EMPLEADO")
                         .requestMatchers("/lista/reservas").hasAnyRole("ADMIN", "EMPLEADO")
                         .requestMatchers("/lista/informes").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")
+                        .requestMatchers("/lista/contactos").hasAnyRole("ADMIN", "EMPLEADO")
                         .requestMatchers("/informes/nuevo").hasAnyRole("ADMIN", "EMPLEADO", "LIMPIEZA")
                         .requestMatchers("/lista/habitaciones", "/lista/productos", "/lista/metodopago", "/lista/categorias").hasRole("ADMIN")
 
