@@ -269,7 +269,7 @@
     </section>
 
     <div class="container mb-5 text-center">
-        <img th:src="${hotel.direccionURL}" class="img-fluid rounded-4 shadow"
+        <img th:src="${hotel.imageURL}" class="img-fluid rounded-4 shadow"
              th:alt="'Fachada o vista principal del hotel ' + ${hotel.nombre}"
              style="max-height: 400px; object-fit: cover;">
     </div>
@@ -393,7 +393,7 @@
                                             <input type="date" th:name="'productos[' + ${pStat.index} + '].fecha'" class="form-control mb-1 fecha-input" style="max-width: 200px;" th:attr="data-index=${iterStat.index}"
                                                    th:aria-label="'Fecha para el servicio ' + ${producto.nombre}" />
                                             <input type="number" th:name="'productos[' + ${pStat.index} + '].descuento'" placeholder="% desc" class="form-control mb-3 descuento-input" style="max-width: 100px;" min="0" max="100" th:attr="data-index=${iterStat.index}"
-                                                   th:aria-label="'Porcentaje de descuento para el servicio ' + ${producto.nombre}" />
+                                                   th:aria-label="'Porcentaje de descuento para el servicio ' + ${producto.nombre}" readonly />
                                         </div>
                                     </div>
 

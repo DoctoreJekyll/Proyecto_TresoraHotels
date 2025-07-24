@@ -4,9 +4,9 @@ import com.atm.buenas_practicas_java.DTOs.UsuarioDTO;
 import com.atm.buenas_practicas_java.entities.Rol;
 import com.atm.buenas_practicas_java.entities.Usuario;
 import com.atm.buenas_practicas_java.services.HotelService;
-import com.atm.buenas_practicas_java.services.ReservaService;
 import com.atm.buenas_practicas_java.services.RolService;
 import com.atm.buenas_practicas_java.services.UsuarioService;
+import com.atm.buenas_practicas_java.services.reserva.ReservaServiceRefactor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -29,16 +29,17 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final RolService rolService;
     private final HotelService hotelService;
-    private final ReservaService reservaService;
+    private final ReservaServiceRefactor reservaService;
 
     @GetMapping("/crear-cuenta")
     @PreAuthorize("permitAll()")
-    public String mostrarFormularioRegistro(Model model) {
+    public String mostrarFormularioRegistro(Model model, Authentication auth) {
         model.addAttribute("userData", new UsuarioDTO());
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated()
-                && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+        boolean esAdmin = auth != null && auth.isAuthenticated()
+                && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (esAdmin) {
             model.addAttribute("roles", rolService.findAll());
         }
 
@@ -53,55 +54,26 @@ public class UsuarioController {
                                              Model model,
                                              Authentication auth) {
 
-        // Validaciones
-        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-            result.rejectValue("confirmPassword", "error.userData", "Las contraseñas no coinciden");
-        }
+        boolean esAdmin = auth != null && auth.isAuthenticated()
+                && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        if (usuarioService.findAllEntities().stream().anyMatch(u -> u.getEmail().equals(dto.getEmail()))) {
-            result.rejectValue("email", "error.userData", "El email ya está registrado");
-        }
-
-        if (result.hasErrors()) {
-            if (auth != null && auth.isAuthenticated()
-                    && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+        try {
+            usuarioService.registrarUsuario(dto, rolId, esAdmin);
+        } catch (IllegalArgumentException e) {
+            result.rejectValue("email", "error.userData", e.getMessage());
+            if (esAdmin) {
                 model.addAttribute("roles", rolService.findAll());
             }
             return "crearCuenta";
         }
-
-        // Conversión a entidad y guardado
-        Usuario usuario = new Usuario();
-        usuario.setNombre(dto.getNombre());
-        usuario.setApellidos(dto.getApellidos());
-        usuario.setEmail(dto.getEmail());
-        usuario.setPassword(dto.getPassword()); // Se cifrará en el servicio
-        usuario.setFechaAlta(java.time.LocalDate.now());
-        usuario.setActivo(true);
-
-
-        // Rol por defecto o elegido
-        Rol rol;
-        if (auth != null && auth.isAuthenticated()
-                && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")) && rolId != null) {
-            rol = rolService.findById(rolId).orElseThrow(() -> new RuntimeException("Rol no válido"));
-        } else {
-            rol = rolService.findByNombre("CLIENTE").orElseThrow(() -> new RuntimeException("Rol cliente no encontrado"));
-        }
-
-        usuario.setIdRol(rol);
-
-        usuarioService.saveEntity(usuario);
 
         return "redirect:/login";
     }
 
     @GetMapping("/userhome")
     public String userHomePage(Model model, Authentication auth) {
-        String email = auth.getName();
-        Usuario usuario = usuarioService.findByEmail(email)
+        Usuario usuario = usuarioService.findByEmail(auth.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
         model.addAttribute("usuario", usuario);
         model.addAttribute("hoteles", hotelService.findAll());
         return "user_home_page";
@@ -110,10 +82,8 @@ public class UsuarioController {
     @GetMapping("/miPerfil")
     @PreAuthorize("isAuthenticated()")
     public String mostrarPerfilAutenticado(Model model, Authentication auth) {
-        String email = auth.getName();
-        Usuario usuario = usuarioService.findByEmail(email)
+        Usuario usuario = usuarioService.findByEmail(auth.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
         model.addAttribute("usuario", usuario);
         return "miPerfil";
     }
@@ -123,43 +93,41 @@ public class UsuarioController {
     public String actualizarPerfil(@ModelAttribute("usuario") Usuario formUsuario,
                                    BindingResult result, Model model,
                                    Authentication auth) {
-        if (result.hasErrors()) {
-            return "miPerfil";
-        }
+        if (result.hasErrors()) return "miPerfil";
 
-        Usuario usuarioExistente = usuarioService.findEntity(formUsuario.getId())
+        Usuario actual = usuarioService.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Usuario objetivo = usuarioService.findEntity(formUsuario.getId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (!auth.getName().equals(usuarioExistente.getEmail())
-                && !auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            throw new AccessDeniedException("No tienes permiso para editar este perfil");
+        if (!usuarioService.puedeModificar(actual, objetivo)) {
+            throw new AccessDeniedException("No tienes permiso");
         }
 
-        usuarioExistente.setNombre(formUsuario.getNombre());
-        usuarioExistente.setApellidos(formUsuario.getApellidos());
-        usuarioExistente.setEmail(formUsuario.getEmail());
-        usuarioExistente.setTelefono(formUsuario.getTelefono());
-        usuarioExistente.setDireccion(formUsuario.getDireccion());
-        usuarioExistente.setDni(formUsuario.getDni());
-        usuarioExistente.setFechaNacimiento(formUsuario.getFechaNacimiento());
+        objetivo.setNombre(formUsuario.getNombre());
+        objetivo.setApellidos(formUsuario.getApellidos());
+        objetivo.setEmail(formUsuario.getEmail());
+        objetivo.setTelefono(formUsuario.getTelefono());
+        objetivo.setDireccion(formUsuario.getDireccion());
+        objetivo.setDni(formUsuario.getDni());
+        objetivo.setFechaNacimiento(formUsuario.getFechaNacimiento());
 
-        usuarioService.saveEntity(usuarioExistente);
-
-        model.addAttribute("usuario", usuarioExistente);
+        usuarioService.saveEntity(objetivo);
+        model.addAttribute("usuario", objetivo);
         model.addAttribute("successMessage", "Perfil actualizado correctamente");
-
         return "miPerfil";
     }
 
     @PostMapping("/eliminar")
     @PreAuthorize("isAuthenticated()")
     public String eliminarCuenta(@ModelAttribute("usuario") Usuario usuario, Authentication auth) {
-        Usuario usuarioExistente = usuarioService.findEntity(usuario.getId())
+        Usuario actual = usuarioService.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Usuario objetivo = usuarioService.findEntity(usuario.getId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (!auth.getName().equals(usuarioExistente.getEmail())
-                && !auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            throw new AccessDeniedException("No tienes permiso para eliminar esta cuenta");
+        if (!usuarioService.puedeModificar(actual, objetivo)) {
+            throw new AccessDeniedException("No tienes permiso");
         }
 
         usuarioService.deleteById(usuario.getId());
@@ -179,8 +147,7 @@ public class UsuarioController {
                                     @RequestParam String confirmacion,
                                     Model model,
                                     Authentication auth) {
-        String email = auth.getName();
-        Usuario usuario = usuarioService.findByEmail(email)
+        Usuario usuario = usuarioService.findByEmail(auth.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         if (!usuarioService.verificarPassword(usuario, actual)) {
@@ -194,7 +161,7 @@ public class UsuarioController {
         }
 
         usuarioService.actualizarPassword(usuario, nueva);
-        model.addAttribute("successMessage", "La contraseña se actualizó correctamente.");
+        model.addAttribute("successMessage", "Contraseña actualizada correctamente.");
         return "cambiarContrasena";
     }
 
@@ -239,24 +206,11 @@ public class UsuarioController {
     //--------------------------------CONTROLLER DE VISTAS USUARIOS LOG/RESERVAS----------------------------------------------//
 
     @GetMapping("/reserva/{id}")
-    public String usuarioListaReservas(@PathVariable("id") Integer id, Model model)
-    {
-        Usuario usuario;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated()){
-            UserDetails user = (UserDetails) authentication.getPrincipal();
-            String userEmail = user.getUsername();
-
-            usuario = usuarioService.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-            model.addAttribute("reserva", reservaService.findReservaByUsuario(usuario.getId()));
-            return "usuarioListaReservas";
-        }
-        else
-        {
-            return "redirect:/user_home_page";
-        }
-
+    public String usuarioListaReservas(@PathVariable("id") Integer id, Model model, Authentication auth) {
+        Usuario usuario = usuarioService.findByEmail(auth.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        model.addAttribute("reserva", reservaService.findReservaByUsuario(usuario.getId()));
+        return "usuarioListaReservas";
     }
 
 }

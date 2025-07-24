@@ -43,8 +43,6 @@ public class Habitacion {
     @Column(name = "imagenUrl",nullable = false, length = 30000)
     private String imagenUrl;
 
-    @OneToMany(mappedBy = "idHabitacion")
-    private Set<DetallesReserva> detallesReservas = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idHabitacion")
     private Set<LimpiezaHabitaciones> limpiezaHabitaciones = new LinkedHashSet<>();

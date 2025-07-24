@@ -6,6 +6,7 @@
 <head>
     <title>Reserva Rápida</title>
     <link href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css" rel="stylesheet">
+    <link th:href="@{/css/tutorial.css}" rel="stylesheet" />
 </head>
 
 <body class="bg-gradient-primary">
@@ -196,19 +197,34 @@
 
                 <div class="form-group mb-4">
                     <label for="nombre">Nombre</label>
-                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required aria-required="true" aria-label="Introduzca su nombre"
-                           th:value="${usuarioLogeadoName != null ? usuarioLogeadoName : ''}"
-                           th:readonly="${usuarioLogeadoName != null}"
-                           data-intro="Comienza introduciendo tu **nombre**. Este campo es obligatorio." data-step="2" data-intro-position="right" />
+                    <input type="text"
+                           th:field="*{nombre}"
+                           id="nombre"
+                           class="form-control"
+                           required aria-required="true"
+                           aria-label="Introduzca su nombre"
+                           th:value="${usuarioLogeadoName}"
+                           th:attr="readonly=${usuarioLogeadoName != null} ? 'readonly' : null"
+                           data-intro="Comienza introduciendo tu **nombre**. Este campo es obligatorio."
+                           data-step="2"
+                           data-intro-position="right" />
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="email">Email</label>
-                    <input type="email" th:field="*{email}" id="email" class="form-control" required aria-required="true" aria-label="Introduzca su correo electrónico"
-                           th:value="${usuarioLogeadoEmail != null ? usuarioLogeadoEmail : ''}"
-                           th:readonly="${usuarioLogeadoEmail != null}"
-                           data-intro="Introduce tu **correo electrónico** para recibir la confirmación de tu reserva." data-step="3" data-intro-position="left" />
+                    <input type="email"
+                           th:field="*{email}"
+                           id="email"
+                           class="form-control"
+                           required aria-required="true"
+                           aria-label="Introduzca su correo electrónico"
+                           th:value="${usuarioLogeadoEmail}"
+                           th:attr="readonly=${usuarioLogeadoEmail != null} ? 'readonly' : null"
+                           data-intro="Introduce tu **correo electrónico** para recibir la confirmación de tu reserva."
+                           data-step="3"
+                           data-intro-position="left" />
                 </div>
+
 
                 <div class="form-group mb-4">
                     <label for="hotelSelect">Hotel</label>
@@ -307,7 +323,7 @@
                                placeholder="% desc"
                                class="form-control mb-3"
                                style="max-width: 100px;" min="0" max="100"
-                               th:aria-label="'Porcentaje de descuento para ' + ${producto.nombre}" />
+                               th:aria-label="'Porcentaje de descuento para ' + ${producto.nombre}" readonly/>
                     </div>
 
                     <div class="form-group mt-4">

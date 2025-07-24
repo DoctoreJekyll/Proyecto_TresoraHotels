@@ -1,0 +1,57 @@
+.customTooltip {
+    color: #ffffff;
+    background-color: #000000 !important;
+    border-radius: 8px;
+    font-size: 1.1em;
+    /* Asegurar que el ancho máximo no sea excesivo */
+    max-width: 350px !important;
+    padding: 20px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+}
+
+    .customTooltip .introjs-prevbutton,
+    .customTooltip .introjs-nextbutton,
+    .customTooltip .introjs-donebutton,
+    .customTooltip .introjs-skipbutton {
+        background-color: #00BFFF !important;
+        border: 2px solid #ffffff !important;
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-weight: bold;
+        text-shadow: none;
+    }
+
+    .customTooltip .introjs-prevbutton:hover,
+    .customTooltip .introjs-nextbutton:hover,
+    .customTooltip .introjs-donebutton:hover
+    {
+        border: 4px solid #00BFFF !important;
+        transform: scale(1.0);
+    }
+
+.customTooltip .introjs-skipbutton
+{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #ffffff !important;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+}
+
+.customTooltip .introjs-skipbutton:hover {
+    color: #ff0000 !important;
+    transform: scale(1.2);
+}
+    /* Estilos para la barra de progreso */
+    .customTooltip .introjs-progressbar {
+        height: 6px;
+        border-radius: 3px;
+        margin-top: 10px;
+    }
+

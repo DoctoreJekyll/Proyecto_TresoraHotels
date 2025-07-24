@@ -1,6 +1,6 @@
-#  ![Logo Tresora](src/main/resources/static/images/LogoTresoraFondoBlanco.png)
+#  ![Logo Tresora](src/main/resources/static/images/LogoTresora.png)
 
-> ***La mejor tecnología es la que no deja a nadie atrás***
+> **La mejor tecnología es la que no deja a nadie atrás**
 
 
 
@@ -35,7 +35,7 @@ Tresora es una cadena hotelera que permite al usuario:
 - Reservar habitaciones en distintos hoteles con fotos y desgloses de precio.
 - Elegir entre reservas convencionales o rápidas.
 - Añadir servicios extras a su reserva.
-- Acceder a una experiencia accesible: incluye soporte por voz, tutoriales, tipografía diseñada especialmente para personas con discapacidad visual, html con etiquetas ARIA y un diseño web con alto contraste *(WCAG AAA con ratio 9.89: 1 👉 https://webaim.org/resources/contrastchecker)*.
+- Acceder a una experiencia accesible: incluye soporte por voz, tutoriales, tipografía diseñada especialmente para personas con discapacidad visual, html con etiquetas ARIA y un diseño web con alto contraste *(ratio 9.89:1 👉 https://webaim.org/resources/contrastchecker)*.
 
 Además, cuenta con una parte de gestión para empleados y administradores con acceso a:
 

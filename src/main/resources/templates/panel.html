@@ -7,7 +7,6 @@
 <head>
     <title>Página de Inicio - Tresora Hotels</title>
 </head>
-<body>
 <main layout:fragment="contenido" role="main" aria-labelledby="welcome-heading">
     <div class="container mt-5">
         <h1 class="text-center mb-4" th:text="${tituloPanel}" id="welcome-heading">Bienvenido</h1>
@@ -46,8 +45,11 @@
                 <a href="lista/categorias" class="btn btn-grupo5 w-100" aria-label="Acceder a la gestión de categorías de producto">Categorías de Producto</a>
             </div>
 
+            <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'EMPLEADO')">
+                <a href="/lista/contactos" class="btn btn-grupo5 w-100" aria-label="Acceder a los contactos recibidos">Ver Contactos</a>
+            </div>
+
         </div>
     </div>
 </main>
-</body>
 </html>

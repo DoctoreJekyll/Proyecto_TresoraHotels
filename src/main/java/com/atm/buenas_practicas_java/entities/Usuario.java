@@ -72,16 +72,16 @@ public class Usuario {
     @OneToMany(mappedBy = "idUsuario")
     private Set<Contacto> contactos = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "idUsuario")
+    @OneToMany(mappedBy = "idUsuario", cascade = CascadeType.ALL)
     private Set<Factura> facturas = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idUsuario")
     private Set<LimpiezaHabitaciones> limpiezaHabitacions = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "idUsuario")
+    @OneToMany(mappedBy = "idUsuario", cascade = CascadeType.ALL)
     private Set<ProductosUsuario> productosUsuarios = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "idUsuario")
+    @OneToMany(mappedBy = "idUsuario", cascade = CascadeType.ALL)
     private Set<Reserva> reservas = new LinkedHashSet<>();
 
 }
